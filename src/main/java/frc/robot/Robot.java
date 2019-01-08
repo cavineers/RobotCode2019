@@ -8,12 +8,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.lib.MathHelper;
+import frc.robot.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.SPI;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,8 +28,10 @@ import frc.robot.subsystems.ExampleSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static OI m_oi;
+  public static DriveTrain drivetrain;
+  public static OI oi;
+  public static AHRS gyro;
+  public static RobotPosEstimator estimator;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -35,10 +42,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
-    SmartDashboard.putData("Auto mode", m_chooser);
+    drivetrain = new DriveTrain();
+    oi = new OI();
+    gyro = new AHRS(SPI.Port.kMXP);
+    estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
+
+    gyro.zeroYaw();
+    gyro.setAngleAdjustment(0);
   }
 
   /**
@@ -128,4 +138,21 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
+  /**
+	 * Get the current heading of the robot in radians
+	 * @return the current robot heading in radians from -pi to pi
+	 */
+	public static double getAngleRad() {
+		return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle()));
+  }
+  
+	/**
+	 * Gets the current time in seconds
+	 * 
+	 * @return the current time in seconds
+	 */
+	public static double getCurrentTime() {
+		return Timer.getFPGATimestamp();
+	}
 }
