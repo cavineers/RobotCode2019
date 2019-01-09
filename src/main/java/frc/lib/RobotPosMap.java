@@ -48,8 +48,10 @@ public class RobotPosMap {
     }
 
     /**
+     * Adds a positional update to the RobotPos map at the desired timestamp and colsolidates the 
+     * map if its size is greater than the max specified size
      * 
-     * @param update
+     * @param update the latest robot pos update
      */
     private void addUpdate(RobotPosUpdate update) {
         boolean foundHome = false;
@@ -156,7 +158,7 @@ public class RobotPosMap {
     /**
      * Rebases the robotPosMap with a new base
      * 
-     * @param update
+     * @param update a absolute RobotPosUpdate that should be the new base of the map
      */
     private void rebaseMap(RobotPosUpdate update) {
         // the base should be the last element in the list
@@ -213,6 +215,11 @@ public class RobotPosMap {
         return map.get(map.size() - 1);
     }
 
+    /**
+     * Get the field relative position of the robot based on the current pos map
+     * 
+     * @return a RobotPos representing the current pos of the robot
+     */
     public RobotPos getFieldRelativePosition() {
         if (!this.isBased) {
             return null;
@@ -231,11 +238,13 @@ public class RobotPosMap {
         return new RobotPos(new Point(xTot, yTot), 0, 0, 0);
     }
 
+    /**
+     * print the given map to the terminal
+     */
     public void printMap() {
         for (RobotPosUpdate update : map) {
             System.out.println(update);
         }
-        
     }
 
 }

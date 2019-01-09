@@ -25,8 +25,6 @@ public class RobotPosMapTest {
         map.addWheelUpdate(1, 1, 11);
         // map.addCameraUpdate(0, 0, 4.5);
 
-        //check if position map updates as expected
-
         RobotPos pos = map.getFieldRelativePosition();
         System.out.println("x: " + pos.getX() + " y: " + pos.getY());
         map.printMap();
