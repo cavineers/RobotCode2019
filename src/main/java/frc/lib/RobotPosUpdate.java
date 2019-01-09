@@ -16,8 +16,11 @@ public class RobotPosUpdate {
     public static enum UpdateType {
         WHEEL,  // an update from wheel odometry
         CAMERA, // an update from the camera
-        BASE    // information that was combined into a single datapoint to save space 
+        BASE,   // information that was combined into a single datapoint to save space 
                 // in the map and is now the starting point of pos estimation
+       
+        EXTRAPOLATION // an update that calculates how much the robot has moved
+                      // since the last encoder update using forward kinematics //TODO IMPLEMENT
     };
 
     UpdateType type;
@@ -63,7 +66,7 @@ public class RobotPosUpdate {
             return dx;
         } else {
             System.out.println("ERROR: ATTEMPTED TO GET DX FROM AN ABSOLUTE UPDATE POINT");
-            return 0;
+            return 5;
         }
     }
 
@@ -119,8 +122,8 @@ public class RobotPosUpdate {
     public RobotPosUpdate consolidateBaseWithUpdate(RobotPosUpdate newUpdate) {
         if (this.type == UpdateType.BASE) {
             if (!newUpdate.isAbsolute()) {
-                double newX = this.getX() + newUpdate.getX();
-                double newY = this.getY() + newUpdate.getY();
+                double newX = this.getX() + newUpdate.getDx();
+                double newY = this.getY() + newUpdate.getDy();
                 return new RobotPosUpdate(newX, newY, newUpdate.getTimestamp(), UpdateType.BASE);
             } else {
                 System.out.println("ERROR: ATTEMPTED TO CONSOLIDATE A BASE WITH A NON-ABSOLUTE ROBOTPOS UPDATE");
@@ -162,5 +165,18 @@ public class RobotPosUpdate {
         double dy = nextUpdate.getDy() * percentDesired;
 
         return new RobotPosUpdate(dx, dy, nextUpdate.getTimestamp(), UpdateType.WHEEL);
+    }
+
+    @Override
+    public String toString() {
+        if (this.type == UpdateType.WHEEL) {
+            return String.format("Type: WHEEL; dx: %s, dy: %s; timestamp: %s", this.dx, this.dy, this.timestamp);
+        } else if (this.type == UpdateType.CAMERA) {
+            return String.format("Type: CAMERA; x: %s, y: %s; timestamp: %s", this.x, this.y, this.timestamp);
+        } else if (this.type == UpdateType.BASE) {
+            return String.format("Type: BASE; dx: %s, dy: %s; timestamp: %s", this.x, this.y, this.timestamp);
+        } else {
+            return "Update has invalid type!";
+        }
     }
 }

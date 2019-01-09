@@ -57,11 +57,6 @@ public class RobotPosMap {
         // older than the new update, and then put the new update in front of the older one
         for (int i = 0; i < map.size(); i++) {
             if (map.get(i).getTimestamp() < update.getTimestamp()) {
-                if (!update.isAbsolute()) {
-                    // if the element's timestamp is older than the update's add it to the array at the old element's index
-                    map.add(i, update);
-                }
-                
                 foundHome = true;
 
                 // if the update is absolute (camera update), run an outlier check to make sure it isn't a crazy result,
@@ -72,6 +67,9 @@ public class RobotPosMap {
                     } else {
                         return; //don't do anything
                     }
+                } else {
+                    // if the element's timestamp is older than the update's add it to the array at the old element's index
+                    map.add(i, update);
                 }
                 
                 break; // stop looking for older timestamps
@@ -79,7 +77,7 @@ public class RobotPosMap {
             // otherwise keep looking through the array for an older update
         }
 
-        if (!foundHome) {
+        if (!foundHome && !update.isAbsolute()) {
             // there are no elements in the list older than the update, so add this one at the end
             map.add(map.size(), update);
         }
@@ -231,6 +229,13 @@ public class RobotPosMap {
         }
 
         return new RobotPos(new Point(xTot, yTot), 0, 0, 0);
+    }
+
+    public void printMap() {
+        for (RobotPosUpdate update : map) {
+            System.out.println(update);
+        }
+        
     }
 
 }
