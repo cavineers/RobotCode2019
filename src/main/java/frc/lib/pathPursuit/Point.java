@@ -1,5 +1,7 @@
 package frc.lib.pathPursuit;
 
+import frc.lib.Vector;
+
 public class Point {
 	
 	private double x = 0;
@@ -134,5 +136,13 @@ public class Point {
 		double x = -1 * (p1.getX() - p2.getX()) * Math.sin(angle) + (p1.getY() - p2.getY()) * Math.cos(angle);
 		
 		return new Point(x, y);
+	}
+
+	/**
+	 * gets a vector with the same values as the current point
+	 * @return a vector representing the point
+	 */
+	public Vector getVector() {
+		return new Vector(this.x, this.y);
 	}
 }

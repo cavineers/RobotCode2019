@@ -23,7 +23,8 @@ public class RobotPosMapTest {
         map.addWheelUpdate(1, 1, 9);
         map.addWheelUpdate(1, 1, 10);
         map.addWheelUpdate(1, 1, 11);
-        // map.addCameraUpdate(0, 0, 4.5);
+        map.addWheelUpdate(1, 1, 6.5);
+        map.addCameraUpdate(0, 0, 3.75);
 
         RobotPos pos = map.getFieldRelativePosition();
         System.out.println("x: " + pos.getX() + " y: " + pos.getY());

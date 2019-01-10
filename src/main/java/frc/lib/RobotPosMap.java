@@ -126,8 +126,6 @@ public class RobotPosMap {
             mid = ( first + last ) / 2;
             if (timestamp == map.get(mid).getTimestamp()) {
                 // an element exists with the given timestamp - return its index in an array
-                System.out.println(timestamp);
-                System.out.println(map.get(mid).getTimestamp());
                 return new int[] {mid};
             } else if (map.get(mid).getTimestamp() < timestamp) {
                 last = mid - 1;

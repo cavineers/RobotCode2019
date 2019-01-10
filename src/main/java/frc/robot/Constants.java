@@ -1,6 +1,8 @@
 package frc.robot;
 
+import frc.lib.Vector;
 import frc.lib.pathPursuit.Lookahead;
+import frc.lib.pathPursuit.Point;
 
 public class Constants {
 
@@ -41,6 +43,8 @@ public class Constants {
  	public static final double kAVelocity = 0.0; // TODO: Tune/Test
  	public static final double kDriveVoltageRampRate = 0.0;
  	
- 	public static final Lookahead lookahead = new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead, Constants.kMinLookAheadSpeed, Constants.kMaxLookAheadSpeed);
+	public static final Lookahead lookahead = new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead, Constants.kMinLookAheadSpeed, Constants.kMaxLookAheadSpeed);
+	 
+	public static final Vector cameraRelativeToRobotCenter = new Vector(5, 2); // a vector representing the difference in position from the robot's center and the camera 
     
 }

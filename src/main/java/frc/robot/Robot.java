@@ -17,8 +17,6 @@ import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.SPI;
 
-import java.io.IOException;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -155,7 +153,7 @@ public class Robot extends TimedRobot {
 	 * @return the current time in seconds
 	 */
 	public static double getCurrentTime() {
-      return 10;
-      // return Timer.getFPGATimestamp();
-	}
+      return Timer.getFPGATimestamp();
+  }
+
 }
