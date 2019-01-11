@@ -97,32 +97,6 @@ public class Point {
 	}
 	
 	/**
-	 * return the angle of the arc formed by a given start point, endpoint, and center point
-	 * 
-	 * @param startPoint the start point of arc
-	 * @param endPoint the end point of the arc
-	 * @param centerPoint the center point of the arc
-	 * @return the angle of the given arc
-	 */
-	public static double getAngleForArc(Point startPoint, Point endPoint, Point centerPoint) {
-		// get the three sides of the triangle
-		double a = Point.getDistance(centerPoint, startPoint);
-		double b = Point.getDistance(centerPoint, endPoint);
-		double c = Point.getDistance(startPoint, endPoint);
-		
-		//solve for arc measure with law of cosines
-		return Math.acos((c*c - a*a - b*b) / (-2 * a * b));
-	}
-	
-	/**
-	 * returns the side length opposite to thetaC in triangle ABC
-	 */
-	public static double getOppSideLength(double a, double b, double thetaC) {
-		//solve for side length with law of cosines
-		return Math.sqrt(a*a + b*b - 2 * a * b * Math.cos(thetaC));
-	}
-	
-	/**
 	 * Converts the reference frame of p1 such that p2 is the origin and rotates it by theta
 	 * 
 	 * @param p1: the point whose origin should be changed

@@ -15,7 +15,7 @@ public class Path {
 	
 	public Path(boolean isDebug, boolean isReversed, double maxAccel) {
 		didFinish = false;
-		manager = new VelocityManager(isDebug, isReversed);
+		manager = new VelocityManager(isDebug, isReversed, maxAccel);
 	}
 	
 	public Path() {
@@ -39,9 +39,8 @@ public class Path {
 	 */
 	public RobotCmd update(RobotPos robotPos) {
 		Segment currentSegment = this.getCurrentSegment();
-//		Point currentPos = robotPos.position;
 		Point lookaheadPt = currentSegment.getLookaheadPoint(robotPos.position, Constants.lookahead.getLookaheadForSpeed(robotPos.getVelocity()));
-		
+		System.out.println(robotPos + "," + lookaheadPt);
 		if (Point.getDistance(currentSegment.getEndPoint(), lookaheadPt) < Constants.kPathPursuitTolerance) {
 			// if the current robot position is within tol of the end point, move on to the next segment
 			// or say that the robot is done following the path
@@ -55,7 +54,7 @@ public class Path {
 			}
 			
 			//stop the target point from becoming behind the robot
-			if (Point.getDistance(currentSegment.getEndPoint(), robotPos.position) < Constants.kStopSteeringDistance) {
+			if (Point.getDistance(currentSegment.getEndPoint(), robotPos.position) < Constants.kStopSteeringDistance && !this.canMoveOnToNextSegment()) {
 				manager.freezeHeading(robotPos.heading);
 			}
 		}

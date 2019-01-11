@@ -1,6 +1,7 @@
 package frc.lib.pathPursuit;
 
 import frc.lib.MathHelper;
+import frc.robot.Constants;
 
 public class ArcSegment implements Segment {
 	
@@ -35,6 +36,10 @@ public class ArcSegment implements Segment {
 	public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel) {
 		this(startPoint, endPoint, centerPoint, maxVel, maxVel);
 	}
+
+	public ArcSegment(Point startPoint, Point endPoint, Point centerPoint) {
+		this(startPoint, endPoint, centerPoint, Constants.kMaxTargetSpeed);
+	}
 	
 	/**
 	 * Gets the closest point on the arc segment to the given point.  Approach was modified from
@@ -52,10 +57,10 @@ public class ArcSegment implements Segment {
 		Point arcPoint = Point.addPoints(centerPoint, deltaPose);
 		
 		// Get the angle of the arcs between the circle's point and the endpoints of the arc
-		double startAngle = Point.getAngleForArc(startPoint, arcPoint, centerPoint);
-		double endAngle = Point.getAngleForArc(arcPoint, endPoint, centerPoint);
+		double startAngle = MathHelper.getAngleForArc(startPoint, arcPoint, centerPoint);
+		double endAngle = MathHelper.getAngleForArc(arcPoint, endPoint, centerPoint);
 		
-		double totalAngle = Point.getAngleForArc(startPoint, endPoint, centerPoint);
+		double totalAngle = MathHelper.getAngleForArc(startPoint, endPoint, centerPoint);
 		
 		// if the arcs between the endpoints equal the total length of the arc, we are on the arc
 		if (MathHelper.areApproxEqual(startAngle + endAngle, totalAngle)) {
@@ -87,7 +92,7 @@ public class ArcSegment implements Segment {
 	@Override
 	public double getDistanceToEndpoint(Point lookaheadPos) {
 		//get the arc angle of the amount of distance left to drive
-		double remainingArcRadians = Point.getAngleForArc(lookaheadPos, this.endPoint, this.centerPoint);
+		double remainingArcRadians = MathHelper.getAngleForArc(lookaheadPos, this.endPoint, this.centerPoint);
 		
 		//get total arc distance with s = theta * r
 		return remainingArcRadians * this.radius;

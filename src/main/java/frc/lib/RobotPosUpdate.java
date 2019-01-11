@@ -11,6 +11,8 @@ public class RobotPosUpdate {
     double dx = 0;
     double dy = 0;
 
+    double heading = 0;
+
     double timestamp;
     
     public static enum UpdateType {
@@ -25,9 +27,10 @@ public class RobotPosUpdate {
 
     UpdateType type;
 
-    public RobotPosUpdate(double x, double y, double timestamp, UpdateType type) {
+    public RobotPosUpdate(double x, double y, double heading, double timestamp, UpdateType type) {
         this.type = type;
         this.timestamp = timestamp;
+        this.heading = heading; // in radians
 
         if (type == UpdateType.WHEEL) {
             this.dx = x;
@@ -111,6 +114,14 @@ public class RobotPosUpdate {
             return 0;
         }
     }
+    
+    /**
+     * gets the heading (in radians) of the robot at the update time
+     * @return the heading of the robot at the update time
+     */
+    public double getHeading() {
+        return this.heading;
+    }
 
     /**
      * adds data from a non-absolute RobotPosUpdate to a base, effectively merging the updates into a new base
@@ -124,7 +135,7 @@ public class RobotPosUpdate {
             if (!newUpdate.isAbsolute()) {
                 double newX = this.getX() + newUpdate.getDx();
                 double newY = this.getY() + newUpdate.getDy();
-                return new RobotPosUpdate(newX, newY, newUpdate.getTimestamp(), UpdateType.BASE);
+                return new RobotPosUpdate(newX, newY, heading, newUpdate.getTimestamp(), UpdateType.BASE);
             } else {
                 System.out.println("ERROR: ATTEMPTED TO CONSOLIDATE A BASE WITH A NON-ABSOLUTE ROBOTPOS UPDATE");
                 return this;
@@ -140,7 +151,7 @@ public class RobotPosUpdate {
      */
     public RobotPosUpdate makeBase() {
         if (this.isAbsolute()) {
-            return new RobotPosUpdate(this.getX(), this.getY(), this.timestamp, UpdateType.BASE);
+            return new RobotPosUpdate(this.getX(), this.getY(), this.getHeading(), this.timestamp, UpdateType.BASE);
         } else {
             System.out.println("ERROR: ATTEMPTED TO TURN A NON-ABSOLUTE ROBOTPOS UPDATE INTO A BASE");
             return null;
@@ -164,7 +175,7 @@ public class RobotPosUpdate {
         double dx = nextUpdate.getDx() * percentDesired;
         double dy = nextUpdate.getDy() * percentDesired;
 
-        return new RobotPosUpdate(dx, dy, nextUpdate.getTimestamp(), UpdateType.WHEEL);
+        return new RobotPosUpdate(dx, dy, nextUpdate.getHeading(), nextUpdate.getTimestamp(), UpdateType.WHEEL);
     }
 
     @Override

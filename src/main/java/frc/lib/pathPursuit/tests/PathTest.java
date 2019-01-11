@@ -25,7 +25,7 @@ public class PathTest {
 //		double distNeeded = manager.getDistanceNeededToAccel(Constants.kMaxAccel, 30, 0);
 //		System.out.println(distNeeded);
 		
-//		Path path = new Path(true, true, Constants.kMaxAccelSpeedUp);
+		Path path = new Path(true, false, Constants.kMaxAccelSpeedUp);
 //		Segment seg1 = new LineSegment(new Point(0, 0), new Point(60, 0), 48, 24);
 //		path.addSegment(seg1);
 //		Segment seg2 = new ArcSegment(new Point(60, 0), new Point(90, 30), new Point(60, 30), 24);
@@ -42,16 +42,16 @@ public class PathTest {
 //		Segment seg2 = new ArcSegment(new Point(90, 0), new Point(140, -50), new Point(90, -50), 60, 0);
 //		path.addSegment(seg2);
 		
-//		Segment seg1 = new LineSegment(new Point(0, 0), new Point(60, 0), 50, 5, 12);
-//		path.addSegment(seg1);
-//		Segment seg2 = new ArcSegment(new Point(60, 0), new Point(90, 30), new Point(60, 30), 12, 10);
-//		path.addSegment(seg2);
-//		Segment seg3 = new LineSegment(new Point(90, 30), new Point(90, 200), 60, 24, 15);
-//		path.addSegment(seg3);
-//		Segment seg4 = new ArcSegment(new Point(90, 200), new Point(50, 240), new Point(50, 200), 24);
-//		path.addSegment(seg4);
-//		Segment seg5 = new LineSegment(new Point(50, 240), new Point(0, 240), 30, 0);
-//		path.addSegment(seg5);
+		Segment seg1 = new LineSegment(new Point(0, 0), new Point(60, 0), 50, 5);
+		path.addSegment(seg1);
+		Segment seg2 = new ArcSegment(new Point(60, 0), new Point(90, 30), new Point(60, 30), 12, 10);
+		path.addSegment(seg2);
+		Segment seg3 = new LineSegment(new Point(90, 30), new Point(90, 200), 60, 24);
+		path.addSegment(seg3);
+		Segment seg4 = new ArcSegment(new Point(90, 200), new Point(50, 240), new Point(50, 200), 24);
+		path.addSegment(seg4);
+		Segment seg5 = new LineSegment(new Point(50, 240), new Point(0, 240), 30, 0);
+		path.addSegment(seg5);
 		
 //		Segment seg1 = new LineSegment(new Point(0, 0), new Point(60, 0), 60, 60);
 //		path.addSegment(seg1);
@@ -62,17 +62,17 @@ public class PathTest {
 //		Segment seg4 = new LineSegment(new Point(120, -60), new Point(170, -60), 60, 0);
 //		path.addSegment(seg4);
 		
-		Path path = new Path(true, true, Constants.kMaxAccelSpeedUp);
-		Segment seg1 = new LineSegment(new Point(170, -60), new Point(120, -60), 60);
-		path.addSegment(seg1);
-		Segment seg2 = new ArcSegment(new Point(120, -60), new Point(90, -30), new Point(120, -30), 60);
-		path.addSegment(seg2);
-		Segment seg3 = new ArcSegment(new Point(90, -30), new Point(60, 0), new Point(60, -30), 60);
-		path.addSegment(seg3);
-		Segment seg4 = new LineSegment(new Point(60, 0), new Point(0, 0), 60, 0);
-		path.addSegment(seg4);
+		// Path path = new Path(true, true, Constants.kMaxAccelSpeedUp);
+		// Segment seg1 = new LineSegment(new Point(170, -60), new Point(120, -60), 60);
+		// path.addSegment(seg1);
+		// Segment seg2 = new ArcSegment(new Point(120, -60), new Point(90, -30), new Point(120, -30), 60);
+		// path.addSegment(seg2);
+		// Segment seg3 = new ArcSegment(new Point(90, -30), new Point(60, 0), new Point(60, -30), 60);
+		// path.addSegment(seg3);
+		// Segment seg4 = new LineSegment(new Point(60, 0), new Point(0, 0), 60, 0);
+		// path.addSegment(seg4);
 		
-		RobotPos currentPos = new RobotPos(170,-60, 0, 0,0);
+		RobotPos currentPos = new RobotPos(0,0, 0, 0,0);
 		
 		double pathTime = 0;
 		while (!path.isFinished()) {

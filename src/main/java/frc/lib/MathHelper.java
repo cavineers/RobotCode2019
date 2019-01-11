@@ -1,5 +1,7 @@
 package frc.lib;
 
+import frc.lib.pathPursuit.Point;
+
 public class MathHelper {
 	
 	/**
@@ -35,5 +37,47 @@ public class MathHelper {
 	 */
 	public static double angleToNegPiToPi(double angle) {
 		return angle - Math.PI * 2 * Math.floor((angle + Math.PI) / (Math.PI * 2));
+	}
+
+	/**
+	 * return the angle of the arc formed by a given start point, endpoint, and center point
+	 * 
+	 * @param startPoint the start point of arc
+	 * @param endPoint the end point of the arc
+	 * @param centerPoint the center point of the arc
+	 * @return the angle of the given arc
+	 */
+	public static double getAngleForArc(Point startPoint, Point endPoint, Point centerPoint) {
+		// get the three sides of the triangle
+		double a = Point.getDistance(centerPoint, startPoint);
+		double b = Point.getDistance(centerPoint, endPoint);
+		double c = Point.getDistance(startPoint, endPoint);
+		
+		//solve for arc measure with law of cosines
+		return Math.acos((c*c - a*a - b*b) / (-2 * a * b));
+	}
+	
+	/**
+	 * returns the side length opposite to thetaC in triangle ABC
+	 */
+	public static double getOppSideLength(double a, double b, double thetaC) {
+		//solve for side length with law of cosines
+		return Math.sqrt(a*a + b*b - 2 * a * b * Math.cos(thetaC));
+	}
+
+	/**
+	 * return the angle of the arc formed by a given start point, endpoint, and center point
+	 * 
+	 * @param startPoint the start point of arc
+	 * @param endPoint the end point of the arc
+	 * @param centerPoint the center point of the arc
+	 * @return the angle of the given arc
+	 */
+	public static double getAngleForArc(Point startPoint, Point endPoint, double radius) {
+		// get the three sides of the triangle
+		double c = Point.getDistance(startPoint, endPoint);
+		
+		//solve for arc measure with law of cosines
+		return Math.acos((c*c - radius*radius - radius*radius) / (-2 * radius * radius));
 	}
 }

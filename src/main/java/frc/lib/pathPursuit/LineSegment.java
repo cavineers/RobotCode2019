@@ -1,5 +1,7 @@
 package frc.lib.pathPursuit;
 
+import frc.robot.Constants;
+
 public class LineSegment implements Segment {
 	
 	private Point startPoint;
@@ -20,6 +22,10 @@ public class LineSegment implements Segment {
 	
 	public LineSegment(Point startPoint, Point endPoint, double maxVel) {
 		this(startPoint, endPoint, maxVel, maxVel);
+	}
+
+	public LineSegment(Point startPoint, Point endPoint) {
+		this(startPoint, endPoint, Constants.kMaxTargetSpeed);
 	}
 	
 	/**

@@ -13,10 +13,12 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 	// should recalculate the dt every cycle - true when on a robot, false when in debug mode
 	boolean recalcDt = false;
 	boolean isReversed = false;
+	double maxAccel = 0;
 	
-	public VelocityManager(boolean isDebug, boolean isReversed) {
+	public VelocityManager(boolean isDebug, boolean isReversed, double maxAccel) {
 		this.recalcDt = !isDebug;
 		this.isReversed = isReversed;
+		this.maxAccel = maxAccel;
 		this.dt = -1;
 		this.lastUpdateTime = -1;
 		this.isHeadingFrozen = false;
@@ -66,7 +68,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 	public double getOverallVelocityTarget(Segment segment, RobotPos state) {
 		
 		if (this.isHeadingFrozen) {
-			this.getNextVelocity(Constants.kMaxAccelSpeedUp, state.getVelocity(), 0);
+			this.getNextVelocity(this.maxAccel, state.getVelocity(), 0);
 		}
 
 		if (!segment.isAcceleratingToEndpoint() && this.shouldAccelToEndPoint(segment, state)) {
@@ -87,9 +89,9 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 				double distToCompletion = segment.getDistanceToEndpoint(segment.getClosestPointOnSegment(state.getVelocityLookaheadPoint(dt))) - Constants.kPathPursuitTolerance - currentLookahead;
 				if (distToCompletion < 0) {
 					if (isReversed) {
-						return this.getNextVelocity(Constants.kMaxAccelSpeedUp, state.getVelocity(), -1 * segment.getEndVelocity());
+						return this.getNextVelocity(this.maxAccel, state.getVelocity(), -1 * segment.getEndVelocity());
 					} else {
-						return this.getNextVelocity(Constants.kMaxAccelSpeedUp, state.getVelocity(), segment.getEndVelocity());
+						return this.getNextVelocity(this.maxAccel, state.getVelocity(), segment.getEndVelocity());
 					}
 				}
 				if (isReversed) {
@@ -109,9 +111,9 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 		else {
 			//The robot must accelerate/decelerate to reach the max speed of the path
 			if (isReversed) {
-				return this.getNextVelocity(Constants.kMaxAccelSpeedUp, state.getVelocity(), -1 * segment.getMaxVelocity());
+				return this.getNextVelocity(this.maxAccel, state.getVelocity(), -1 * segment.getMaxVelocity());
 			} else {
-				return this.getNextVelocity(Constants.kMaxAccelSpeedUp, state.getVelocity(), segment.getMaxVelocity());
+				return this.getNextVelocity(this.maxAccel, state.getVelocity(), segment.getMaxVelocity());
 			}
 			
 		}
@@ -143,7 +145,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 			}
 						
 			}
-		return requiredAccelToFinish >= Constants.kMaxAccelSpeedUp;
+		return requiredAccelToFinish >= this.maxAccel;
 	}
 	
 	/**

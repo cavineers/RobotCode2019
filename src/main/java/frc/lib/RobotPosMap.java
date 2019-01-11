@@ -32,8 +32,8 @@ public class RobotPosMap {
      * @param dy the change in y calculated from wheel odometry
      * @param timestamp
      */
-    public void addWheelUpdate(double dx, double dy, double timestamp) {
-        this.addUpdate(new RobotPosUpdate(dx, dy, timestamp, UpdateType.WHEEL));
+    public void addWheelUpdate(double dx, double dy, double heading, double timestamp) {
+        this.addUpdate(new RobotPosUpdate(dx, dy, timestamp, heading, UpdateType.WHEEL));
     }
 
     /**
@@ -43,8 +43,8 @@ public class RobotPosMap {
      * @param y field relative yPos of the robot from the camera
      * @param timestamp time in seconds when the picture was taken
      */
-    public void addCameraUpdate(double x, double y, double timestamp) {
-        this.addUpdate(new RobotPosUpdate(x, y, timestamp, UpdateType.CAMERA));
+    public void addCameraUpdate(double x, double y, double heading, double timestamp) {
+        this.addUpdate(new RobotPosUpdate(x, y, heading, timestamp, UpdateType.CAMERA));
     }
 
     /**
@@ -80,8 +80,8 @@ public class RobotPosMap {
         }
 
         if (!foundHome && !update.isAbsolute()) {
-            // there are no elements in the list older than the update, so add this one at the end
-            map.add(map.size(), update);
+            // there are no elements in the list older than the update, so make this one the first element
+            map.add(0, update);
         }
 
         while (map.size() > maxListSize) {

@@ -6,12 +6,23 @@ public class VelocityTrapezoid {
 	double dt = 0;
 	double lastUpdateTime = 0;
 	boolean isAcceleratingToEndpoint = false;
+	boolean isUpdatingDt = true;
+
+	boolean doesLockDecel = true;
 
     public VelocityTrapezoid(double maxAccel, double maxSpeed, double dt) {
         this.maxAccel = Math.abs(maxAccel);
 		this.maxSpeed = Math.abs(maxSpeed);
 		this.dt = dt;
 		this.lastUpdateTime = System.currentTimeMillis();
+	}
+
+	public void setDebugMode() {
+		isUpdatingDt = false;
+	}
+
+	public void setDecelLock(boolean lock) {
+		doesLockDecel = lock;
 	}
 	
 	/**
@@ -22,14 +33,18 @@ public class VelocityTrapezoid {
 	 * @return the velocity that the system should be traveling
 	 */
 	public double update(double currentVel, double distanceRemaining) {
-		//recalc dt every interval (time in between updates)
-		updateDt();
+		if (isUpdatingDt) {
+			//recalc dt every interval (time in between updates)
+			updateDt();
+		}
 
 		//calculate the acceleration needed for the robot to stop by the given endpoint
 		double endpointAccel = this.getAccelNeededToStopByPoint(currentVel, distanceRemaining);
 
 		if (endpointAccel >= this.maxAccel || this.isAcceleratingToEndpoint) {
-			this.isAcceleratingToEndpoint = true;
+			if (this.doesLockDecel) {
+				this.isAcceleratingToEndpoint = true;
+			}
 			// if the robot cannot reach the endpoint within max acceleration, slow down as fast as is required
 			return this.getNextVelocity(currentVel, 0, endpointAccel);
 		} else {

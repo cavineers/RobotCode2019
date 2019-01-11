@@ -46,6 +46,10 @@ public class ConnectionArc {
 		this.isTurningRight = isTurningRight;
 	}
 
+	public double getLength() {
+		return MathHelper.getAngleForArc(startPoint, endPoint, radius);
+	}
+
 	/**
 	 * 
 	 * @param currentVel:
