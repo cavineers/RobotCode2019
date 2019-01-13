@@ -1,6 +1,7 @@
 package frc.lib.pathPursuit;
 
 import frc.lib.MathHelper;
+import frc.lib.Vector;
 import frc.robot.Constants;
 
 public class ArcSegment implements Segment {
@@ -17,8 +18,16 @@ public class ArcSegment implements Segment {
 	double endVel;
 	
 	boolean isAccelToEndpoint = false;
+
+	TURN smallSide;
+	public enum TURN {
+		RIGHT,
+		LEFT
+	}
+
+	public TURN turnType;
 	
-	public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel, double endVel) {
+	public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel, double endVel, boolean left) {
 		this.startPoint = startPoint;
 		this.endPoint = endPoint;
 		this.centerPoint = centerPoint;
@@ -31,6 +40,30 @@ public class ArcSegment implements Segment {
 		this.endVel = endVel;
 		
 		isAccelToEndpoint = false;
+
+		if (left) {
+			turnType = TURN.LEFT;
+		} else {
+			turnType = TURN.RIGHT;
+		}
+
+		// the vector from the center of the circle to the start
+		Vector centerToStart = new Vector(this.centerPoint.getX() - this.startPoint.getX(), this.centerPoint.getY() - this.startPoint.getY());
+		Vector centerToEnd   = new Vector(this.centerPoint.getX() - this.endPoint.getX(), this.centerPoint.getY() - this.endPoint.getY());
+		
+		double crossProduct = Vector.getCrossProduct(centerToStart, centerToEnd);
+		
+		// figure out if the small side of the circle is a left or right hand turn
+		if (crossProduct < 0) {
+			smallSide = TURN.RIGHT;
+		} else {
+			smallSide = TURN.LEFT;
+		}
+
+	}
+
+	public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel, double endVel) {
+		this(startPoint, endPoint, centerPoint, maxVel, endVel, true);
 	}
 	
 	public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel) {
@@ -51,7 +84,7 @@ public class ArcSegment implements Segment {
 	@Override
 	public Point getClosestPointOnSegment(Point lookaheadPoint) {
 		// Map the lookahead point to the closest point on the circle
-		Point deltaPose = Point.getDelta(centerPoint, lookaheadPoint);
+ 		Point deltaPose = Point.getDelta(centerPoint, lookaheadPoint);
 		double scale = deltaStart.getHypot() / deltaPose.getHypot();
 		deltaPose = new Point(deltaPose.getX() * scale, deltaPose.getY() * scale);
 		Point arcPoint = Point.addPoints(centerPoint, deltaPose);
@@ -59,15 +92,16 @@ public class ArcSegment implements Segment {
 		// Get the angle of the arcs between the circle's point and the endpoints of the arc
 		double startAngle = MathHelper.getAngleForArc(startPoint, arcPoint, centerPoint);
 		double endAngle = MathHelper.getAngleForArc(arcPoint, endPoint, centerPoint);
-		
-		double totalAngle = MathHelper.getAngleForArc(startPoint, endPoint, centerPoint);
-		
-		// if the arcs between the endpoints equal the total length of the arc, we are on the arc
-		if (MathHelper.areApproxEqual(startAngle + endAngle, totalAngle)) {
+		double arcAngle = MathHelper.getAngleForArc(startPoint, endPoint, centerPoint);
+
+		//TODO: account for arcs that are exactly Pi radians
+
+		// if the arcs between the endpoints equal the total length of the arc, we are on the smaller arc, otherwise we are on the larger arc
+		if ((MathHelper.areApproxEqual(startAngle + endAngle, arcAngle) && smallSide == this.turnType) || !(MathHelper.areApproxEqual(startAngle + endAngle, arcAngle) && smallSide != this.turnType)) {
 			// We are on the part of the arc we want, just return the point
 			return arcPoint;
 		} else { 
-			// Otherwise we are not on the arc so return the closest endpoint
+			// We are not on the arc so return the closest endpoint
 			if (Point.getDistance(arcPoint, startPoint) < Point.getDistance(arcPoint, endPoint)) {
 				return startPoint;
 			} 
@@ -93,6 +127,29 @@ public class ArcSegment implements Segment {
 	public double getDistanceToEndpoint(Point lookaheadPos) {
 		//get the arc angle of the amount of distance left to drive
 		double remainingArcRadians = MathHelper.getAngleForArc(lookaheadPos, this.endPoint, this.centerPoint);
+		
+		if (this.smallSide != this.turnType) {
+			//we are on the larger part of a circle
+
+			//create vectors from the center to the start point, lookahead point, and end point
+			Vector centerToEnd = Point.getDelta(this.endPoint, this.centerPoint).getVector();
+			Vector centerToLPos = Point.getDelta(this.startPoint, lookaheadPos).getVector();
+
+			double crossProduct = Vector.getCrossProduct(centerToLPos, centerToEnd);
+
+			TURN travelDir;
+
+			// figure out if the small side of the circle is a left or right hand turn
+			if (crossProduct < 0) {
+				travelDir = TURN.RIGHT;
+			} else {
+				travelDir = TURN.LEFT;
+			}
+
+			if (this.turnType == travelDir) {
+				remainingArcRadians = (Math.PI * 2) - remainingArcRadians;
+			}
+		}
 		
 		//get total arc distance with s = theta * r
 		return remainingArcRadians * this.radius;
@@ -136,10 +193,26 @@ public class ArcSegment implements Segment {
 		
 		double x2 = Math.cos(-theta) * (closestPoint.getX() - this.centerPoint.getX()) - Math.sin(-theta) * (closestPoint.getY() - this.centerPoint.getY()) + this.centerPoint.getX();
 		double y2 = Math.sin(-theta) * (closestPoint.getX() - this.centerPoint.getX()) + Math.cos(-theta) * (closestPoint.getY() - this.centerPoint.getY()) + this.centerPoint.getY();
+		
 		Point p2 = new Point(x2, y2);
 		
-		//figure out which point gets us closer to the endpoint and then return that point
-		if (Point.getDistance(p1, this.endPoint) < Point.getDistance(p2, endPoint)) {
+		//create vectors from the center to the start point, lookahead point, and end point
+		Vector centerToEnd = Point.getDelta(robotPosition, this.centerPoint).getVector();
+		Vector centerToLPos = Point.getDelta(p1, this.centerPoint).getVector();
+		// Vector centerToRPos = Point.getDelta(robotPosition, this.cen)
+
+		double crossProduct = Vector.getCrossProduct(centerToLPos, centerToEnd);
+
+		TURN travelDir;
+
+		// figure out if the small side of the circle is a left or right hand turn
+		if (crossProduct > 0) {
+			travelDir = TURN.RIGHT;
+		} else {
+			travelDir = TURN.LEFT;
+		}
+
+		if (travelDir == this.turnType) {
 			return p1;
 		} else {
 			return p2;

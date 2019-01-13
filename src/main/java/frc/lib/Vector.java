@@ -61,4 +61,23 @@ public class Vector {
     public Point getPoint() {
         return new Point(dx, dy);
     }
+
+    /**
+     * Gets the angle between the vector and the x-axis
+     * 
+     * @return the angle between the vector and the x-axis
+     */
+    public double getAngle() {
+        return Math.atan2(dy, dx);
+    }
+
+    /**
+     * Gets the cross product of two vectors
+     * @param v1 the first vector
+     * @param v2 the second vector
+     * @return the cross product of v1 and v2
+     */
+    public static double getCrossProduct(Vector v1, Vector v2) {
+        return v1.dx * v2.dy - v1.dy * v2.dx;
+    }
 }

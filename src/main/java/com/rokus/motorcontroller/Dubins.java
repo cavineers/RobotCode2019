@@ -151,6 +151,9 @@ public class Dubins {
 		next = BestCSCTrajectory(agentLeft,agentRight,queryLeft,queryRight);
 		if (next.length < shortest.length)
 			shortest = next;
+		next = BestCCCTrajectory(agentLeft,agentRight,queryLeft,queryRight);
+		if(next.length < shortest.length)
+			shortest = next;
 
 		return shortest;
 	}
@@ -207,7 +210,7 @@ public class Dubins {
 			//don't use velocities because Dubins assumes unit forward velocity
 			nextControl.timesteps = arcL1 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(m_start.pos.toPoint(), RRTangents.get(0).first.toPoint(), agentRight.GetPos().toPoint())); //start, end, center
+			next.addSegment(new ArcSegment(m_start.pos.toPoint(), RRTangents.get(0).first.toPoint(), agentRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, false)); //start, end, center
 
 			nextControl = new Control();
 			nextControl.steeringRadius = 0.0; //straight
@@ -221,7 +224,7 @@ public class Dubins {
 			arcL3 = Geometry.ArcLength(queryRight.GetPos(),RRTangents.get(0).second, m_goal.pos, m_minTurnRadius, false);
 			nextControl.timesteps = arcL3 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(RRTangents.get(0).second.toPoint(), m_goal.pos.toPoint(), queryRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0)); //start, end, center
+			next.addSegment(new ArcSegment(RRTangents.get(0).second.toPoint(), m_goal.pos.toPoint(), queryRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0, false)); //start, end, center
 
 			//calculate total length
 			next.length =  arcL1 + arcL2 + arcL3;
@@ -241,7 +244,7 @@ public class Dubins {
 			//don't use velocities because Dubins assumes unit forward velocity
 			nextControl.timesteps = arcL1 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(m_start.pos.toPoint(), LLTangents.get(1).first.toPoint(), agentLeft.GetPos().toPoint())); //start, end, center
+			next.addSegment(new ArcSegment(m_start.pos.toPoint(), LLTangents.get(1).first.toPoint(), agentLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, true)); //start, end, center
 
 
 			nextControl = new Control();
@@ -256,7 +259,7 @@ public class Dubins {
 			arcL3 = Geometry.ArcLength(queryLeft.GetPos(),LLTangents.get(1).second, m_goal.pos, m_minTurnRadius, true);
 			nextControl.timesteps = arcL3 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(LLTangents.get(1).second.toPoint(), m_goal.pos.toPoint(), queryLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0)); //start, end, center
+			next.addSegment(new ArcSegment(LLTangents.get(1).second.toPoint(), m_goal.pos.toPoint(), queryLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0, true)); //start, end, center
 
 			//calculate total length
 			next.length =  arcL1 + arcL2 + arcL3;
@@ -277,7 +280,7 @@ public class Dubins {
 			//don't use velocities because Dubins assumes unit forward velocity
 			nextControl.timesteps = arcL1 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(m_start.pos.toPoint(), RLTangents.get(2).first.toPoint(), agentRight.GetPos().toPoint())); //start, end, center
+			next.addSegment(new ArcSegment(m_start.pos.toPoint(), RLTangents.get(2).first.toPoint(), agentRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, false)); //start, end, center
 
 			nextControl = new Control();
 			nextControl.steeringRadius = 0.0; //straight
@@ -291,7 +294,7 @@ public class Dubins {
 			arcL3 = Geometry.ArcLength(queryLeft.GetPos(), RLTangents.get(2).second, m_goal.pos, m_minTurnRadius, true);
 			nextControl.timesteps = arcL3 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(RLTangents.get(2).second.toPoint(), m_goal.pos.toPoint(), queryLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0)); //start, end, center
+			next.addSegment(new ArcSegment(RLTangents.get(2).second.toPoint(), m_goal.pos.toPoint(), queryLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0, true)); //start, end, center
 
 			//calculate total length
 			next.length =  arcL1 + arcL2 + arcL3;
@@ -312,8 +315,7 @@ public class Dubins {
 			//don't use velocities because Dubins assumes unit forward velocity
 			nextControl.timesteps = arcL1 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(m_start.pos.toPoint(), LRTangents.get(3).first.toPoint(), agentLeft.GetPos().toPoint())); //start, end, center
-
+			next.addSegment(new ArcSegment(m_start.pos.toPoint(), LRTangents.get(3).first.toPoint(), agentLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, true)); //start, end, center
 
 			nextControl = new Control();
 			nextControl.steeringRadius = 0.0; //straight
@@ -327,7 +329,7 @@ public class Dubins {
 			arcL3 = Geometry.ArcLength(queryRight.GetPos(), LRTangents.get(3).second, m_goal.pos, m_minTurnRadius, false);
 			nextControl.timesteps = arcL3 / DELTA;
 			next.controls.add(nextControl);
-			next.addSegment(new ArcSegment(LRTangents.get(3).second.toPoint(), m_goal.pos.toPoint(), queryRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0)); //start, end, center
+			next.addSegment(new ArcSegment(LRTangents.get(3).second.toPoint(), m_goal.pos.toPoint(), queryRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0, false)); //start, end, center
 
 			//calculate total length
 			next.length =  arcL1 + arcL2 + arcL3;
@@ -338,7 +340,7 @@ public class Dubins {
 
 
 
-	/*
+	
 	private DubinsTrajectory BestCCCTrajectory(Geometry.Circle agentLeft, Geometry.Circle agentRight, Geometry.Circle queryLeft, Geometry.Circle queryRight) {
 		DubinsTrajectory shortest, next;
 		shortest = new DubinsTrajectory();
@@ -391,6 +393,7 @@ public class Dubins {
 		nextControl = new Control();
 		nextControl.steeringRadius = -1.0 * m_minTurnRadius; //right turn at max
 		arcL1 = Geometry.ArcLength(agentRight.GetPos(), m_start.pos, agentTan, m_minTurnRadius, false);
+		next.addSegment(new ArcSegment(m_start.pos.toPoint(), agentTan.toPoint(), agentRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, false)); //start, end, center
 
 		//don't use velocities because Dubins assumes unit forward velocity
 		nextControl.timesteps = arcL1 / DELTA;
@@ -401,12 +404,15 @@ public class Dubins {
 		arcL2 = Geometry.ArcLength(lCircle.GetPos(), agentTan, queryTan, m_minTurnRadius, true);
 		nextControl.timesteps = arcL2 / DELTA;
 		next.controls.add(nextControl);
+		next.addSegment(new ArcSegment(agentTan.toPoint(), queryTan.toPoint(), lCircle.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, true)); //start, end, center
 
 		nextControl = new Control();
 		nextControl.steeringRadius =  -1.0 * m_minTurnRadius; //right turn at max
 		arcL3 = Geometry.ArcLength(queryRight.GetPos(), queryTan, m_goal.pos, m_minTurnRadius, false);
 		nextControl.timesteps = arcL3 / DELTA;
 		next.controls.add(nextControl);
+		next.addSegment(new ArcSegment(queryTan.toPoint(), m_goal.pos.toPoint(), queryRight.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0, false)); //start, end, center
+
 
 		//calculate total length
 		next.length =  arcL1 + arcL2 + arcL3;
@@ -435,22 +441,25 @@ public class Dubins {
 		//don't use velocities because Dubins assumes unit forward velocity
 		nextControl.timesteps = arcL1 / DELTA;
 		next.controls.add(nextControl);
+		next.addSegment(new ArcSegment(m_start.pos.toPoint(), agentTan.toPoint(), agentLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, true)); //start, end, center
 
 		nextControl = new Control();
 		nextControl.steeringRadius = -1.0 * m_minTurnRadius; //right turn at max
 		arcL2 = Geometry.ArcLength(rCircle.GetPos(), agentTan, queryTan, m_minTurnRadius, false);
 		nextControl.timesteps = arcL2 / DELTA;
 		next.controls.add(nextControl);
+		next.addSegment(new ArcSegment(agentTan.toPoint(), queryTan.toPoint(), rCircle.GetPos().toPoint(), Constants.kMaxTargetSpeed, Constants.kMaxTargetSpeed, false)); //start, end, center
 
 		nextControl = new Control();
 		nextControl.steeringRadius = m_minTurnRadius; //left turn at max
 		arcL3 = Geometry.ArcLength(queryLeft.GetPos(), queryTan, m_goal.pos, m_minTurnRadius, true);
 		nextControl.timesteps = arcL3 / DELTA;
 		next.controls.add(nextControl);
+		next.addSegment(new ArcSegment(queryTan.toPoint(), m_goal.pos.toPoint(), queryLeft.GetPos().toPoint(), Constants.kMaxTargetSpeed, 0, true)); //start, end, center
 
 		//calculate total length
 		next.length =  arcL1 + arcL2 + arcL3;
 		return next;
 	} 
-	*/
+	
 }

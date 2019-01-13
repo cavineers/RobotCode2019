@@ -21,15 +21,15 @@ public class Constants {
 	public static final double kSensorUnitsPerInch = 854.3 / 12; //pulses per foot 854.3 math; 876.7 experimentally, 848.18- 4 times 64
 
 	//Variable lookahead stuff
-    // public static final double kMinLookAhead = 12.0; // inches
-    // public static final double kMinLookAheadSpeed = 9.0; // inches per second
-    // public static final double kMaxLookAhead = 24.0; // inches
-	// public static final double kMaxLookAheadSpeed = 120.0; // inches per second
-
-	public static final double kMinLookAhead = 5.0; // inches
+    public static final double kMinLookAhead = 12.0; // inches
     public static final double kMinLookAheadSpeed = 9.0; // inches per second
-    public static final double kMaxLookAhead = 5.0; // inches
+    public static final double kMaxLookAhead = 24.0; // inches
 	public static final double kMaxLookAheadSpeed = 120.0; // inches per second
+
+	public static final double kMinLookAheadTargeting = 1.0; // inches
+    public static final double kMinLookAheadSpeedTargeting = 3.0; // inches per second
+    public static final double kMaxLookAheadTargeting = 5.0; // inches
+	public static final double kMaxLookAheadSpeedTargeting = 120.0; // inches per second
 	
 	//turn to angle stuff
 	public static final double kMaxTurnToAngleSpeed = 144; // in inches per second; the max speed of the robot used for turn to angle
@@ -48,10 +48,9 @@ public class Constants {
  	public static final double kAVelocity = 0.0; // TODO: Tune/Test
  	public static final double kDriveVoltageRampRate = 0.0;
  	
-	public static final Lookahead lookahead = new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead, Constants.kMinLookAheadSpeed, Constants.kMaxLookAheadSpeed);
-	 
 	public static final Vector cameraRelativeToRobotCenter = new Vector(5, 2); // a vector representing the difference in position from the robot's center and the camera 
 	
 	//Auto Targeting stuff
-	public static final double kMaxTargetSpeed = 100; //in inches per second; max speed of the robot when it is targeting vision tape
+	public static final double kMaxTargetSpeed = 40; //in inches per second; max speed of the robot when it is targeting vision tape
+	public static final double kMaxTargetAccel = 20;
 }

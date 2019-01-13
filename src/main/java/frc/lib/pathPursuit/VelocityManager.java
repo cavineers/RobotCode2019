@@ -14,14 +14,17 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 	boolean recalcDt = false;
 	boolean isReversed = false;
 	double maxAccel = 0;
+
+	Lookahead lookahead;
 	
-	public VelocityManager(boolean isDebug, boolean isReversed, double maxAccel) {
+	public VelocityManager(boolean isDebug, boolean isReversed, double maxAccel, Lookahead lookahead) {
 		this.recalcDt = !isDebug;
 		this.isReversed = isReversed;
 		this.maxAccel = maxAccel;
 		this.dt = -1;
 		this.lastUpdateTime = -1;
 		this.isHeadingFrozen = false;
+		this.lookahead = lookahead;
 	}
 	
 	/**
@@ -44,7 +47,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 		if (this.isHeadingFrozen) {
 			return new RobotCmd(overallVel, overallVel);
 		}
-		Point lookahead = segment.getLookaheadPoint(state.position, Constants.lookahead.getLookaheadForSpeed(state.getVelocity()));
+		Point lookahead = segment.getLookaheadPoint(state.position, this.lookahead.getLookaheadForSpeed(state.getVelocity()));
 		
 		ConnectionArc arc = new ConnectionArc(state, lookahead, isReversed);
 		
@@ -85,7 +88,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 				}
 			}
 			else { //The robot will be continuing onto another segment, reach final velocity before it switches segments
-				double currentLookahead = Constants.lookahead.getLookaheadForSpeed(state.getVelocity());
+				double currentLookahead = this.lookahead.getLookaheadForSpeed(state.getVelocity());
 				double distToCompletion = segment.getDistanceToEndpoint(segment.getClosestPointOnSegment(state.getVelocityLookaheadPoint(dt))) - Constants.kPathPursuitTolerance - currentLookahead;
 				if (distToCompletion < 0) {
 					if (isReversed) {
@@ -133,7 +136,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
 		if (segment.getEndVelocity() == 0) { //The robot will stop at the end of this segment, try to stop exactly at the end
 			requiredAccelToFinish = this.getAccelNeededToGetToVelByPoint(state.getVelocity(), segment.getEndVelocity(), segment.getDistanceToEndpoint(segment.getClosestPointOnSegment(state.getVelocityLookaheadPoint(dt))));
 		} else { //The robot will be continuing onto another segment, reach final velocity before it does
-			double currentLookahead = Constants.lookahead.getLookaheadForSpeed(state.getVelocity());
+			double currentLookahead = this.lookahead.getLookaheadForSpeed(state.getVelocity());
 			double distToCompletion = segment.getDistanceToEndpoint(segment.getClosestPointOnSegment(state.getVelocityLookaheadPoint(dt))) - Constants.kPathPursuitTolerance - currentLookahead;
 			if (distToCompletion < 0) {
 				return true;
