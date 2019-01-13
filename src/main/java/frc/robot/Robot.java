@@ -140,20 +140,20 @@ public class Robot extends TimedRobot {
   }
 
   /**
-	 * Get the current heading of the robot in radians
-	 * @return the current robot heading in radians from -pi to pi
-	 */
-	public static double getAngleRad() {
-		return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle()));
+   * Get the current heading of the robot in radians
+   * @return the current robot heading in radians from -pi to pi
+   */
+  public static double getAngleRad() {
+    return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle()));
   }
   
-	/**
-	 * Gets the current time in seconds
-	 * 
-	 * @return the current time in seconds
-	 */
-	public static double getCurrentTime() {
-      return Timer.getFPGATimestamp();
+  /**
+   * Gets the current time in seconds
+   * 
+   * @return the current time in seconds
+   */
+  public static double getCurrentTime() {
+    return Timer.getFPGATimestamp();
   }
 
 }

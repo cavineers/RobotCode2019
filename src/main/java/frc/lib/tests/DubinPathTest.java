@@ -28,7 +28,7 @@ public class DubinPathTest {
     static double startHeading = 0;
 
     static Point endPoint = new Point(10, -7);
-    static double endHeading = 0;//Math.PI/8; //fails at 2.03540569779
+    static double endHeading = 2.03540569779;
 
     public static void main(String[] args) {
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -40,28 +40,28 @@ public class DubinPathTest {
 
 
         RobotPos currentPos = new RobotPos(0,0, 0, 0,0);
-		
+        
         double pathTime = 0;
         
         Path path = getPath(startPoint, startHeading, endPoint, endHeading);
 
-		while (!path.isFinished()) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+        while (!path.isFinished()) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
-			RobotCmd cmd = path.update(currentPos);
-			double heading = currentPos.heading + ((cmd.getLeftVel() - cmd.getRightVel()) / Constants.kWheelBase) * path.manager.dt;
-			
-			double lVel = cmd.getLeftVel();
-			double rVel = cmd.getRightVel();
-			
-			double xPos = currentPos.position.getX() + (lVel + rVel)/2 * path.manager.dt * Math.cos(heading);
-			double yPos = currentPos.position.getY() + (lVel  + rVel)/2 * path.manager.dt * Math.sin(heading);
-			currentPos = new RobotPos(xPos, yPos, heading, rVel, lVel);
-			pathTime += Constants.kDefaultDt;
+            RobotCmd cmd = path.update(currentPos);
+            double heading = currentPos.heading + ((cmd.getLeftVel() - cmd.getRightVel()) / Constants.kWheelBase) * path.manager.dt;
+            
+            double lVel = cmd.getLeftVel();
+            double rVel = cmd.getRightVel();
+            
+            double xPos = currentPos.position.getX() + (lVel + rVel)/2 * path.manager.dt * Math.cos(heading);
+            double yPos = currentPos.position.getY() + (lVel  + rVel)/2 * path.manager.dt * Math.sin(heading);
+            currentPos = new RobotPos(xPos, yPos, heading, rVel, lVel);
+            pathTime += Constants.kDefaultDt;
             // System.out.println(currentPos);
             // System.out.println(path.getCurrentSegment()); 
         }

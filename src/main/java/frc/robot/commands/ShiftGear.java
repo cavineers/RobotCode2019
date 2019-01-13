@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class ShiftGear extends Command {
-	DriveGear gear;
+    DriveGear gear;
     public ShiftGear(DriveGear gear) {
-    	this.gear = gear;
+        this.gear = gear;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.setDriveGear(gear);
+        Robot.drivetrain.setDriveGear(gear);
     }
 
     // Called repeatedly when this Command is scheduled to run

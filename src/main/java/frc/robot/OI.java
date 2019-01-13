@@ -18,45 +18,45 @@ import frc.robot.subsystems.DriveTrain.DriveGear;
  */
 public class OI {
   public enum SENSOR {
-		ENCODER_RIGHT_WHEELS, ENCODER_LEFT_WHEELS, ENCODER_ELEVATOR
-	};
+        ENCODER_RIGHT_WHEELS, ENCODER_LEFT_WHEELS, ENCODER_ELEVATOR
+    };
 
-	public enum TRIG_MODE {
-		ELEVATOR, INTAKE, CLIMBER
-	}
+    public enum TRIG_MODE {
+        ELEVATOR, INTAKE, CLIMBER
+    }
 
-	public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
+    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
 
-	public static Joystick joy = new Joystick(0);
-	public static JoystickButton a_button = new JoystickButton(joy, 1);
-	public static JoystickButton b_button = new JoystickButton(joy, 2);
-	public static JoystickButton x_button = new JoystickButton(joy, 3);
-	public static JoystickButton y_button = new JoystickButton(joy, 4);
+    public static Joystick joy = new Joystick(0);
+    public static JoystickButton a_button = new JoystickButton(joy, 1);
+    public static JoystickButton b_button = new JoystickButton(joy, 2);
+    public static JoystickButton x_button = new JoystickButton(joy, 3);
+    public static JoystickButton y_button = new JoystickButton(joy, 4);
 
-	public static JoystickButton l_bump = new JoystickButton(joy, 5);
-	public static JoystickButton r_bump = new JoystickButton(joy, 6);
-	public static JoystickButton left_middle = new JoystickButton(joy, 7);
-	public static JoystickButton right_middle = new JoystickButton(joy, 8);
-	public static JoystickButton left_stick = new JoystickButton(joy, 9);
-	public static JoystickButton right_stick = new JoystickButton(joy, 10);
-	public int lastDpad = -1;
+    public static JoystickButton l_bump = new JoystickButton(joy, 5);
+    public static JoystickButton r_bump = new JoystickButton(joy, 6);
+    public static JoystickButton left_middle = new JoystickButton(joy, 7);
+    public static JoystickButton right_middle = new JoystickButton(joy, 8);
+    public static JoystickButton left_stick = new JoystickButton(joy, 9);
+    public static JoystickButton right_stick = new JoystickButton(joy, 10);
+    public int lastDpad = -1;
 
-	public OI() {
-		r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
-		l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
-	}
+    public OI() {
+        r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
+        l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
+    }
 
-	public Joystick getJoystick() {
-		return joy;
-	}
+    public Joystick getJoystick() {
+        return joy;
+    }
 
-	public double addDeadZone(double input) {
-		if (Math.abs(input) <= .05)
-			input = 0;
-		else if (input < 0)
-			input = -Math.pow(input, 2);
-		else
-			input = Math.pow(input, 2);
-		return input;
-	}
+    public double addDeadZone(double input) {
+        if (Math.abs(input) <= .05)
+            input = 0;
+        else if (input < 0)
+            input = -Math.pow(input, 2);
+        else
+            input = Math.pow(input, 2);
+        return input;
+    }
 }

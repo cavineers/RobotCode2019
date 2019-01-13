@@ -24,9 +24,9 @@ public class DriveToTargetTestConnectionArc {
         velTrap.setDebugMode();
         while(true) {
             try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             double currentVel = (rVel + lVel)/2;
 

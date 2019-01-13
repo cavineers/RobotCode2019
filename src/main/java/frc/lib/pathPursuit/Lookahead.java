@@ -24,7 +24,7 @@ public class Lookahead {
     }
 
     public double getLookaheadForSpeed(double speed) {
-    	speed = Math.abs(speed);
+        speed = Math.abs(speed);
         double lookahead = delta_distance * (speed - min_speed) / delta_speed + min_distance;
         return Double.isNaN(lookahead) ? min_distance : Math.max(min_distance, Math.min(max_distance, lookahead));
     }
