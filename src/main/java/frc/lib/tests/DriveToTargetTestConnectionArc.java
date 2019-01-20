@@ -30,7 +30,7 @@ public class DriveToTargetTestConnectionArc {
             }
             double currentVel = (rVel + lVel)/2;
 
-            RobotPos currentPos = map.getFieldRelativePosition();
+            RobotPos currentPos = map.getLastestFieldRelativePosition();
 
             ConnectionArc arc = new ConnectionArc(new RobotPos(currentPos.position, currentHeading, 0, 0), target, false);
 

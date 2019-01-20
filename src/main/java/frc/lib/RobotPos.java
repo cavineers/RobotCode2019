@@ -47,6 +47,11 @@ public class RobotPos {
     public double getHeading() {
         return this.heading;
     }
+
+    public void setVelocities(double rVel, double lVel) {
+        this.rVel = rVel;
+        this.lVel = lVel;
+    }
     
     /**
      * Gives an approximation of the robot's position at the next update

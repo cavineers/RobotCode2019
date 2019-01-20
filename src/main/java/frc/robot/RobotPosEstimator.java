@@ -3,30 +3,31 @@ package frc.robot;
 import java.util.concurrent.locks.ReentrantLock;
 
 import frc.lib.MathHelper;
-import frc.lib.pathPursuit.Point;
+import frc.lib.RobotPos;
+import frc.lib.RobotPosMap;
 import frc.robot.Robot;
 
 public class RobotPosEstimator {
 
-    double xPos = 0;
-    double yPos = 0;
-    double heading = 0;
-    double rWheelTravel = 0;
-    double lWheelTravel = 0;
     boolean isLocked = false;
 
     ReentrantLock mutex = new ReentrantLock();
     
     Thread thread;
+
+    RobotPosMap map = new RobotPosMap(Constants.kMaxListSize);
+
+    public double rWheelTravel = 0;
+    public double lWheelTravel = 0;
+    public double heading = 0;
     
     private volatile boolean running = false;
 
     public RobotPosEstimator(double x, double y, double h, double rWT, double lWT) {
-        xPos = x; // in inches
-        yPos = y; // in inches
-        heading = h; // in radians
-        rWheelTravel = rWT; // in rotations
-        lWheelTravel = lWT; // in rotations
+        map.clearAndSetPos(new RobotPos(x, y, h, 0, 0));
+        rWheelTravel = Robot.drivetrain.getRightPos();
+        lWheelTravel = Robot.drivetrain.getLeftPos();
+        heading = this.getHeading();
     }
 
     public void updatePos(double newRTravel, double newLTravel, double newHeading) {
@@ -34,18 +35,23 @@ public class RobotPosEstimator {
         double dL = newLTravel - lWheelTravel;
         double dH = rotate(getInverseOfAngle(heading), newHeading);
         double epsilon = 0.0000001; // threshold between circular and linear estimations
+        double dx;
+        double dy;
         if (dH > epsilon) { // estimate change in position using constant radius math
             double radius = (dR + dL) / (2 * dH);
             double mag = 2 * radius * Math.sin(dH / 2);
             double XMag = mag * Math.cos(newHeading);
             double YMag = mag * Math.sin(newHeading);
-            xPos += XMag;
-            yPos += YMag;
+            dx = XMag;
+            dy = YMag;
+            
         } else { // estimate change in position using linear distance between points
             double mag = (dR + dL) / 2;
-            yPos += Math.sin(newHeading) * mag;
-            xPos += Math.cos(newHeading) * mag;
+            dy = Math.sin(newHeading) * mag;
+            dx = Math.cos(newHeading) * mag;
         }
+
+        map.addWheelUpdate(dx, dy, this.getHeading(), Robot.getCurrentTime());
         heading = newHeading;
         rWheelTravel = newRTravel;
         lWheelTravel = newLTravel;
@@ -90,40 +96,15 @@ public class RobotPosEstimator {
         return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle())); // in radians
     }
 
-    public double getRightWheel() {
-        return Robot.drivetrain.getRightPos();
-    }
-
-    public double getLeftWheel() {
-        return Robot.drivetrain.getLeftPos();
-    }
-
-    public double getX() {
+    public RobotPos getPos() {
         mutex.lock();
         try {
-            return xPos;
+            return map.getLastestFieldRelativePosition();
         } finally {
             mutex.unlock();
         }
     }
 
-    public double getY() {
-        mutex.lock();
-        try {
-            return yPos;
-        } finally {
-            mutex.unlock();
-        }
-    }
-    
-    public Point getPosition() {
-        mutex.lock();
-        try {
-            return new Point(this.xPos, this.yPos);
-        } finally {
-            mutex.unlock();
-        }
-    }
 
     public void start() {
         this.running = true;
@@ -133,7 +114,7 @@ public class RobotPosEstimator {
                 mutex.lock();
                 // when locked, continously update position
                 try {
-                    this.updatePos(getRightWheel(), getLeftWheel(), getHeading());
+                    this.updatePos(Robot.drivetrain.getRightPos(), Robot.drivetrain.getLeftPos(), getHeading());
                 } finally {
                     mutex.unlock();
                 }
@@ -150,8 +131,7 @@ public class RobotPosEstimator {
     public void zero() {
         mutex.lock();
         try {
-            xPos = 0;
-            yPos = 0;
+            map.clearAndSetPos(new RobotPos(0,0, 0, 0,0));
         } finally {
             mutex.unlock();
         }

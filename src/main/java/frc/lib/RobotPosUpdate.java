@@ -160,13 +160,14 @@ public class RobotPosUpdate {
     
     /**
      * Creates a partial update between the prevUpdate and the timestamp by linearly interpolating x and y over the time
+     * Update is between timestamp and nextUpdate
      * 
      * @param prevUpdate a relative update before the timestamp
      * @param nextUpdate a relative update after the timestamp
      * @param timestamp the time that the relative update is requested for
      * @return a RobotPosUpdate representing the movement between prevUpdate and the timestamp
      */
-    public static RobotPosUpdate createUpdateAtTime(RobotPosUpdate prevUpdate, RobotPosUpdate nextUpdate, double timestamp) {
+    public static RobotPosUpdate createUpdateBetweenTimeAndNextUpdate(RobotPosUpdate prevUpdate, RobotPosUpdate nextUpdate, double timestamp) {
         double dtTotal = nextUpdate.getTimestamp() - prevUpdate.getTimestamp(); // the amount of time the next update encompases
         double dtDesired = nextUpdate.getTimestamp() - timestamp; // the amount of time we want the update to encompass
 
@@ -176,6 +177,30 @@ public class RobotPosUpdate {
         double dy = nextUpdate.getDy() * percentDesired;
 
         return new RobotPosUpdate(dx, dy, nextUpdate.getHeading(), nextUpdate.getTimestamp(), UpdateType.WHEEL);
+    }
+
+     /**
+     * Creates a partial update between the prevUpdate and the timestamp by linearly interpolating x and y over the time
+     * Update is between prevUpdate and timestamp
+     * 
+     * @param prevUpdate a relative update before the timestamp
+     * @param nextUpdate a relative update after the timestamp
+     * @param timestamp the time that the relative update is requested for
+     * @return a RobotPosUpdate representing the movement between prevUpdate and the timestamp
+     */
+    public static RobotPosUpdate createUpdateBetweenPrevUpdateAndTime(RobotPosUpdate prevUpdate, RobotPosUpdate nextUpdate, double timestamp) {
+        double dtTotal = nextUpdate.getTimestamp() - prevUpdate.getTimestamp(); // the amount of time the next update encompases
+        double dtDesired = nextUpdate.getTimestamp() - timestamp; // the amount of time we want the update to encompass
+
+        double percentDesired = 1 - (dtDesired / dtTotal);
+
+        double dx = nextUpdate.getDx() * percentDesired;
+        double dy = nextUpdate.getDy() * percentDesired;
+        double dh = (nextUpdate.getHeading() - prevUpdate.getHeading()) * percentDesired;
+
+        double heading = MathHelper.angleToNegPiToPi(prevUpdate.getHeading() + dh);
+
+        return new RobotPosUpdate(dx, dy, heading, timestamp, UpdateType.WHEEL);
     }
 
     @Override

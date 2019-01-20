@@ -4,15 +4,18 @@ import java.util.ArrayList;
 
 import frc.lib.RobotPosUpdate.UpdateType;
 import frc.lib.pathPursuit.Point;
+import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class RobotPosMap {
     // map goes from new updates (small indexes; larger timestamps) to old updates (large indexes; smaller timestamps)
-    ArrayList<RobotPosUpdate> map = new ArrayList<>();
+    ArrayList<RobotPosUpdate> map = new ArrayList<RobotPosUpdate>();
 
     double maxListSize = 0;
 
     boolean isBased = false;
+
+    boolean allowsCameraUpdates = true;
 
     public RobotPosMap(int maxListSize) {
         this.maxListSize = maxListSize;
@@ -30,10 +33,11 @@ public class RobotPosMap {
      * 
      * @param dx the change in x calculated from wheel odometry
      * @param dy the change in y calculated from wheel odometry
-     * @param timestamp
+     * @param heading the heading when the updated was captured
+     * @param timestamp the time when the update was captured
      */
     public void addWheelUpdate(double dx, double dy, double heading, double timestamp) {
-        this.addUpdate(new RobotPosUpdate(dx, dy, timestamp, heading, UpdateType.WHEEL));
+        this.addUpdate(new RobotPosUpdate(dx, dy, heading, timestamp, UpdateType.WHEEL));
     }
 
     /**
@@ -54,6 +58,10 @@ public class RobotPosMap {
      * @param update the latest robot pos update
      */
     private void addUpdate(RobotPosUpdate update) {
+        if (update.type == UpdateType.CAMERA && !this.allowsCameraUpdates) {
+            return;
+        }
+
         boolean foundHome = false;
         // starting from the front (lowest index / newest timestamps) of the array, look for an element
         // older than the new update, and then put the new update in front of the older one
@@ -64,11 +72,31 @@ public class RobotPosMap {
                 // if the update is absolute (camera update), run an outlier check to make sure it isn't a crazy result,
                 // if it fails, throw it out; if it passes, make it the new base of position calculations
                 if (update.isAbsolute()) {
-                    if (this.passesOutlierCheck(update)) {
-                        this.rebaseMap(update);
-                    } else {
-                        return; //don't do anything
+                    //compare where the map says the robot should be and where the new update says the robot should be
+                    RobotPos mapPos = this.getRobotPositionAtTime(update.timestamp);
+                    if (mapPos == null) {
+                        // if there was an error getting the position from the map, ignore the update
+                        System.out.println("COULD NOT ADD CAMERA UDPATE TO ROBOT MAP");
+                        return;
                     }
+
+                    double delta = Point.getDistance(mapPos.position, new Point(update.getX(), update.getY()));
+                    if (delta < Constants.kCameraToMapToleranceLvl1) {
+                        this.rebaseMap(update); //if we are within lvl1 tolerances, completely rebase the map
+                    } else if (delta < Constants.kCameraToMapToleranceLvl2) {
+                        //if we are within lvl2 tolerances, partially rebase the map with percents of each update from the constants file
+                        double newX = (update.getX() * Constants.kCameraToMapPercentLvl2) + (mapPos.getX() * (1-Constants.kCameraToMapPercentLvl2));
+                        double newY = (update.getY() * Constants.kCameraToMapPercentLvl2) + (mapPos.getY() * (1-Constants.kCameraToMapPercentLvl2));
+                        RobotPosUpdate newBase = new RobotPosUpdate(newX,newY, mapPos.heading, update.timestamp,UpdateType.BASE);
+                        this.rebaseMap(newBase); 
+                    } else if (delta < Constants.kCameraToMapToleranceLvl3) {
+                        //if we are within lvl3 tolerances, partially rebase the map with percents of each update from the constants file
+                        double newX = (update.getX() * Constants.kCameraToMapPercentLvl3) + (mapPos.getX() * (1-Constants.kCameraToMapPercentLvl3));
+                        double newY = (update.getY() * Constants.kCameraToMapPercentLvl3) + (mapPos.getY() * (1-Constants.kCameraToMapPercentLvl3));
+                        RobotPosUpdate newBase = new RobotPosUpdate(newX,newY, mapPos.heading, update.timestamp,UpdateType.BASE);
+                        this.rebaseMap(newBase); 
+                    }
+                    return;
                 } else {
                     // if the element's timestamp is older than the update's add it to the array at the old element's index
                     map.add(i, update);
@@ -94,17 +122,6 @@ public class RobotPosMap {
             // the new base of the list has the data from the previous update
             map.set(map.size()-1, oldBase.consolidateBaseWithUpdate(map.get(map.size()-1)));
         }
-    }
-    
-    /**
-     * Determine if an absolute update is an outlier, used for camera updates to ensure that no crazy
-     * positions are made to be the base of positional estimations
-     * 
-     * @param update an absolute update that should be checked for being an outlier
-     * @return whether or not the given update is an outlier
-     */
-    private boolean passesOutlierCheck(RobotPosUpdate update) {
-        return true; //TODO: check for outliers
     }
     
     /**
@@ -134,7 +151,6 @@ public class RobotPosMap {
             }
         }
         if (last >= 0 && first < map.size()) {
-            //TODO: verify that this is in the order first, last
             return new int[] {first, last}; // no element exists with the requested timestamp, but there are elements on either side of it
         } else if (last >= 0){
             // no element exists within the requested timestamp, and the timestamp is the smallest (oldest) in the array
@@ -154,6 +170,64 @@ public class RobotPosMap {
     }
 
     /**
+     * Gets an estimate of the robot position at the given time
+     * 
+     * @param time the time at which the position of the robot is desired
+     * @return the robot's position at the given time
+     */
+    public RobotPos getRobotPositionAtTime(double time) {
+        RobotPosUpdate base = map.get(map.size() - 1);
+        if (base.timestamp > time) {
+            return null; // a position cannot be calculated for the given time, image too old
+        }
+
+        int[] indexArr = this.getMapIndexForTimestamp(time);
+        if (indexArr.length == 0) {
+            // the position cannot be calculated for the given time.
+            return null;
+        }
+        if (indexArr.length == 1) {
+            // there is a whole number index at the given time, calculate position at that time
+            int index = indexArr[0];
+
+            double xTot = base.getX();
+            double yTot = base.getY();
+            double heading = map.get(index).heading;
+            
+            //add all elements after the one at the requested time
+            for (int i = index; i < map.size() - 1; i++) {
+                RobotPosUpdate rel = map.get(i);
+                xTot += rel.getDx();
+                yTot += rel.getDy();
+            }
+            return new RobotPos(new Point(xTot, yTot), heading, 0, 0);
+        }
+        if (indexArr.length == 2) {
+            // there is no whole number index for the requested time, create a partial update representing
+            // the movement in between the last update and that time
+            RobotPosUpdate partialUpdate = RobotPosUpdate.createUpdateBetweenPrevUpdateAndTime(map.get(indexArr[0]), map.get(indexArr[1]), time);
+
+            int prevUpdate = indexArr[0];
+
+            double xTot = base.getX();
+            double yTot = base.getY();
+
+            for (int i = prevUpdate; i < map.size() - 1; i++) {
+                RobotPosUpdate rel = map.get(i);
+                xTot += rel.getDx();
+                yTot += rel.getDy();
+            }
+            
+            xTot += partialUpdate.getDx();
+            yTot += partialUpdate.getDy();
+
+            return new RobotPos(new Point(xTot, yTot), partialUpdate.getHeading(), 0, 0);
+        }
+        return null;
+        
+    }
+
+    /**
      * Rebases the robotPosMap with a new base
      * 
      * @param update a absolute RobotPosUpdate that should be the new base of the map
@@ -167,7 +241,7 @@ public class RobotPosMap {
         //get the index(es) that the update should replace
         int[] indexArr = this.getMapIndexForTimestamp(update.getTimestamp());
         if (indexArr.length == 0) {
-            // the map cannot be rebased, revert the old base and stop]
+            // the map cannot be rebased, revert the old base and stop
             map.add(map.size(), oldBase); // add the old base to the end of the map
             return;
         }
@@ -186,7 +260,7 @@ public class RobotPosMap {
         if (indexArr.length == 2) {
             // there is no whole number index that the base can replace, create a partial update representing
             // the movement in between the last update and the base
-            RobotPosUpdate partialUpdate = RobotPosUpdate.createUpdateAtTime(map.get(indexArr[0]), map.get(indexArr[1]), update.getTimestamp());
+            RobotPosUpdate partialUpdate = RobotPosUpdate.createUpdateBetweenTimeAndNextUpdate(map.get(indexArr[0]), map.get(indexArr[1]), update.getTimestamp());
 
             // replace the total wheel positional update with the partial update we just created
             map.set(indexArr[1], partialUpdate);
@@ -218,7 +292,7 @@ public class RobotPosMap {
      * 
      * @return a RobotPos representing the current pos of the robot
      */
-    public RobotPos getFieldRelativePosition() {
+    public RobotPos getLastestFieldRelativePosition() { //TODO account for movement since last update?
         if (!this.isBased) {
             return null;
         }
@@ -232,8 +306,8 @@ public class RobotPosMap {
             xTot += rel.getDx();
             yTot += rel.getDy();
         }
-
-        return new RobotPos(new Point(xTot, yTot), 0, 0, 0);
+        double latestHeading = MathHelper.angleToNegPiToPi(map.get(0).getHeading());
+        return new RobotPos(new Point(xTot, yTot), latestHeading, 0, 0);
     }
 
     /**
@@ -243,6 +317,25 @@ public class RobotPosMap {
         for (RobotPosUpdate update : map) {
             System.out.println(update);
         }
+    }
+
+    /**
+     * says if the path is should integrate or ignore camera updates
+     * @param allowed true if camera updates should be integrated, false if they should be ignored
+     */
+    public void setAllowedToIntegrateCameraUpdates(boolean allowed) {
+        this.allowsCameraUpdates = allowed;
+    }
+
+    /**
+     * Clears the update map and sets the current position of the map to the given position
+     * 
+     * @param update the new position to set the map to
+     */
+    public void clearAndSetPos(RobotPos newPos) {
+        // clear the map
+        map = new ArrayList<RobotPosUpdate>();
+        map.add(new RobotPosUpdate(newPos.getX(), newPos.getY(), newPos.getHeading(), 0, UpdateType.BASE));
     }
 
 }

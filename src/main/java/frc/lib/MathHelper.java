@@ -1,5 +1,7 @@
 package frc.lib;
 
+import java.util.Random;
+
 import frc.lib.pathPursuit.Point;
 
 public class MathHelper {
@@ -79,5 +81,16 @@ public class MathHelper {
         
         //solve for arc measure with law of cosines
         return Math.acos((c*c - radius*radius - radius*radius) / (-2 * radius * radius));
+    }
+    
+    /**
+     * return a random double between two values
+     * @param min the minimum value for the random number
+     * @param max the maximum value for the random number
+     * @return a random double between min and max
+     */
+    public static double getRandomDouble(double min, double max) {
+        Random random = new Random();
+        return random.nextDouble() * (max - min) + min;
     }
 }

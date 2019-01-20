@@ -21,7 +21,7 @@ public class Path {
     }
 
     public Path(boolean isDebug, boolean isReversed, double maxAccel) {
-        this(false, false, Constants.kMaxAccelSpeedUp, new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead, Constants.kMinLookAheadSpeed, Constants.kMaxLookAheadSpeed));
+        this(isDebug, false, Constants.kMaxAccelSpeedUp, new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead, Constants.kMinLookAheadSpeed, Constants.kMaxLookAheadSpeed));
     }
     
     public Path() {
@@ -46,7 +46,7 @@ public class Path {
     public RobotCmd update(RobotPos robotPos) {
         Segment currentSegment = this.getCurrentSegment();
         Point lookaheadPt = currentSegment.getLookaheadPoint(robotPos.position, this.lookahead.getLookaheadForSpeed(robotPos.getVelocity()));
-        System.out.println(robotPos + "," + lookaheadPt);
+        // System.out.println(robotPos + "," + lookaheadPt);
         if (Point.getDistance(currentSegment.getEndPoint(), lookaheadPt) < Constants.kPathPursuitTolerance) {
             // if the current robot position is within tol of the end point, move on to the next segment
             // or say that the robot is done following the path
@@ -78,7 +78,7 @@ public class Path {
     /*
      * moves the robot onto the next segment of the path
      */
-    public void moveOnToNextSegment() {
+    private void moveOnToNextSegment() {
         segmentList.remove(0);
     }
     

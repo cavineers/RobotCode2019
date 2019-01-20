@@ -22,12 +22,13 @@ public class ArcSegment implements Segment {
     TURN smallSide;
     public enum TURN {
         RIGHT,
-        LEFT
+        LEFT,
+        SMALL_SIDE
     }
 
     public TURN turnType;
     
-    public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel, double endVel, boolean left) {
+    public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel, double endVel, TURN turnType) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.centerPoint = centerPoint;
@@ -41,12 +42,6 @@ public class ArcSegment implements Segment {
         
         isAccelToEndpoint = false;
 
-        if (left) {
-            turnType = TURN.LEFT;
-        } else {
-            turnType = TURN.RIGHT;
-        }
-
         // the vector from the center of the circle to the start
         Vector centerToStart = new Vector(this.centerPoint.getX() - this.startPoint.getX(), this.centerPoint.getY() - this.startPoint.getY());
         Vector centerToEnd   = new Vector(this.centerPoint.getX() - this.endPoint.getX(), this.centerPoint.getY() - this.endPoint.getY());
@@ -55,15 +50,21 @@ public class ArcSegment implements Segment {
         
         // figure out if the small side of the circle is a left or right hand turn
         if (crossProduct < 0) {
-            smallSide = TURN.RIGHT;
+            this.smallSide = TURN.RIGHT;
         } else {
-            smallSide = TURN.LEFT;
+            this.smallSide = TURN.LEFT;
+        }
+
+        this.turnType = turnType;
+
+        if (turnType == TURN.SMALL_SIDE) {
+            this.turnType = this.smallSide;
         }
 
     }
 
     public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel, double endVel) {
-        this(startPoint, endPoint, centerPoint, maxVel, endVel, true);
+        this(startPoint, endPoint, centerPoint, maxVel, endVel, TURN.SMALL_SIDE);
     }
     
     public ArcSegment(Point startPoint, Point endPoint, Point centerPoint, double maxVel) {

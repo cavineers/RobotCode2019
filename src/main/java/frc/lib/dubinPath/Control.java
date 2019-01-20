@@ -1,4 +1,4 @@
-package com.rokus.motorcontroller;
+package frc.lib.dubinPath;
 
 public class Control {
     public double steeringAngle;

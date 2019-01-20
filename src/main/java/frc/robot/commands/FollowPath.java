@@ -75,14 +75,14 @@ public class FollowPath extends Command {
     
     @Override
     public void execute() {
-        RobotPos latestPos = new RobotPos(Robot.estimator.getPosition(),
-                Robot.estimator.getHeading(), Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel()); //right way
+        RobotPos latestPos = Robot.estimator.getPos();
+        latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
 
         RobotCmd cmd = this.path.update(latestPos);
         
         //debug print: lTarget, rTarget, lActualVel, rActualVel, RobotPosition
 //		System.out.println(Robot.drivetrain.leftMotor1.getClosedLoopTarget(0) +  "," + Robot.drivetrain.rightMotor1.getClosedLoopTarget(0) + "," + Robot.drivetrain.leftMotor1.getSelectedSensorVelocity(0) + "," + Robot.drivetrain.rightMotor1.getSelectedSensorVelocity(0) + "," + Robot.state.getPosition());
-        System.out.println(Robot.estimator.getX() + "," + Robot.estimator.getY());
+        System.out.println(latestPos.getX() + ", " + latestPos.getY());
         
         Robot.drivetrain.setLeftVel(cmd.getLeftVel());
         Robot.drivetrain.setRightVel(cmd.getRightVel());
@@ -99,7 +99,7 @@ public class FollowPath extends Command {
         Robot.drivetrain.setRightVel(0);
         if (this.isFinished()) {
             System.out.println("FINISHED PATH");
-            System.out.println(Robot.estimator.getPosition());
+            System.out.println(Robot.estimator.getPos());
         }
     }
 
