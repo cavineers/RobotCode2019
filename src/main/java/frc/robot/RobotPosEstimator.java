@@ -9,8 +9,6 @@ import frc.robot.Robot;
 
 public class RobotPosEstimator {
 
-    boolean isLocked = false;
-
     ReentrantLock mutex = new ReentrantLock();
     
     Thread thread;
@@ -57,7 +55,7 @@ public class RobotPosEstimator {
         lWheelTravel = newLTravel;
     }
 
-    /*
+    /**
      * Effectively undoes the rotation by an angle; If a line segment is rotated by
      * the angle and then its inverse, it will have the same heading as before being
      * rotated
@@ -66,7 +64,7 @@ public class RobotPosEstimator {
         return Math.atan2((-1 * Math.sin(angleRad)), Math.cos(angleRad));
     }
 
-    /*
+    /**
      * Rotates an a1 by a2 using a rotation matrix
      */
     public double rotate(double a1, double a2) {
@@ -74,7 +72,7 @@ public class RobotPosEstimator {
                 Math.cos(a1) * Math.cos(a2) - Math.sin(a1) * Math.sin(a2));
     }
 
-    /*
+    /**
      * Get the net distance traveled by the right wheels of the robot
      */
     public double getRightWheelTravel() {
