@@ -56,8 +56,8 @@ public class Constants {
 
     public static final double kCameraToMapToleranceLvl3 = 8.0; // in inches, the max distance where the robot's position map can be partially 
                                                                 // rebased by a camera update with the lvl 3 scale factor
-  public static final double kCameraToMapPercentLvl3 = 0.2; // the portion of the camera update rebased when the updates are within lvl 3 tolerance
-                                                            // of current map estimates
+    public static final double kCameraToMapPercentLvl3 = 0.2; // the portion of the camera update rebased when the updates are within lvl 3 tolerance
+                                                                // of current map estimates
 
 
 
