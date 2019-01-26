@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   public static OI oi;
   public static AHRS gyro;
   public static RobotPosEstimator estimator;
+  public static CameraHelper reflectiveTapeCamera;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -44,6 +45,8 @@ public class Robot extends TimedRobot {
     gyro = new AHRS(SPI.Port.kMXP);
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
 
+    reflectiveTapeCamera = new CameraHelper("reflectiveTape");
+
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
   }
@@ -58,6 +61,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+      //ensure that the raspberry pi successfully synchronized clocks with the rio
+      if (reflectiveTapeCamera.shouldSyncClocks()) {
+          reflectiveTapeCamera.startClockSync();
+      }
   }
 
   /**
@@ -87,19 +94,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_chooser.getSelected();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.start();
-    }
   }
 
   /**
@@ -112,13 +106,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+      
   }
 
   /**

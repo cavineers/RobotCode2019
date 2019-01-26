@@ -224,7 +224,63 @@ public class RobotPosMap {
             return new RobotPos(new Point(xTot, yTot), partialUpdate.getHeading(), 0, 0);
         }
         return null;
-        
+    }
+
+    /**
+     * Gets an estimate of the robot's displacement since the current time
+     * 
+     * @param time the time at which the position of the robot is desired
+     * @return the robot's position at the given time
+     */
+    public RobotPos getRobotMovementSinceTime(double time) {
+        if (this.map.size() < 2) {
+            return null; // list is too small to extrapolate from
+        }
+
+        RobotPosUpdate firstRelative = map.get(map.size() - 2);
+        if (firstRelative.timestamp > time) {
+            return null; // movement cannot be calculated for the given time, image too old
+        }
+
+        int[] indexArr = this.getMapIndexForTimestamp(time);
+        if (indexArr.length == 0) {
+            // movement cannot be calculated for the given time.
+            return null;
+        }
+        if (indexArr.length == 1) {
+            // there is a whole number index at the given time, calculate movement position since that time
+            int index = indexArr[0];
+
+            double xTot = 0;
+            double yTot = 0;
+            double heading = map.get(0).heading; //heading is the heading of the newest update in the map
+            
+            //add all elements after the one at the requested time
+            for (int i = index; i >= 0; i--) {
+                RobotPosUpdate rel = map.get(i);
+                xTot += rel.getDx();
+                yTot += rel.getDy();
+            }
+            return new RobotPos(new Point(xTot, yTot), heading, 0, 0);
+        }
+        if (indexArr.length == 2) {
+            // there is no whole number index for the requested time, create a partial update representing
+            // the movement in between the last update and that time
+            RobotPosUpdate partialUpdate = RobotPosUpdate.createUpdateBetweenTimeAndNextUpdate(map.get(indexArr[0]), map.get(indexArr[1]), time);
+
+            int nextUpdate = indexArr[1];
+
+            double xTot = partialUpdate.getDx();
+            double yTot = partialUpdate.getDy();
+
+            for (int i = nextUpdate-1; i >= 0; i--) {
+                RobotPosUpdate rel = map.get(i);
+                xTot += rel.getDx();
+                yTot += rel.getDy();
+            }
+            return new RobotPos(new Point(xTot, yTot), partialUpdate.getHeading(), 0, 0);
+        }
+        return null;
     }
 
     /**

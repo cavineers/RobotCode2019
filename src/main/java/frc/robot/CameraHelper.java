@@ -22,7 +22,7 @@ import frc.lib.TargetPos;
  * TargetUpdate - a string describing new target information from a raspberry pi in the following format:
  *                 targetX,targetY,targetTheta,imageNum,timestamp
  */
-class CameraHelper {
+public class CameraHelper {
     String name = "";
     NetworkTable netTable;
     int lastUpdateNum = -1; // the number of the last targetPos update
@@ -47,7 +47,7 @@ class CameraHelper {
      * 
      * @return whether or not the raspberry pi is ready for a clock synchonization with the rio
      */
-    public boolean isPiReadyForClockSync() {
+    private boolean isPiReadyForClockSync() {
         return netTable.getEntry("CamReadyForSync").getBoolean(false);
     }
     
@@ -56,7 +56,7 @@ class CameraHelper {
      * 
      * @return if the raspberry pi has a update
      */
-    public boolean didSuccessfullyClockSync() {
+    private boolean didSuccessfullyClockSync() {
         return netTable.getEntry("SuccessfulSync").getBoolean(false);
     }
     /**
@@ -75,15 +75,20 @@ class CameraHelper {
         if (this.shouldSyncClocks()) {
             // the camera is connected and ready for a clock sync, and has not yet synchronzied
             netTable.getEntry("AttemptingToSync").setBoolean(true);
+            // run clock synchronization in a seperate thread so that the main thread is not stopped for a long time while updating
+            Thread clockSync = new Thread() {
+                public void run() {
+                    while (shouldSyncClocks()) {
+                        // while the raspberry pi has not grabbed an update, update the riotime update as fast as possible
+                        netTable.getEntry("RioTime").setNumber(Robot.getCurrentTime());
+                        NetworkTableInstance.getDefault().flush();
+                    }
+                    netTable.getEntry("AttemptingToSync").setBoolean(false);
+                    netTable.getEntry("RioTime").setNumber(-1);
+                }  
+            };
 
-            while (!this.didSuccessfullyClockSync()) {
-                // while the raspberry pi has not grabbed an update, update the riotime update as fast as possible
-                netTable.getEntry("RioTime").setNumber(Robot.getCurrentTime());
-                NetworkTableInstance.getDefault().flush();
-            }
-
-            netTable.getEntry("AttemptingToSync").setBoolean(false);
-            netTable.getEntry("RioTime").setNumber(-1);
+            clockSync.start();
         }
     }
 
@@ -115,6 +120,8 @@ class CameraHelper {
         if (this.lastUpdateNum >= imageNum) {
             return null; // there is no new update available
         }
+
+        this.lastUpdateNum = imageNum;
 
         return new TargetPos(targetX, targetY, theta, imageNum, timestamp);
     }

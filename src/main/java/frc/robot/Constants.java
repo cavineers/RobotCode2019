@@ -7,7 +7,7 @@ public class Constants {
     //path pursuit stuff
     public static final double kPathPursuitTolerance = 1; //in inches; get within 1 inch of the endpoint prior to moving on to the next segment
     public static final double kPathPursuitFinishTolerance = 5;
-    public static final double kDefaultDt = 0.025; // in seconds; the default dt for pathfinding calculations
+    public static final double kDefaultDt = 0.01; // in seconds; the default dt for pathfinding calculations
     public static final double kMaxAccelSpeedUp = 120; //in inches/sec^2; the max acceleration the robot can be commanded to experience when traveling a path
     public static final double kStopSteeringDistance = 0; //in inches; when the robot stops steering after a path
 

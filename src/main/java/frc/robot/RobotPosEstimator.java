@@ -79,19 +79,46 @@ public class RobotPosEstimator {
         return rWheelTravel; // in inches
     }
 
-    /*
+    /**
      * Get the net distance traveled by the left wheels of the robot
      */
     public double getLeftWheelTravel() {
         return lWheelTravel; // in inches
     }
 
-    /*
+    /**
      * Get the heading of the robot (from the gyroscope at the time of the last
      * update)
      */
     public double getHeading() {
         return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle())); // in radians
+    }
+
+    /**
+     * Get an estimate of the robot's position at a given time
+     */
+    public RobotPos getPositionAtTime(double time) {
+        mutex.lock();
+        try {
+            return map.getRobotPositionAtTime(time);
+        } finally {
+            mutex.unlock();
+        }
+    }
+    
+    /**
+     * Gets the displacement of the robot since the given time
+     * 
+     * @param time rio time in seconds
+     * @return the change in position since the given time
+     */
+    public RobotPos getMovementSinceTime(double time) {
+        mutex.lock();
+        try {
+            return map.getRobotMovementSinceTime(time);
+        } finally {
+            mutex.unlock();
+        }
     }
 
     public RobotPos getPos() {

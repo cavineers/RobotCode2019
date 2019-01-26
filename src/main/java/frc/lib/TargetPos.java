@@ -1,5 +1,7 @@
 package frc.lib;
 
+import frc.lib.pathPursuit.Point;
+
 public class TargetPos {
     double x;
     double y;
@@ -8,7 +10,7 @@ public class TargetPos {
     double timestamp;
 
     /**
-     * A helper class dedicated to storing information about information from a target
+     * A helper class dedicated to storing information about a target
      * 
      * @param x x position of the target relative to the robot
      * @param y y position of the target relative to the robot
@@ -32,6 +34,10 @@ public class TargetPos {
         return y;
     }
 
+    public Point getPosition() {
+        return new Point(this.getX(), this.getY());
+    }
+
     public double getAngle() {
         return theta;
     }
@@ -43,5 +49,4 @@ public class TargetPos {
     public double getTimestamp() {
         return timestamp;
     }
-
 }
