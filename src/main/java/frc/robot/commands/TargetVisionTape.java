@@ -30,7 +30,7 @@ public class TargetVisionTape extends Command {
     protected void initialize() {
         //TODO: test
 
-        TargetUpdate targetUpdate = Robot.reflectiveTapeCamera.getUpdate(); //position of the robot on the target's field coords
+        TargetUpdate targetUpdate = Robot.reflectiveTapeCamera.getUpdate(); //data received from the camera
 
         RobotPos robotFieldPos = Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()); // the position of the robot when the picture was taken (field coords)
 
