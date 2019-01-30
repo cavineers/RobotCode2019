@@ -1,7 +1,7 @@
 package frc.lib.pathPursuit;
 
 import frc.lib.MathHelper;
-import frc.lib.Vector;
+import frc.lib.Vector2D;
 import frc.robot.Constants;
 
 public class ArcSegment implements Segment {
@@ -43,10 +43,10 @@ public class ArcSegment implements Segment {
         isAccelToEndpoint = false;
 
         // the vector from the center of the circle to the start
-        Vector centerToStart = new Vector(this.centerPoint.getX() - this.startPoint.getX(), this.centerPoint.getY() - this.startPoint.getY());
-        Vector centerToEnd   = new Vector(this.centerPoint.getX() - this.endPoint.getX(), this.centerPoint.getY() - this.endPoint.getY());
+        Vector2D centerToStart = new Vector2D(this.centerPoint.getX() - this.startPoint.getX(), this.centerPoint.getY() - this.startPoint.getY());
+        Vector2D centerToEnd   = new Vector2D(this.centerPoint.getX() - this.endPoint.getX(), this.centerPoint.getY() - this.endPoint.getY());
         
-        double crossProduct = Vector.getCrossProduct(centerToStart, centerToEnd);
+        double crossProduct = Vector2D.getCrossProduct(centerToStart, centerToEnd);
         
         // figure out if the small side of the circle is a left or right hand turn
         if (crossProduct < 0) {
@@ -133,10 +133,10 @@ public class ArcSegment implements Segment {
             //we are on the larger part of a circle
 
             //create vectors from the center to the start point, lookahead point, and end point
-            Vector centerToEnd = Point.getDelta(this.endPoint, this.centerPoint).getVector();
-            Vector centerToLPos = Point.getDelta(this.startPoint, lookaheadPos).getVector();
+            Vector2D centerToEnd = Point.getDelta(this.endPoint, this.centerPoint).getVector();
+            Vector2D centerToLPos = Point.getDelta(this.startPoint, lookaheadPos).getVector();
 
-            double crossProduct = Vector.getCrossProduct(centerToLPos, centerToEnd);
+            double crossProduct = Vector2D.getCrossProduct(centerToLPos, centerToEnd);
 
             TURN travelDir;
 
@@ -198,11 +198,11 @@ public class ArcSegment implements Segment {
         Point p2 = new Point(x2, y2);
         
         //create vectors from the center to the start point, lookahead point, and end point
-        Vector centerToEnd = Point.getDelta(robotPosition, this.centerPoint).getVector();
-        Vector centerToLPos = Point.getDelta(p1, this.centerPoint).getVector();
+        Vector2D centerToEnd = Point.getDelta(robotPosition, this.centerPoint).getVector();
+        Vector2D centerToLPos = Point.getDelta(p1, this.centerPoint).getVector();
         // Vector centerToRPos = Point.getDelta(robotPosition, this.cen)
 
-        double crossProduct = Vector.getCrossProduct(centerToLPos, centerToEnd);
+        double crossProduct = Vector2D.getCrossProduct(centerToLPos, centerToEnd);
 
         TURN travelDir;
 

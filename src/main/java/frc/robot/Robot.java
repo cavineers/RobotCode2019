@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
 
     gyro.zeroYaw();
-    gyro.setAngleAdjustment(0);
+    gyro.setAngleAdjustment(0); 
   }
 
   /**
@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+      
   }
 
   /**

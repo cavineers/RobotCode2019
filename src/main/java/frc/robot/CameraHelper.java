@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.lib.TargetPos;
+import frc.lib.TargetUpdate;
 
 /**
  * A class which handles the network tables communcation between the roborio and raspberry pi vision coprocessors
@@ -20,7 +20,7 @@ import frc.lib.TargetPos;
  * 
  * Target Data channels:
  * TargetUpdate - a string describing new target information from a raspberry pi in the following format:
- *                 targetX,targetY,targetTheta,imageNum,timestamp
+ *                 targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
  */
 public class CameraHelper {
     String name = "";
@@ -73,6 +73,7 @@ public class CameraHelper {
      */
     public void startClockSync() {
         if (this.shouldSyncClocks()) {
+            System.out.println("Attempting to sync clocks");
             // the camera is connected and ready for a clock sync, and has not yet synchronzied
             netTable.getEntry("AttemptingToSync").setBoolean(true);
             // run clock synchronization in a seperate thread so that the main thread is not stopped for a long time while updating
@@ -89,6 +90,7 @@ public class CameraHelper {
             };
 
             clockSync.start();
+            this.lastUpdateNum = -1;
         }
     }
 
@@ -97,8 +99,8 @@ public class CameraHelper {
      * 
      * @return a TargetPos describing the update if there was a new update, or null if there was no new update since last checked
      */
-    public TargetPos getUpdate() {
-        String updateString = netTable.getEntry("TargetUpdate").getString(""); //format: targetX,targetY,targetTheta,imageNum,timestamp
+    public TargetUpdate getUpdate() {
+        String updateString = netTable.getEntry("TargetUpdate").getString(""); //format: targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
         if (updateString.isEmpty()) {
             return null; // no update available
@@ -106,16 +108,21 @@ public class CameraHelper {
         // split the update string into its respective individual values
         String[] updateArr = updateString.split(",");
 
-        if (updateArr.length != 5) {
+        if (updateArr.length != 8) {
             return null; // invalid update format
         }
 
         // extract numerical information from the string
         double targetX = Double.parseDouble(updateArr[0]);
         double targetY = Double.parseDouble(updateArr[1]);
-        double theta = Double.parseDouble(updateArr[2]);
-        int imageNum = Integer.parseInt(updateArr[3]);
-        double timestamp = Double.parseDouble(updateArr[4]);
+        double targetZ = Double.parseDouble(updateArr[2]);
+
+        double cameraX = Double.parseDouble(updateArr[3]);
+        double cameraY = Double.parseDouble(updateArr[4]);
+        double cameraZ = Double.parseDouble(updateArr[5]);
+
+        int imageNum = Integer.parseInt(updateArr[6]);
+        double timestamp = Double.parseDouble(updateArr[7]);
 
         if (this.lastUpdateNum >= imageNum) {
             return null; // there is no new update available
@@ -123,7 +130,7 @@ public class CameraHelper {
 
         this.lastUpdateNum = imageNum;
 
-        return new TargetPos(targetX, targetY, theta, imageNum, timestamp);
+        return new TargetUpdate(targetX, targetY, targetZ, cameraX, cameraY, cameraZ, imageNum, timestamp);
     }
 
 

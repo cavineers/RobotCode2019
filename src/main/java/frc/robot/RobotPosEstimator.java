@@ -121,6 +121,9 @@ public class RobotPosEstimator {
         }
     }
 
+    /**
+     * get the latest available position from the position map
+     */
     public RobotPos getPos() {
         mutex.lock();
         try {
@@ -130,7 +133,9 @@ public class RobotPosEstimator {
         }
     }
 
-
+    /**
+     * Start a thread to update the position map based on encoder readings
+     */
     public void start() {
         this.running = true;
         thread = new Thread(() -> {
@@ -149,10 +154,16 @@ public class RobotPosEstimator {
         thread.start();
     }
     
+    /**
+     * Stop the thread that updates the robot's position
+     */
     public void end() {
         this.running = false;
     }
-    
+
+    /**
+     * clear all updates from the position map and set the base of the map to zero
+     */
     public void zero() {
         mutex.lock();
         try {

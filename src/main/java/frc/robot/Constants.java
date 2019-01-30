@@ -1,6 +1,6 @@
 package frc.robot;
 
-import frc.lib.Vector;
+import frc.lib.Vector3D;
 
 public class Constants {
 
@@ -40,8 +40,6 @@ public class Constants {
     public static final int kVelocityIZone = 0;
     public static final double kAVelocity = 0.0; // TODO: Tune/Test
     public static final double kDriveVoltageRampRate = 0.0;
-     
-    public static final Vector cameraRelativeToRobotCenter = new Vector(5, 2); // a vector representing the difference in position from the robot's center and the camera 
     
     //Position mapping stuff
     public static final int kMaxListSize = 3000;
@@ -72,4 +70,11 @@ public class Constants {
 
     public static final double kStraightLineDistance = 4; // distance in inches of the straight line path at the end of a target
     public static final double kMinRadiusTargeting = 10; // radius in inches of the minimum allowed radius for a dubin's path
+
+    // Robot Vector constants
+    // TODO get actual measurements
+
+    // a vector representing the difference in position from the robot's center of mass and the camera
+    public static final Vector3D kCameraRelativeToRobotCenter = new Vector3D(5, 2, 10); 
+
 }

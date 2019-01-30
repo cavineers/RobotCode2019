@@ -2,11 +2,11 @@ package frc.lib;
 
 import frc.lib.pathPursuit.Point;
 
-public class Vector {
+public class Vector2D {
     double dx;
     double dy;
     
-    public Vector(double dx, double dy) {
+    public Vector2D(double dx, double dy) {
         this.dx = dx;
         this.dy = dy;
     }
@@ -24,11 +24,11 @@ public class Vector {
      * @param angleRad the angle to rotate the vector by
      * @return a vector rotated by angleRad
      */
-    public Vector rotate(double angleRad) {
+    public Vector2D rotate(double angleRad) {
         double dxRot = this.dx * Math.cos(angleRad) - this.dy * Math.sin(angleRad);
         double dyRot = this.dx * Math.sin(angleRad) + this.dy * Math.cos(angleRad);
 
-        return new Vector(dxRot, dyRot);
+        return new Vector2D(dxRot, dyRot);
     }
 
     /**
@@ -38,8 +38,8 @@ public class Vector {
      * @param v2 the number to subtract from v1
      * @return the result of v1 - v2
      */
-    public static Vector subtract(Vector v1, Vector v2) {
-        return new Vector(v1.getDx() - v2.getDx(), v1.getDy() - v2.getDy());
+    public static Vector2D subtract(Vector2D v1, Vector2D v2) {
+        return new Vector2D(v1.getDx() - v2.getDx(), v1.getDy() - v2.getDy());
     }
 
     /**
@@ -49,8 +49,8 @@ public class Vector {
      * @param v2 the second vector to sum
      * @return the sum of the two vectors
      */
-    public static Vector add(Vector v1, Vector v2) {
-        return new Vector(v1.getDx() + v2.getDx(), v1.getDy() + v2.getDy());
+    public static Vector2D add(Vector2D v1, Vector2D v2) {
+        return new Vector2D(v1.getDx() + v2.getDx(), v1.getDy() + v2.getDy());
     }
 
     /**
@@ -77,7 +77,7 @@ public class Vector {
      * @param v2 the second vector
      * @return the cross product of v1 and v2
      */
-    public static double getCrossProduct(Vector v1, Vector v2) {
+    public static double getCrossProduct(Vector2D v1, Vector2D v2) {
         return v1.dx * v2.dy - v1.dy * v2.dx;
     }
 }

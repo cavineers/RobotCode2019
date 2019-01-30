@@ -1,6 +1,6 @@
 package frc.lib.pathPursuit;
 
-import frc.lib.Vector;
+import frc.lib.Vector2D;
 
 public class Point {
     
@@ -116,7 +116,7 @@ public class Point {
      * gets a vector with the same values as the current point
      * @return a vector representing the point
      */
-    public Vector getVector() {
-        return new Vector(this.x, this.y);
+    public Vector2D getVector() {
+        return new Vector2D(this.x, this.y);
     }
 }
