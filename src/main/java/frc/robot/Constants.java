@@ -30,7 +30,10 @@ public class Constants {
     
     //elevator stuff
     public static final double kElevatorPosTolerance = 1;
-    
+    public static final double kMaxElevAcceleration = 10; //TODO: fix
+    public static final double kMaxElevSpeed = 10; //TODO: fix
+
+
     //Talon stuff
     public static final int kTimeoutMs = 10;
     public static final int kPIDLoopIdx = 0;

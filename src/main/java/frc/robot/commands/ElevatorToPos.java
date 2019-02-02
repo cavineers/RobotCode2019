@@ -16,8 +16,6 @@ public class ElevatorToPos extends Command {
 
 	protected void initialize() {
 		Robot.elevator.setVel(0);
-		}
-
 	}
 
 	// Called repeatedly when this Command is scheduled to run
