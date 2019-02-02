@@ -1,0 +1,9 @@
+build/
+bin/
+.gradle/
+.DS_Store
+vendordeps/
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+gradlew
+gradlew.bat

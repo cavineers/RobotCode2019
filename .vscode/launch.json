@@ -1,0 +1,53 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - VectorTest",
+            "request": "launch",
+            "mainClass": "frc.lib.tests.VectorTest",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MultithreadingTest",
+            "request": "launch",
+            "mainClass": "frc.lib.tests.MultithreadingTest",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DriveToTargetTestConnectionArc",
+            "request": "launch",
+            "mainClass": "frc.lib.tests.DriveToTargetTestConnectionArc",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - PathTest",
+            "request": "launch",
+            "mainClass": "frc.lib.pathPursuit.tests.PathTest",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DubinPathTest",
+            "request": "launch",
+            "mainClass": "frc.lib.tests.DubinPathTest",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DriveToTargetTest",
+            "request": "launch",
+            "mainClass": "frc.lib.tests.DriveToTargetTest",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RobotPosMapTest",
+            "request": "launch",
+            "mainClass": "frc.lib.tests.RobotPosMapTest",
+            "projectName": "RobotCode2019"
+        }
+    ]
+}

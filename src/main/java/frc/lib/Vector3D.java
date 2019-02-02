@@ -46,7 +46,7 @@ public class Vector3D {
      * @return a vector rotated by angleRad
      */
     public Vector3D rotateXAxis(double angleRad) {
-        return new Vector3D(dx, dy * Math.cos(angleRad) + dz * Math.sin(angleRad), - dy * Math.sin(angleRad) + dz * Math.cos(angleRad));
+        return new Vector3D(dx, dy * Math.cos(angleRad) + dz * -Math.sin(angleRad), dy * Math.sin(angleRad) + dz * Math.cos(angleRad));
     }
 
     /**
@@ -55,7 +55,7 @@ public class Vector3D {
      * @return a vector rotated by angleRad
      */
     public Vector3D rotateYAxis(double angleRad) {
-        return new Vector3D(dx * Math.cos(angleRad) - dz * Math.sin(angleRad), dy, dx * Math.sin(angleRad) + dz * Math.cos(angleRad));
+        return new Vector3D(dx * Math.cos(angleRad) + dz * Math.sin(angleRad), dy, dx * -Math.sin(angleRad) + dz * Math.cos(angleRad));
     }
 
     /**
@@ -64,7 +64,7 @@ public class Vector3D {
      * @return a vector rotated by angleRad
      */
     public Vector3D rotateZAxis(double angleRad) {
-        return new Vector3D(dx * Math.cos(angleRad) + dy * Math.sin(angleRad), -dx * Math.sin(angleRad) + dy * Math.cos(angleRad), dz);
+        return new Vector3D(dx * Math.cos(angleRad) + dy * -Math.sin(angleRad), dx * Math.sin(angleRad) + dy * Math.cos(angleRad), dz);
     }
 
     /**
@@ -92,6 +92,23 @@ public class Vector3D {
     @Override
     public String toString() {
         return "[" + this.getDx() + "\t" + this.getDy() + "\t" + this.getDz() + "]";
+    }
+
+    /**
+     * Rotates the given vector by the given rotation matrix
+     * 
+     * @param matrix a 3x3 rotation matrix the vector should be multiplied by
+     * @return the vector rotated by the given matrix
+     */
+    public Vector3D rotate(double[][] matrix) {
+        if (matrix.length != 3 && matrix[0].length != 3) {
+            System.out.println("ERROR: ATTEMPTED TO ROTATE A VECTOR BY AN INVALID MATRIX");
+            return null; // return null if an invalid matrix is given
+        }
+        double x = this.getDx() * matrix[0][0] + this.getDy() * matrix[0][1] + this.getDz() * matrix[0][2];
+        double y = this.getDx() * matrix[1][0] + this.getDy() * matrix[1][1] + this.getDz() * matrix[1][2];
+        double z = this.getDx() * matrix[2][0] + this.getDy() * matrix[2][1] + this.getDz() * matrix[2][2];
+        return new Vector3D(x, y, z);
     }
 
 }
