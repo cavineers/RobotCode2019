@@ -1,18 +1,24 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.lib.VelocityTrapezoid;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.commands.ElevatorToPos;
 
 /**
  * The Elevator subsystem 
  */
 public class Elevator extends Subsystem {
     //TODO: add two sparkmax
-	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor);
+	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor1);
     
     VelocityTrapezoid velTrapezoid = new VelocityTrapezoid(Constants.kMaxAccelSpeedUp, Constants.kMaxTurnToAngleSpeed, Constants.kDefaultDt);
+    DigitalInput limitSwitch;
 
     public Elevator() {
         limitSwitch = new DigitalInput(0); // change input later
@@ -37,16 +43,16 @@ public class Elevator extends Subsystem {
     }
     
     public double getElevatorPos() {
-		return getElevatorMotor().getSelectedSensorPosition(0);
+		return getElevatorTalon().getSelectedSensorPosition(0);
 	}
 
     public DigitalInput getLimitSwitch() {
 		return limitSwitch;
 	}
 
-	public void setManualVelocity(double trigger) {
-		manualVelocity = trigger;
-	}
+	// public void setManualVelocity(double trigger) {
+	// 	manualVelocity = trigger;
+	// }
 	
 	public double getElevatorVel() {
 		return elevatorMotor.getSelectedSensorVelocity(0);
@@ -54,7 +60,7 @@ public class Elevator extends Subsystem {
 
     public void setVel(double vel) {
         // set the current setpoint of the talon's PIDF Controller to the desired velocity
-        elevatorMotor.set(ControlMode.Velocity, vel);
+        // elevatorMotor.set(ControlMode.Velocity, vel);
     }
 
     public VelocityTrapezoid getVelTrapezoid(){

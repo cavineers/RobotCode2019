@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   public static AHRS gyro;
   public static RobotPosEstimator estimator;
   public static CameraHelper reflectiveTapeCamera;
+  public static Elevator elevator;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -44,6 +46,7 @@ public class Robot extends TimedRobot {
     gyro = new AHRS(SPI.Port.kMXP);
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
     oi = new OI();
+    elevator = new Elevator();
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
     

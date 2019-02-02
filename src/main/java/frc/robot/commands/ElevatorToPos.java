@@ -1,7 +1,8 @@
-package org.usfirst.frc.team4541.robot.commands;
+package frc.robot.commands;
 
-import frc.team4541.robot.OI.TRIG_MODE;
-import frc.team4541.robot.Robot;
+import frc.robot.OI.TRIG_MODE;
+import frc.robot.Constants;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 /**
  *
@@ -9,20 +10,18 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ElevatorToPos extends Command {
 	double targetHeight = 0;
 
-	public ElevatorToPos(double theight) {
+	public ElevatorToPos(double targetHeight) {
 		requires(Robot.elevator);
-		this.targetHeight = theight;
+		this.targetHeight = targetHeight;
 	}
 
 	protected void initialize() {
 		Robot.elevator.setVel(0);
-		}
-
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		double error = this.setpoint - Robot.elevator.getElevatorPos();
+		double error = this.targetHeight - Robot.elevator.getElevatorPos();
 
 		
 	}
@@ -32,8 +31,8 @@ public class ElevatorToPos extends Command {
 	}
 
 	protected boolean isFinished() {
-		double error = this.setpoint - Robot.elevator.getElevatorPos();
-    	return error <= Constants.kElevatorPosTolerance; //TODO: tune
+		double error = this.targetHeight - Robot.elevator.getElevatorPos();
+        return error <= Constants.kElevatorPosTolerance; //TODO: tune
 	}
 
 	protected void end() {
