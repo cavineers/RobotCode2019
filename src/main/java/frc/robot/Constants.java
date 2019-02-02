@@ -9,11 +9,11 @@ public class Constants {
     public static final double kPathPursuitFinishTolerance = 5;
     public static final double kDefaultDt = 0.01; // in seconds; the default dt for pathfinding calculations
     public static final double kMaxAccelSpeedUp = 120; //in inches/sec^2; the max acceleration the robot can be commanded to experience when traveling a path
-    public static final double kStopSteeringDistance = 0; //in inches; when the robot stops steering after a path
+    public static final double kStopSteeringDistance = 3; //in inches; when the robot stops steering after a path
 
     //physical info about the chassis
     public static final double kWheelDiameter = 6; // in inches; the diameter of the drive wheels
-    public static final double kWheelBase = 30; //in inches; the distance between the left and right drive wheels
+    public static final double kWheelBase = 35; //in inches; the distance between the left and right drive wheels
     
     //pulses per inch of the wheel encoders
     public static final double kSensorUnitsPerInch = 854.3 / 12; //pulses per foot 854.3 math; 876.7 experimentally, 848.18- 4 times 64
@@ -33,10 +33,10 @@ public class Constants {
     public static final int kPIDLoopIdx = 0;
     
     //PID stuff
-    public static final double kPVelocity = 4.5;//1.8; //4
+    public static final double kPVelocity = 1.8;//1.8; //4
     public static final double kIVelocity = 0.0;//0.0; //0
-    public static final double kDVelocity = 25;//0.15; //10
-    public static final double kFVelocity = 0.9;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
+    public static final double kDVelocity = 0;//0.15; //10
+    public static final double kFVelocity = 1.5;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
     public static final int kVelocityIZone = 0;
     public static final double kAVelocity = 0.0; // TODO: Tune/Test
     public static final double kDriveVoltageRampRate = 0.0;

@@ -34,7 +34,7 @@ public class FollowPath extends Command {
         switch (pathType) {
         case TEST_PATH: {
             path = new Path();
-            Segment seg1 = new LineSegment(new Point(0, 0), new Point(60, 0), 60, 0);
+            Segment seg1 = new LineSegment(new Point(0, 0), new Point(100, 0), 60, 0);
             path.addSegment(seg1);
             return path;
         } case TEST_PATH_REVERSE: {

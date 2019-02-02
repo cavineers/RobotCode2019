@@ -20,7 +20,7 @@ import frc.lib.TargetUpdate;
  * 
  * Target Data channels:
  * TargetUpdate - a string describing new target information from a raspberry pi in the following format:
- *                 targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
+ *                headingX,headingY,headingZ, targetX,targetY,targetZ, cameraX,cameraY,cameraZ, imageNum,timestamp
  */
 public class CameraHelper {
     String name = "";
@@ -100,7 +100,7 @@ public class CameraHelper {
      * @return a TargetPos describing the update if there was a new update, or null if there was no new update since last checked
      */
     public TargetUpdate getUpdate() {
-        String updateString = netTable.getEntry("TargetUpdate").getString(""); //format: targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
+        String updateString = netTable.getEntry("TargetUpdate").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
         if (updateString.isEmpty()) {
             return null; // no update available
@@ -113,16 +113,20 @@ public class CameraHelper {
         }
 
         // extract numerical information from the string
-        double targetX = Double.parseDouble(updateArr[0]);
-        double targetY = Double.parseDouble(updateArr[1]);
-        double targetZ = Double.parseDouble(updateArr[2]);
+        double headingX = Double.parseDouble(updateArr[0]);
+        double headingY = Double.parseDouble(updateArr[1]);
+        double headingZ = Double.parseDouble(updateArr[2]);
 
-        double cameraX = Double.parseDouble(updateArr[3]);
-        double cameraY = Double.parseDouble(updateArr[4]);
-        double cameraZ = Double.parseDouble(updateArr[5]);
+        double targetX = Double.parseDouble(updateArr[3]);
+        double targetY = Double.parseDouble(updateArr[4]);
+        double targetZ = Double.parseDouble(updateArr[5]);
+        
+        double cameraX = Double.parseDouble(updateArr[6]);
+        double cameraY = Double.parseDouble(updateArr[7]);
+        double cameraZ = Double.parseDouble(updateArr[8]);
 
-        int imageNum = Integer.parseInt(updateArr[6]);
-        double timestamp = Double.parseDouble(updateArr[7]);
+        int imageNum = Integer.parseInt(updateArr[9]);
+        double timestamp = Double.parseDouble(updateArr[10]);
 
         if (this.lastUpdateNum >= imageNum) {
             return null; // there is no new update available
@@ -130,7 +134,7 @@ public class CameraHelper {
 
         this.lastUpdateNum = imageNum;
 
-        return new TargetUpdate(targetX, targetY, targetZ, cameraX, cameraY, cameraZ, imageNum, timestamp);
+        return new TargetUpdate(headingX, headingY, headingZ, targetX, targetY, targetZ, cameraX, cameraY, cameraZ, imageNum, timestamp);
     }
 
 

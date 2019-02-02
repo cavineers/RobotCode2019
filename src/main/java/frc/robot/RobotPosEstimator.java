@@ -5,6 +5,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import frc.lib.MathHelper;
 import frc.lib.RobotPos;
 import frc.lib.RobotPosMap;
+import frc.lib.RobotPosUpdate;
+import frc.lib.RobotPosUpdate.UpdateType;
 import frc.robot.Robot;
 
 public class RobotPosEstimator {
@@ -13,7 +15,7 @@ public class RobotPosEstimator {
     
     Thread thread;
 
-    RobotPosMap map = new RobotPosMap(Constants.kMaxListSize);
+    RobotPosMap map = new RobotPosMap(Constants.kMaxListSize, new RobotPosUpdate(0,0, 0, 0, UpdateType.BASE));
 
     public double rWheelTravel = 0;
     public double lWheelTravel = 0;
@@ -65,7 +67,7 @@ public class RobotPosEstimator {
     }
 
     /**
-     * Rotates an a1 by a2 using a rotation matrix
+     * Rotates a1 by a2 using a rotation matrix
      */
     public double rotate(double a1, double a2) {
         return Math.atan2(Math.cos(a1) * Math.sin(a2) + Math.sin(a1) * Math.cos(a2),

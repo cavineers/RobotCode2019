@@ -41,14 +41,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     drivetrain = new DriveTrain();
-    oi = new OI();
     gyro = new AHRS(SPI.Port.kMXP);
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
+    oi = new OI();
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
-
+    
     gyro.zeroYaw();
-    gyro.setAngleAdjustment(0); 
+    gyro.setAngleAdjustment(0);
+    estimator.start(); 
   }
 
   /**
@@ -74,6 +75,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+      
   }
 
   @Override
@@ -107,7 +109,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-      
+    gyro.zeroYaw();
+    gyro.setAngleAdjustment(0);
+    estimator.zero();
+    //TODO: remove this
   }
 
   /**
