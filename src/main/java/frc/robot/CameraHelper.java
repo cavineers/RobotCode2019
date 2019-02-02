@@ -100,15 +100,18 @@ public class CameraHelper {
      * @return a TargetPos describing the update if there was a new update, or null if there was no new update since last checked
      */
     public TargetUpdate getUpdate() {
-        String updateString = netTable.getEntry("TargetUpdate").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
+        String updateString = netTable.getEntry("TargetUpdates").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
+        System.out.println(updateString);
         if (updateString.isEmpty()) {
+            System.out.println("EMPTY!!");
             return null; // no update available
         }
         // split the update string into its respective individual values
         String[] updateArr = updateString.split(",");
 
-        if (updateArr.length != 8) {
+        if (updateArr.length != 11) {
+            System.out.println("INVALID LENGTH!!");
             return null; // invalid update format
         }
 
@@ -129,6 +132,7 @@ public class CameraHelper {
         double timestamp = Double.parseDouble(updateArr[10]);
 
         if (this.lastUpdateNum >= imageNum) {
+            System.out.println("LAST IMG NUM!!");
             return null; // there is no new update available
         }
 

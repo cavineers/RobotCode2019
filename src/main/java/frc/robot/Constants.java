@@ -80,4 +80,7 @@ public class Constants {
     // a vector representing the difference in position from the robot's center of mass and the camera
     public static final Vector3D kCameraRelativeToRobotCenter = new Vector3D(5, 2, 10); 
 
+    //a 3x3 rotation matrix that converts from the camera coordinate frame to the robot coordinate frame
+    public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
+
 }

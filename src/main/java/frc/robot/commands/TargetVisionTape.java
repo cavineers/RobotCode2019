@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.lib.CoordinateFrameHelper;
 import frc.lib.MathHelper;
 import frc.lib.RobotPos;
 import frc.lib.TargetUpdate;
@@ -30,23 +29,30 @@ public class TargetVisionTape extends Command {
     protected void initialize() {
         //TODO: test
 
-        TargetUpdate targetUpdate = Robot.reflectiveTapeCamera.getUpdate(); //data received from the camera
+        TargetUpdate targetUpdate = null; //data received from the camera
+        System.out.println("Aquiring vision target");
+        while (targetUpdate == null) {
+            targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
+        }
+        System.out.println("Aquired target");
 
         RobotPos robotFieldPos = Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()); // the position of the robot when the picture was taken (field coords)
 
-        double angleA = Math.atan(targetUpdate.getTargetVector().getDx() / targetUpdate.getTargetVector().getDz());
-        double angleB = Math.atan(targetUpdate.getCameraVector().getDx() / targetUpdate.getCameraVector().getDz());
+        //convert the target heading vector to the robot's coordinate system
+        Vector3D targetHeadingVect = targetUpdate.getHeadingVector();
+        targetHeadingVect.rotate(Constants.kCameraToRobotMatrix);
 
-        double targetHeading = robotFieldPos.getHeading() + angleA - angleB; //heading of the target
+        // compute the target heading
+        double targetHeading = robotFieldPos.getHeading() + Math.atan(targetHeadingVect.getDx() / targetHeadingVect.getDy());
 
         // the target in the robot's reference frame
-        Vector3D targetRobotFrameRobotOrigin = Vector3D.add(Constants.kCameraRelativeToRobotCenter, targetUpdate.getCameraVector().rotateXAxis(Math.PI/2)); 
+        Vector3D targetRobotFrameRobotOrigin = Vector3D.add(Constants.kCameraRelativeToRobotCenter, targetUpdate.getCameraVector().rotate(Constants.kCameraToRobotMatrix)); 
 
         //the target in a coordinate system alligned with the field, but centered at the robot
         Vector3D targetFieldFrameRobotOrigin = targetRobotFrameRobotOrigin.rotateZAxis(-robotFieldPos.getHeading());
 
         // rotate the vector such that its x component is pointing forward to match path pursuit's coordinate system
-        targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(-Math.PI/2);
+        targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
         targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateYAxis(Math.PI);
 
         //the target's location relative to the field in 2 dimentions
@@ -54,12 +60,16 @@ public class TargetVisionTape extends Command {
 
         RobotPos latestFieldPos = Robot.estimator.getPos();
 
+        System.out.println("Did conversion");
+
         DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), targetFieldLocation.getPoint(), targetHeading);
         
         if (!dubinsPath.isValid()) {
             forceFinish = true;
         }
         this.path = dubinsPath.getPath();
+
+        System.out.println("planned path");
         
     }
   

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.lib.pathPursuit.Path;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.ShiftGear;
+import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.FollowPath.PATH_TYPE;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 
@@ -47,7 +48,7 @@ public class OI {
     public OI() {
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
-        a_button.whenPressed(new FollowPath(PATH_TYPE.TEST_PATH_CURVE));
+        a_button.whenPressed(new TargetVisionTape());
     }
 
     public Joystick getJoystick() {
