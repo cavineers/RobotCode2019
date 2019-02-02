@@ -29,9 +29,9 @@ public class Constants {
     public static final double kAngleTolerance = 0.5; // in degrees; the tolerance of turn to angle
     
     //elevator stuff
-    public static final double kElevatorPosTolerance = 1;
-    public static final double kMaxElevAcceleration = 10; //TODO: fix
-    public static final double kMaxElevSpeed = 10; //TODO: fix
+    public static final double kElevatorPosTolerance = 5;
+    public static final double kMaxElevAcceleration = 1; //TODO: fix
+    public static final double kMaxElevSpeed = 1; //TODO: fix
 
 
     //Talon stuff

@@ -22,8 +22,7 @@ public class ElevatorToPos extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		double error = this.targetHeight - Robot.elevator.getElevatorPos();
-
-		
+		double motorSpeed = velTrapezoid.update(Robot.elevator.getElevatorTalon.getSelectedSensorVel(0), error);	
 	}
 
 	protected void interrupted() {
@@ -36,7 +35,7 @@ public class ElevatorToPos extends Command {
 	}
 
 	protected void end() {
-		Robot.elevator.setVel(0);
+		//Robot.elevator.setVel(0);
 	}
 
 }
