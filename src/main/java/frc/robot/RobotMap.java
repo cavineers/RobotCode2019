@@ -21,6 +21,9 @@ public class RobotMap {
   public static int rightDriveMotor1 = 2;
   public static int rightDriveMotor2 = 3;
 
+  public static int elevatorMotor1 = 4;
+  public static int elevatorMotor2 = 5;
+
   //pneumatics
   public static int PCM = 4;
 }

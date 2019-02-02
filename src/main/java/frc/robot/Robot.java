@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   public static AHRS gyro;
   public static RobotPosEstimator estimator;
   public static CameraHelper reflectiveTapeCamera;
+  public static Elevator elevator;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -41,14 +43,16 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     drivetrain = new DriveTrain();
-    oi = new OI();
     gyro = new AHRS(SPI.Port.kMXP);
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
+    oi = new OI();
+    elevator = new Elevator();
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
-
+    
     gyro.zeroYaw();
-    gyro.setAngleAdjustment(0); 
+    gyro.setAngleAdjustment(0);
+    estimator.start(); 
   }
 
   /**
@@ -74,6 +78,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+      
   }
 
   @Override
@@ -107,7 +112,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-      
+    gyro.zeroYaw();
+    gyro.setAngleAdjustment(0);
+    estimator.zero();
+    //TODO: remove this
   }
 
   /**

@@ -31,7 +31,7 @@ public class DriveTrain extends Subsystem {
     
     public WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightDriveMotor1);
     public WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightDriveMotor2);
-    private DoubleSolenoid sol;
+    // private DoubleSolenoid sol;
     
     private DifferentialDrive drive = new DifferentialDrive(leftMotor1, rightMotor1);
     
@@ -48,7 +48,7 @@ public class DriveTrain extends Subsystem {
         this.configTalons();
         leftMotor2.follow(leftMotor1);
         rightMotor2.follow(rightMotor1);
-        sol = new DoubleSolenoid(RobotMap.PCM, 0, 1);
+        // sol = new DoubleSolenoid(RobotMap.PCM, 0, 1);
         this.setBrakeMode(false);
         this.setDriveGear(DriveGear.LOW_GEAR); //shift into low gear
     }
@@ -68,9 +68,9 @@ public class DriveTrain extends Subsystem {
      */
     public void setDriveGear(DriveGear gear){
         if (gear == DriveGear.LOW_GEAR) {
-            sol.set(DoubleSolenoid.Value.kReverse);
+            // sol.set(DoubleSolenoid.Value.kReverse);
         } else if (gear == DriveGear.HIGH_GEAR) {
-            sol.set(DoubleSolenoid.Value.kForward);
+            // sol.set(DoubleSolenoid.Value.kForward);
         }
     }
     
@@ -80,11 +80,12 @@ public class DriveTrain extends Subsystem {
      * @return if the DriveTrain is in high or low gear
      */
     public DriveGear getDriveGear() {
-        if (sol.get() == DoubleSolenoid.Value.kReverse) {
-            return DriveGear.LOW_GEAR;
-        } else {
-            return DriveGear.HIGH_GEAR;
-        }
+        // if (sol.get() == DoubleSolenoid.Value.kReverse) {
+        //     return DriveGear.LOW_GEAR;
+        // } else {
+        //     return DriveGear.HIGH_GEAR;
+        // }
+        return DriveGear.LOW_GEAR;
     }
     
     /**
@@ -103,6 +104,8 @@ public class DriveTrain extends Subsystem {
      * @param joy: current state of the robot
      */
     public void drive(Joystick joy) {
+        // System.out.println("left: " + this.leftMotor1.get() * 1023 / this.leftMotor1.getSelectedSensorVelocity());
+        // System.out.println("right:" + this.leftMotor1.get() * 1023 / this.rightMotor1.getSelectedSensorVelocity());
         this.drive(this.addDeadZone(-joy.getRawAxis(1)), this.addDeadZone(joy.getRawAxis(4)));
     }
     
