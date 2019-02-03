@@ -1,9 +1,9 @@
 package frc.robot.commands;
-
-import frc.robot.OI.TRIG_MODE;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  *
  */
@@ -16,14 +16,19 @@ public class ElevatorToPos extends Command {
 	}
 
 	protected void initialize() {
-		Robot.elevator.setVel(0);
+        Robot.elevator.setVel(0);
+        Robot.elevator.getElevatorTalon().setSelectedSensorPosition(0);
+
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		double error = this.targetHeight - Robot.elevator.getElevatorPos();
-		double motorSpeed = velTrapezoid.update(Robot.elevator.getElevatorTalon.getSelectedSensorVel(0), error);	
-	}
+		double motorSpeed = Robot.elevator.getVelTrapezoid().update(Robot.elevator.getElevatorTalon().getSelectedSensorVelocity(0), error);	
+        Robot.elevator.setVel(motorSpeed);
+        SmartDashboard.putNumber("Encoder Value", Robot.elevator.getElevatorPos());
+        SmartDashboard.putNumber("Error", error);
+    }
 
 	protected void interrupted() {
 		end();
@@ -35,7 +40,8 @@ public class ElevatorToPos extends Command {
 	}
 
 	protected void end() {
-		//Robot.elevator.setVel(0);
+        //TODO: fix so elevator doesn't drift down
+		Robot.elevator.setVel(0);
 	}
 
 }

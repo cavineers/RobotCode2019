@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.lib.VelocityTrapezoid;
@@ -31,7 +31,7 @@ public class Elevator extends Subsystem {
      */
     @Override
     public void initDefaultCommand() {
-		setDefaultCommand(new ElevatorToPos(10));
+		setDefaultCommand(new ElevatorToPos(.5));
     }
 
     /**
@@ -59,8 +59,7 @@ public class Elevator extends Subsystem {
 	}
 
     public void setVel(double vel) {
-        // set the current setpoint of the talon's PIDF Controller to the desired velocity
-        // elevatorMotor.set(ControlMode.Velocity, vel);
+        elevatorMotor.set(ControlMode.Velocity, vel);
     }
 
     public VelocityTrapezoid getVelTrapezoid(){

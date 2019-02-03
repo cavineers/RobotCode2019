@@ -30,10 +30,12 @@ public class Constants {
     
     //elevator stuff
     public static final double kElevatorPosTolerance = 5;
-    public static final double kMaxElevAcceleration = 1; //TODO: fix
-    public static final double kMaxElevSpeed = 1; //TODO: fix
-
-
+    public static final double kMaxElevAcceleration = 800; //TODO: fix
+    public static final double kMaxElevSpeed = 3000; //TODO: fix
+    public static final double maxElevatorHeight  = 42000; //TODO: set actual max height (native units)
+	public static final double minElevatorHeight = 0; //TODO: set actual min height (native units)
+    public static final double pulsesPerInch = 500; 
+    
     //Talon stuff
     public static final int kTimeoutMs = 10;
     public static final int kPIDLoopIdx = 0;
