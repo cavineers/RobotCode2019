@@ -88,4 +88,6 @@ public class Constants {
     //a 3x3 rotation matrix that converts from the camera coordinate frame to the robot coordinate frame
     public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
 
+    // Intake
+    public static final double intakeSpeed = 1;
 }

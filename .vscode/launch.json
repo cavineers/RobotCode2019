@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "frc.robot.Main",
+            "projectName": "RobotCode2019"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - VectorTest",
             "request": "launch",
             "mainClass": "frc.lib.tests.VectorTest",
