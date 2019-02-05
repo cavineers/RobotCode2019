@@ -21,18 +21,19 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class Elevator extends Subsystem {
     //TODO: add two sparkmax
 	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor1);
-    private PIDController elevPID;
+    /*private PIDController elevPID;
     private double P = 0;
     private double I = 0;
     private double D = 0;
-    private double F = .0001;
-    private double period = .025;
+    private double F = .0002;
+    private double period = .025;*/
 
     VelocityTrapezoid velTrapezoid = new VelocityTrapezoid(Constants.kMaxElevAcceleration, Constants.kMaxElevSpeed, Constants.kDefaultDt);
     DigitalInput limitSwitch;
 
     public Elevator() {
-         elevPID = new PIDController(P, I, D, F, new PIDSource() {
+        velTrapezoid.setDecelLock(false);
+         /*elevPID = new PIDController(P, I, D, F, new PIDSource() {
 			PIDSourceType out_sourceType = PIDSourceType.kDisplacement;
 
 			@Override
@@ -63,11 +64,11 @@ public class Elevator extends Subsystem {
                 elevPID.setOutputRange(-1, 1);
                 elevPID.setContinuous(false);
                 elevPID.setPercentTolerance(1);
-                elevPID.setSetpoint(0);
+                elevPID.setSetpoint(0);*/
                 
         limitSwitch = new DigitalInput(0); // change input later
 		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-		elevatorMotor.setSensorPhase(true); /* keep sensor and motor in phase */
+        elevatorMotor.setSensorPhase(true); /* keep sensor and motor in phase */
     }
 
     /**
@@ -111,7 +112,7 @@ public class Elevator extends Subsystem {
         return this.velTrapezoid;
     }
 
-    public PIDController getElevPID() {
+   /* public PIDController getElevPID() {
 		return elevPID;
-	}
+	}*/
 }

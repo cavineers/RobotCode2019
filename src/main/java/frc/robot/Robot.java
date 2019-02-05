@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
     
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
-    estimator.start(); 
+    //estimator.start(); 
   }
 
   /**
