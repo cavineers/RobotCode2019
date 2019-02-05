@@ -33,7 +33,7 @@ public class ElevatorToPos extends Command {
         Robot.elevator.getElevPID().setSetpoint(motorSpeedInSec);
         Robot.elevator.getElevPID().enable();
         
-        Write.writeCsvFile(file, ((int)motorSpeedInSec), ((int)Robot.elevator.getElevatorTalon().getSelectedSensorVelocity(0));    
+        Write.writeCsvFile(file, ((int)motorSpeedInSec), ((int)Robot.elevator.getElevatorTalon().getSelectedSensorVelocity(0)));    
         SmartDashboard.putNumber("Encoder Value", Robot.elevator.getElevatorPos());
         SmartDashboard.putNumber("Error", error);
         SmartDashboard.putNumber("Speed from VelTrap", motorSpeedInSec);
