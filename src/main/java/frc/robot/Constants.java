@@ -29,11 +29,13 @@ public class Constants {
     public static final double kAngleTolerance = 0.5; // in degrees; the tolerance of turn to angle
     
     //elevator stuff
-    public static final double kElevatorPosTolerance = 1;
-    public static final double kMaxElevAcceleration = 10; //TODO: fix
-    public static final double kMaxElevSpeed = 10; //TODO: fix
-
-
+    public static final double kElevatorPosTolerance = 5;
+    public static final double kMaxElevAcceleration = 800; //800
+    public static final double kMaxElevSpeed = 3000; //3000
+    public static final double maxElevatorHeight  = 42000; //TODO: set actual max height (native units)
+	public static final double minElevatorHeight = 0; //TODO: set actual min height (native units)
+    public static final double pulsesPerInch = 500; 
+    
     //Talon stuff
     public static final int kTimeoutMs = 10;
     public static final int kPIDLoopIdx = 0;
@@ -86,4 +88,6 @@ public class Constants {
     //a 3x3 rotation matrix that converts from the camera coordinate frame to the robot coordinate frame
     public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
 
+    // Intake
+    public static final double intakeSpeed = 1;
 }

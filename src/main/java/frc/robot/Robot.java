@@ -49,8 +49,9 @@ public class Robot extends TimedRobot {
     drivetrain = new DriveTrain();
     gyro = new AHRS(SPI.Port.kMXP);
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
-    oi = new OI();
     elevator = new Elevator();
+    oi = new OI();
+    
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
     
