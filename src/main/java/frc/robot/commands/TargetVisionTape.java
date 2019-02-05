@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.MathHelper;
 import frc.lib.RobotPos;
 import frc.lib.TargetUpdate;
@@ -18,11 +19,11 @@ import frc.robot.Constants;
 public class TargetVisionTape extends Command {
 
     Path path;
-
     boolean forceFinish = false;
 
     public TargetVisionTape() {
         requires(Robot.drivetrain);
+        this.setTimeout(10);
     }
 
     @Override
@@ -30,14 +31,13 @@ public class TargetVisionTape extends Command {
         //TODO: test
 
         TargetUpdate targetUpdate = null; //data received from the camera
-        System.out.println("Aquiring vision target");
+
         while (targetUpdate == null) {
             targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
         }
-        System.out.println("Aquired target");
 
         RobotPos robotFieldPos = Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()); // the position of the robot when the picture was taken (field coords)
-
+ 
         //convert the target heading vector to the robot's coordinate system
         Vector3D targetHeadingVect = targetUpdate.getHeadingVector();
         targetHeadingVect.rotate(Constants.kCameraToRobotMatrix);
@@ -60,14 +60,13 @@ public class TargetVisionTape extends Command {
 
         RobotPos latestFieldPos = Robot.estimator.getPos();
 
-        System.out.println("Did conversion");
-
         DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), targetFieldLocation.getPoint(), targetHeading);
         
         if (!dubinsPath.isValid()) {
             forceFinish = true;
         }
         this.path = dubinsPath.getPath();
+        System.out.println(this.path);
 
         System.out.println("planned path");
         
@@ -75,18 +74,23 @@ public class TargetVisionTape extends Command {
   
     @Override
     protected void execute() {
-        RobotPos currentPos = Robot.estimator.getPos();
-        currentPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
-        
-        RobotCmd cmd = path.update(currentPos);
+        RobotPos latestPos = Robot.estimator.getPos();
+        latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
 
+        RobotCmd cmd = this.path.update(latestPos);
+        
+        //debug print: lTarget, rTarget, lActualVel, rActualVel, RobotPosition
+//		System.out.println(Robot.drivetrain.leftMotor1.getClosedLoopTarget(0) +  "," + Robot.drivetrain.rightMotor1.getClosedLoopTarget(0) + "," + Robot.drivetrain.leftMotor1.getSelectedSensorVelocity(0) + "," + Robot.drivetrain.rightMotor1.getSelectedSensorVelocity(0) + "," + Robot.state.getPosition());
+        System.out.println(latestPos.getX() + ", " + latestPos.getY());
+        
         Robot.drivetrain.setLeftVel(cmd.getLeftVel());
         Robot.drivetrain.setRightVel(cmd.getRightVel());
+        // System.out.println(Robot.estimator.getPos().position);
     }
   
     @Override
     protected boolean isFinished() {
-        return path.isFinished() || forceFinish;
+        return path.isFinished() || forceFinish || this.isTimedOut();
     }
   
     @Override

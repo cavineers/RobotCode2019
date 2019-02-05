@@ -95,5 +95,21 @@ public class Path {
     public boolean isFinished() {
         return didFinish;
     }
+
+    @Override
+    public String toString() {
+        String s = "";
+        for (Segment seg : segmentList) {
+            if (seg instanceof ArcSegment) {
+                ArcSegment arc = (ArcSegment) seg;
+                System.out.println(arc.getStartPoint() + " " + arc.getEndPoint() + " " + arc.getCenterPoint() + " " + arc.smallSide);
+            } else {
+                LineSegment lin = (LineSegment) seg;
+                System.out.println(lin.getStartPoint() + " " + lin.getEndPoint());
+            }
+            System.out.println(seg);
+        }
+        return s;
+    }
     
 }

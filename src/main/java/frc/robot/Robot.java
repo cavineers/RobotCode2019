@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.lib.MathHelper;
+import frc.lib.RobotPos;
+import frc.lib.TargetUpdate;
+import frc.lib.Vector3D;
+import frc.robot.commands.TargetVisionTape;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
@@ -65,10 +69,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-      //ensure that the raspberry pi successfully synchronized clocks with the rio
-      if (reflectiveTapeCamera.shouldSyncClocks()) {
-          reflectiveTapeCamera.startClockSync();
-      }
+            //ensure that the raspberry pi successfully synchronized clocks with the rio
+            if (reflectiveTapeCamera.shouldSyncClocks()) {
+                reflectiveTapeCamera.startClockSync();
+            }
   }
 
   /**
@@ -78,7 +82,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-      
   }
 
   @Override

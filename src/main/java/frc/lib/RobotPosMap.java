@@ -178,11 +178,13 @@ public class RobotPosMap {
     public RobotPos getRobotPositionAtTime(double time) {
         RobotPosUpdate base = map.get(map.size() - 1);
         if (base.timestamp > time) {
+            System.out.println("UPDATE TOO OLD!");
             return null; // a position cannot be calculated for the given time, image too old
         }
 
         int[] indexArr = this.getMapIndexForTimestamp(time);
         if (indexArr.length == 0) {
+            System.out.println("CANNOT CALC!");
             // the position cannot be calculated for the given time.
             return null;
         }

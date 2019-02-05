@@ -13,9 +13,9 @@ import frc.lib.TargetUpdate;
  * CamOnline - a boolean sent from the raspberry pi to the roborio indicating that it is online
  * 
  * Clock Synchronization Channels:
- * CamReadyForSync - a boolean sent from the raspberry pi to the roborio indicating if it is ready to synchroinze clocks
- * SuccessfulSync - a boolean sent from the raspberry pi to the roborio indicating if the pi successfully synchronized its clock
- * AttemptingToSync - a boolean sent from the roborio to the raspberry pi describing if it is trying to synchronize its clock with the pi
+ * CamOnline
+ * RioWantsClockSync
+ * PiWantsClockSync
  * RioTime - the system time of the roborio sent from the roborio to the raspberry pi when a clock sync is being performed; otherwise it is -1
  * 
  * Target Data channels:
@@ -26,11 +26,22 @@ public class CameraHelper {
     String name = "";
     NetworkTable netTable;
     int lastUpdateNum = -1; // the number of the last targetPos update
+    boolean isRunningClockSync = false;
 
     public CameraHelper(String name) {
         this.name = name;
         netTable = NetworkTableInstance.getDefault().getTable(name);
         netTable.getEntry("RioTime").setNumber(-1);
+        netTable.getEntry("RioWantsClockSync").setBoolean(true);
+    }
+
+    /**
+     * Tells if the raspberry pi is connected to the rio
+     * 
+     * @return whether or not the pi is connected to the rio
+     */
+    public boolean doesPiWantSync() {
+        return this.netTable.getEntry("PiWantsClockSync").getBoolean(false);
     }
 
     /**
@@ -43,39 +54,33 @@ public class CameraHelper {
     }
 
     /**
-     * Tells if the pi is ready to sync slocks with the rio
-     * 
-     * @return whether or not the raspberry pi is ready for a clock synchonization with the rio
+     * Tells if the roborio wants to sync clocks
+     * @return
      */
-    private boolean isPiReadyForClockSync() {
-        return netTable.getEntry("CamReadyForSync").getBoolean(false);
+    public boolean doesRioWantSync() {
+        return netTable.getEntry("RioWantsClockSync").getBoolean(false) && this.isPiConnected();
     }
-    
-    /**
-     * Tells if the raspberry pi has successfully synchronized clocks with the rio
-     * 
-     * @return if the raspberry pi has a update
-     */
-    private boolean didSuccessfullyClockSync() {
-        return netTable.getEntry("SuccessfulSync").getBoolean(false);
-    }
+
     /**
      * Tells if the rio should attempt to synchronze its clocks with the pi
      * 
      * @return if the rio should attempt to synchronze its clocks with the pi
      */
     public boolean shouldSyncClocks() {
-        return this.isPiConnected() && this.isPiReadyForClockSync() && !this.didSuccessfullyClockSync();
+        return this.doesPiWantSync() || this.doesRioWantSync();
     }
 
     /**
      * Starts the clock synchronization procedure between the rio and the pi
      */
     public void startClockSync() {
+        if (this.isRunningClockSync) {
+            return;
+        }
         if (this.shouldSyncClocks()) {
+            netTable.getEntry("RioWantsClockSync").setBoolean(true);
             System.out.println("Attempting to sync clocks");
             // the camera is connected and ready for a clock sync, and has not yet synchronzied
-            netTable.getEntry("AttemptingToSync").setBoolean(true);
             // run clock synchronization in a seperate thread so that the main thread is not stopped for a long time while updating
             Thread clockSync = new Thread() {
                 public void run() {
@@ -84,12 +89,15 @@ public class CameraHelper {
                         netTable.getEntry("RioTime").setNumber(Robot.getCurrentTime());
                         NetworkTableInstance.getDefault().flush();
                     }
-                    netTable.getEntry("AttemptingToSync").setBoolean(false);
+                    netTable.getEntry("RioWantsClockSync").setBoolean(false);
+                    netTable.getEntry("PiWantsClockSync").setBoolean(false);
                     netTable.getEntry("RioTime").setNumber(-1);
+                    isRunningClockSync = false;
                 }  
             };
 
             clockSync.start();
+            isRunningClockSync = true;
             this.lastUpdateNum = -1;
         }
     }
@@ -102,16 +110,15 @@ public class CameraHelper {
     public TargetUpdate getUpdate() {
         String updateString = netTable.getEntry("TargetUpdates").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
-        System.out.println(updateString);
         if (updateString.isEmpty()) {
-            System.out.println("EMPTY!!");
+            // System.out.println("EMPTY!!");
             return null; // no update available
         }
         // split the update string into its respective individual values
         String[] updateArr = updateString.split(",");
 
         if (updateArr.length != 11) {
-            System.out.println("INVALID LENGTH!!");
+            // System.out.println("INVALID LENGTH!!");
             return null; // invalid update format
         }
 
@@ -131,8 +138,19 @@ public class CameraHelper {
         int imageNum = Integer.parseInt(updateArr[9]);
         double timestamp = Double.parseDouble(updateArr[10]);
 
+        if (timestamp > Robot.getCurrentTime()) {
+            System.out.println("update too new!");
+            System.out.println("timestamp " + timestamp + " current time: " + Robot.getCurrentTime());
+            return null; //update is too new
+        }
+
+        if (timestamp < (Robot.getCurrentTime() - 3)) {
+            System.out.println("update too old!");
+            return null; // update is too old
+        }
+
         if (this.lastUpdateNum >= imageNum) {
-            System.out.println("LAST IMG NUM!!");
+            // System.out.println("LAST IMG NUM!!");
             return null; // there is no new update available
         }
 
