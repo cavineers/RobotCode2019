@@ -30,11 +30,11 @@ public class Constants {
     
     //elevator stuff
     public static final double kElevatorPosTolerance = 5;
-    public static final double kMaxElevAcceleration = 800; //800
-    public static final double kMaxElevSpeed = 3000; //3000
-    public static final double maxElevatorHeight  = 42000; //TODO: set actual max height (native units)
-	public static final double minElevatorHeight = 0; //TODO: set actual min height (native units)
-    public static final double pulsesPerInch = 500;
+    public static final double kElevatorMaxAcceleration = 40; //800
+    public static final double kElevatorMaxSpeed = 70; //3000
+    public static final double kElevatorMaxHeight  = 42000; //TODO: set actual max height (native units)
+	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (native units)
+    public static final double kElevatorPulsesPerInch = 500;
     public static final double kPVelocityElev = 0;
     public static final double kIVelocityElev = 0;
     public static final double kDVelocityElev = 0;

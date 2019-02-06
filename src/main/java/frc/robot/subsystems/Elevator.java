@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -21,54 +23,24 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class Elevator extends Subsystem {
     //TODO: add two sparkmax
 	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor1);
-    /*private PIDController elevPID;
-    private double P = 0;
-    private double I = 0;
-    private double D = 0;
-    private double F = .0002;
-    private double period = .025;*/
-
-    VelocityTrapezoid velTrapezoid = new VelocityTrapezoid(Constants.kMaxElevAcceleration, Constants.kMaxElevSpeed, Constants.kDefaultDt);
+    VelocityTrapezoid velTrapezoid = new VelocityTrapezoid(Constants.kElevatorMaxAcceleration, Constants.kElevatorMaxSpeed, Constants.kDefaultDt);
     DigitalInput limitSwitch;
 
     public Elevator() {
         velTrapezoid.setDecelLock(false);
-         /*elevPID = new PIDController(P, I, D, F, new PIDSource() {
-			PIDSourceType out_sourceType = PIDSourceType.kDisplacement;
-
-			@Override
-			public double pidGet() {
-				return elevatorMotor.getSelectedSensorVelocity(0);
-			}
-
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-				out_sourceType = pidSource;
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				return out_sourceType;
-			}
-		},
-
-				new PIDOutput() {
-					@Override
-					public void pidWrite(double d) {
-                        SmartDashboard.putNumber("PID output", d);
-						elevatorMotor.set(ControlMode.PercentOutput, d);
-					}
-                }, period);
-
-                elevPID.setInputRange(-Constants.kMaxElevSpeed, Constants.kMaxElevSpeed);
-                elevPID.setOutputRange(-1, 1);
-                elevPID.setContinuous(false);
-                elevPID.setPercentTolerance(1);
-                elevPID.setSetpoint(0);*/
-                
         limitSwitch = new DigitalInput(0); // change input later
-		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
         elevatorMotor.setSensorPhase(true); /* keep sensor and motor in phase */
+
+        this.getElevatorTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        this.getElevatorTalon().config_kP(Constants.kPIDLoopIdx, Constants.kPVelocityElev);
+        this.getElevatorTalon().config_kI(Constants.kPIDLoopIdx, Constants.kIVelocityElev);
+        this.getElevatorTalon().config_kD(Constants.kPIDLoopIdx, Constants.kDVelocityElev);
+        this.getElevatorTalon().config_kF(Constants.kPIDLoopIdx, Constants.kFVelocityElev);
+        this.getElevatorTalon().enableVoltageCompensation(true);
+        this.getElevatorTalon().configVoltageCompSaturation(12.0, Constants.kTimeoutMs);
+        this.getElevatorTalon().configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.kTimeoutMs);
+        this.getElevatorTalon().configVelocityMeasurementWindow(1, Constants.kTimeoutMs);
+        this.getElevatorTalon().setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, 100);
     }
 
     /**
@@ -87,10 +59,6 @@ public class Elevator extends Subsystem {
         return this.elevatorMotor;
     }
     
-    public double getElevatorPos() {
-		return getElevatorTalon().getSelectedSensorPosition(0);
-	}
-
     public DigitalInput getLimitSwitch() {
 		return limitSwitch;
 	}
@@ -112,7 +80,25 @@ public class Elevator extends Subsystem {
         return this.velTrapezoid;
     }
 
-   /* public PIDController getElevPID() {
-		return elevPID;
-	}*/
+    /**
+     * returns the current velocity of the elevator in inches per second
+     */
+    public double getVelInchesPerSecond() {
+        return (this.getElevatorTalon().getSelectedSensorVelocity(0)/Constants.kElevatorPulsesPerInch) * 10;
+    }
+
+    /**
+     * returns the current height of the elevator in inches
+     */
+    public double getCurrentHeight() {
+        return this.getElevatorTalon().getSelectedSensorPosition(0)/Constants.kElevatorPulsesPerInch;
+    }
+
+    /**
+     * Converts a given speed in inches/sec to pulses per 100ms
+     */
+    public static double convertToPulsesPer100Ms(double velInPerSec) {
+        return (velInPerSec / 10) * Constants.kElevatorPulsesPerInch;
+    }
+
 }

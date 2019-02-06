@@ -41,15 +41,23 @@ public class VelocityTrapezoid {
         //calculate the acceleration needed for the robot to stop by the given endpoint
         double endpointAccel = this.getAccelNeededToStopByPoint(currentVel, distanceRemaining);
 
-        if (endpointAccel >= this.maxAccel || this.isAcceleratingToEndpoint) {
+        if (endpointAccel > this.maxAccel || this.isAcceleratingToEndpoint) {
             if (this.doesLockDecel) {
                 this.isAcceleratingToEndpoint = true;
             }
-            // if the robot cannot reach the endpoint within max acceleration, slow down as fast as is required
-            return this.getNextVelocity(currentVel, 0, endpointAccel);
+            if (distanceRemaining > 0) {
+                // if the robot cannot reach the endpoint within max acceleration, slow down as fast as is required
+                return this.getNextVelocity(currentVel, 0, endpointAccel);
+            } else {
+                return this.getNextVelocity(currentVel, 0, endpointAccel);
+            }
         } else {
-            // otherwise, speed up to max speed and maintain it
-            return this.getNextVelocity(currentVel, this.maxSpeed, this.maxAccel);
+            if (distanceRemaining > 0) {
+                // otherwise, speed up to max speed and maintain it
+                return this.getNextVelocity(currentVel, this.maxSpeed, this.maxAccel);
+            } else {
+                return this.getNextVelocity(currentVel, -this.maxSpeed, this.maxAccel);
+            }
         }
     }
 
