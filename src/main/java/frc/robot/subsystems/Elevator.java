@@ -41,6 +41,12 @@ public class Elevator extends Subsystem {
         this.getElevatorTalon().configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.kTimeoutMs);
         this.getElevatorTalon().configVelocityMeasurementWindow(1, Constants.kTimeoutMs);
         this.getElevatorTalon().setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, 100);
+
+        // set the peak, nominal outputs
+        this.getElevatorTalon().configNominalOutputForward(0, Constants.kTimeoutMs);
+        this.getElevatorTalon().configNominalOutputReverse(0, Constants.kTimeoutMs);
+        this.getElevatorTalon().configPeakOutputForward(1, Constants.kTimeoutMs);
+        this.getElevatorTalon().configPeakOutputReverse(-1, Constants.kTimeoutMs);
     }
 
     /**

@@ -38,7 +38,7 @@ public class Constants {
     public static final double kPVelocityElev = 0;
     public static final double kIVelocityElev = 0;
     public static final double kDVelocityElev = 0;
-    public static final double kFVelocityElev = .341;
+    public static final double kFVelocityElev = 0.5;
 
     
     //Talon stuff

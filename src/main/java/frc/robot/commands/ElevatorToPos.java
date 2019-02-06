@@ -29,15 +29,17 @@ public class ElevatorToPos extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute(){
-		double error = this.targetHeight - Robot.elevator.getCurrentHeight();
+        double error = this.targetHeight - Robot.elevator.getCurrentHeight();
 		double motorSpeedInSec = Robot.elevator.getVelTrapezoid().update(Robot.elevator.getVelInchesPerSecond(), error);	
         double motorSpeedPulses = Elevator.convertToPulsesPer100Ms(motorSpeedInSec);
         
+        System.out.println(error + "," + motorSpeedInSec + "," + Robot.elevator.getVelInchesPerSecond());
+
         /*Robot.elevator.getElevPID().setSetpoint(motorSpeedInSec);
         Robot.elevator.getElevPID().enable();*/
 
         Robot.elevator.getElevatorTalon().set(ControlMode.Velocity, motorSpeedPulses);
-        System.out.println((Integer.toString((int)motorSpeedPulses)) + "," + (Integer.toString(Robot.elevator.getElevatorTalon().getSelectedSensorVelocity(0))));
+        // System.out.println((Integer.toString((int)motorSpeedPulses)) + "," + (Integer.toString(Robot.elevator.getElevatorTalon().getSelectedSensorVelocity(0))));
 
         //Write.writeCsvFile(file, ((int)motorSpeedInSec), ((int)Robot.elevator.getElevatorTalon().getSelectedSensorVelocity(0)));    
         SmartDashboard.putNumber("Talon Error", Robot.elevator.getElevatorTalon().getClosedLoopError(0));
