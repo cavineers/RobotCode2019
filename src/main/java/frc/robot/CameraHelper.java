@@ -45,6 +45,13 @@ public class CameraHelper {
     }
 
     /**
+     * Makes the roborio send a signal to synchronize clocks with the pi
+     */
+    public void setWantClockSync(boolean wantsSync) {
+        netTable.getEntry("RioWantsClockSync").setBoolean(wantsSync);
+    }
+
+    /**
      * Tells if the raspberry pi is connected to the rio
      * 
      * @return whether or not the pi is connected to the rio
@@ -111,14 +118,14 @@ public class CameraHelper {
         String updateString = netTable.getEntry("TargetUpdates").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
         if (updateString.isEmpty()) {
-            // System.out.println("EMPTY!!");
+            System.out.println("EMPTY!!");
             return null; // no update available
         }
         // split the update string into its respective individual values
         String[] updateArr = updateString.split(",");
 
         if (updateArr.length != 11) {
-            // System.out.println("INVALID LENGTH!!");
+            System.out.println("INVALID LENGTH!!");
             return null; // invalid update format
         }
 
@@ -138,23 +145,26 @@ public class CameraHelper {
         int imageNum = Integer.parseInt(updateArr[9]);
         double timestamp = Double.parseDouble(updateArr[10]);
 
+        if (this.lastUpdateNum >= imageNum) {
+            System.out.println("LAST IMG NUM!!");
+            return null; // there is no new update available
+        }
+
+        this.lastUpdateNum = imageNum;
+
         if (timestamp > Robot.getCurrentTime()) {
             System.out.println("update too new!");
             System.out.println("timestamp " + timestamp + " current time: " + Robot.getCurrentTime());
+            this.setWantClockSync(true);
             return null; //update is too new
         }
 
         if (timestamp < (Robot.getCurrentTime() - 3)) {
             System.out.println("update too old!");
+            System.out.println("timestamp " + timestamp + " current time: " + Robot.getCurrentTime());
+            this.setWantClockSync(true);
             return null; // update is too old
         }
-
-        if (this.lastUpdateNum >= imageNum) {
-            // System.out.println("LAST IMG NUM!!");
-            return null; // there is no new update available
-        }
-
-        this.lastUpdateNum = imageNum;
 
         return new TargetUpdate(headingX, headingY, headingZ, targetX, targetY, targetZ, cameraX, cameraY, cameraZ, imageNum, timestamp);
     }

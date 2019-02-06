@@ -71,4 +71,9 @@ public class TargetUpdate {
     public double getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return headingX + "," + headingY + "," + headingZ + targX + "," + targY + "," + targZ + "," + camX + "," + camY + "," + camZ + "," + updateNum + "," + timestamp;
+    }
 }

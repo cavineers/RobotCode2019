@@ -80,4 +80,9 @@ public class Vector2D {
     public static double getCrossProduct(Vector2D v1, Vector2D v2) {
         return v1.dx * v2.dy - v1.dy * v2.dx;
     }
+
+    @Override
+    public String toString() {
+        return this.dx + ", " + this.dy; 
+    }
 }

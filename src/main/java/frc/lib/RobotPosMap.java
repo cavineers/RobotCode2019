@@ -155,12 +155,14 @@ public class RobotPosMap {
         } else if (last >= 0){
             // no element exists within the requested timestamp, and the timestamp is the smallest (oldest) in the array
             System.out.println("ERROR: CANNOT ADD UPDATE TO POSITION MAP; UPDATE TOO OLD!");
+            Robot.reflectiveTapeCamera.setWantClockSync(true);
             return new int[] {}; // return nothing because it is too old
         } else {
             // no element exists within the requested timestamp, and the timestamp is the largest (newest) in the array
             if (timestamp > Robot.getCurrentTime()) {
                 // the timestamp is ahead of current system time; throw it out
                 System.out.println("ERROR: CANNOT ADD UPDATE TO POSITION MAP; UPDATE TOO NEW!");
+                Robot.reflectiveTapeCamera.setWantClockSync(true);
                 return new int[] {};
             } else {
                 // the timestamp is the largest (newest) one in the array, and its time is valid

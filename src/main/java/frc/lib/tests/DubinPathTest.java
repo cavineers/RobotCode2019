@@ -28,21 +28,21 @@ import frc.robot.Constants;
 
 public class DubinPathTest {
 
-    static double minRad = 30;
+    // static double minRad = 30;
 
     static Point startPoint = new Point(0, 0);
-    static double startHeading = 0;
+    static double startHeading = Math.PI;
 
-    static Point endPoint = new Point(40, 18);
-    static double endHeading = 0;
-    static double straightLineAmount = 3;
+    static Point endPoint = new Point(-22.7227053308, 9.873755356459998);
+    static double endHeading = -7.400670117941084E-4 + Math.PI;
+    static double straightLineAmount = 1;
 
     static RobotPosMap map = new RobotPosMap(200, new RobotPosUpdate(startPoint.getX(), startPoint.getY(), startHeading, 0, UpdateType.BASE));
 
     public static void main(String[] args) {
         double pathTime = 0;
 
-        double startVel = 30;
+        double startVel = 40;
         
         Path path = DubinPathCalculator.getBestPath(startPoint, startHeading, endPoint, endHeading).getPath();
 
@@ -51,7 +51,7 @@ public class DubinPathTest {
 
         // Random r = new Random();
 
-        double maxSpeedForTesting = 80;
+        double maxSpeedForTesting = 30000;
 
         while (!path.isFinished()) {
             try {
