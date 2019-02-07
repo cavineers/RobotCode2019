@@ -95,4 +95,8 @@ public class Constants {
 
     // Intake
     public static final double intakeSpeed = 1;
+
+    // Climber
+    public static final double climberPPI = 1; // Pulses per inch
+    public static final double climberLength = 10.0;
 }
