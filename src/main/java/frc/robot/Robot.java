@@ -54,7 +54,6 @@ public class Robot extends TimedRobot {
     
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
-    
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
     estimator.start(); 

@@ -30,19 +30,19 @@ public class DubinPathTest {
 
     // static double minRad = 30;
 
-    static Point startPoint = new Point(0, 0);
-    static double startHeading = Math.PI;
+    static Point startPoint = new Point(7.769695932137786, 0.7880266999897699);
+    static double startHeading = 0.11065387723960159;
 
-    static Point endPoint = new Point(-22.7227053308, 9.873755356459998);
-    static double endHeading = -7.400670117941084E-4 + Math.PI;
-    static double straightLineAmount = 1;
+    static Point endPoint = new Point(37.3861478587509, 8.268122838004851);
+    static double endHeading = 0.2127759890603868;//2.3573910734479835;
+    static double straightLineAmount = 3;
 
     static RobotPosMap map = new RobotPosMap(200, new RobotPosUpdate(startPoint.getX(), startPoint.getY(), startHeading, 0, UpdateType.BASE));
 
     public static void main(String[] args) {
         double pathTime = 0;
 
-        double startVel = 40;
+        double startVel = 0;
         
         Path path = DubinPathCalculator.getBestPath(startPoint, startHeading, endPoint, endHeading).getPath();
 
@@ -95,10 +95,10 @@ public class DubinPathTest {
             // }
             pathTime += Constants.kDefaultDt;
 
-            System.out.println(currentPos);
+            System.out.println(",," + currentPos);
 
         }
 
-        System.out.println("Estimate time Required " + pathTime + " sec");
+        // System.out.println("Estimate time Required " + pathTime + " sec");
     }
 }

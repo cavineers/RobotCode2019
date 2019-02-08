@@ -89,11 +89,6 @@ public class Vector3D {
         return new Vector3D(v1.getDx() + v2.getDx(), v1.getDy() + v2.getDy(), v1.getDz() + v2.getDz());
     }
 
-    @Override
-    public String toString() {
-        return "[" + this.getDx() + "\t" + this.getDy() + "\t" + this.getDz() + "]";
-    }
-
     /**
      * Rotates the given vector by the given rotation matrix
      * 
@@ -109,6 +104,11 @@ public class Vector3D {
         double y = this.getDx() * matrix[1][0] + this.getDy() * matrix[1][1] + this.getDz() * matrix[1][2];
         double z = this.getDx() * matrix[2][0] + this.getDy() * matrix[2][1] + this.getDz() * matrix[2][2];
         return new Vector3D(x, y, z);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.getDx() + "\t" + this.getDy() + "\t" + this.getDz() + "]";
     }
 
 }

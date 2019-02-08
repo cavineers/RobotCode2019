@@ -69,10 +69,6 @@ public class Elevator extends Subsystem {
 		return limitSwitch;
 	}
 
-	// public void setManualVelocity(double trigger) {
-	// 	manualVelocity = trigger;
-	// }
-	
 	public double getElevatorVel() {
 		return elevatorMotor.getSelectedSensorVelocity(0);
 	}

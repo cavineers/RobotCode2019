@@ -7,7 +7,7 @@ public class Constants {
     //path pursuit stuff
     public static final double kPathPursuitTolerance = 1; //in inches; get within 1 inch of the endpoint prior to moving on to the next segment
     public static final double kPathPursuitFinishTolerance = 5;
-    public static final double kDefaultDt = 0.02; // in seconds; the default dt for pathfinding calculations
+    public static final double kDefaultDt = 0.01; // in seconds; the default dt for pathfinding calculations
     public static final double kMaxAccelSpeedUp = 120; //in inches/sec^2; the max acceleration the robot can be commanded to experience when traveling a path
     public static final double kStopSteeringDistance = 3; //in inches; when the robot stops steering after a path
 
@@ -46,12 +46,12 @@ public class Constants {
     public static final int kPIDLoopIdx = 0;
     
     //PID stuff
-    public static final double kPVelocity = 1.8;//1.8; //4
+    public static final double kPVelocity = 2;//1.8; //4
     public static final double kIVelocity = 0.0;//0.0; //0
-    public static final double kDVelocity = 0;//0.15; //10
-    public static final double kFVelocity = 1.5;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
+    public static final double kDVelocity = 0.15;//0.15; //10
+    public static final double kFVelocity = 1.8;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
     public static final int kVelocityIZone = 0;
-    public static final double kAVelocity = 0.0; // TODO: Tune/Test
+    public static final double kAVelocity = 0.0001; // TODO: Tune/Test
     public static final double kDriveVoltageRampRate = 0.0;
     
     //Position mapping stuff
@@ -76,19 +76,25 @@ public class Constants {
     public static final double kMaxTargetSpeed = 120; //in inches per second; max speed of the robot when it is targeting vision tape
     public static final double kMaxTargetAccel = 120;
 
-    public static final double kMinLookAheadTargeting = 3.0; // inches
-    public static final double kMinLookAheadSpeedTargeting = 12.0; // inches per second
-    public static final double kMaxLookAheadTargeting = 10.0; // inches
+    // public static final double kMinLookAheadTargeting = 3.0; // inches
+    // public static final double kMinLookAheadSpeedTargeting = 12.0; // inches per second
+    // public static final double kMaxLookAheadTargeting = 10.0; // inches
+    // public static final double kMaxLookAheadSpeedTargeting = 120.0; // inches per second
+
+    public static final double kMinLookAheadTargeting = 12.0; // inches
+    public static final double kMinLookAheadSpeedTargeting = 9.0; // inches per second
+    public static final double kMaxLookAheadTargeting = 24.0; // inches
     public static final double kMaxLookAheadSpeedTargeting = 120.0; // inches per second
 
-    public static final double kStraightLineDistance = 4; // distance in inches of the straight line path at the end of a target
+
+    public static final double kStraightLineDistance = 3; // distance in inches of the straight line path at the end of a target
     public static final double kMinRadiusTargeting = 5; // radius in inches of the minimum allowed radius for a dubin's path
 
     // Robot Vector constants
     // TODO get actual measurements
 
     // a vector representing the difference in position from the robot's center of mass and the camera
-    public static final Vector3D kCameraRelativeToRobotCenter = new Vector3D(5, 2, 10); 
+    public static final Vector3D kCameraRelativeToRobotCenter = new Vector3D(0, 0, 0); 
 
     //a 3x3 rotation matrix that converts from the camera coordinate frame to the robot coordinate frame
     public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot

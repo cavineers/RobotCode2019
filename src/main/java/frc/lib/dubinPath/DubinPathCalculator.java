@@ -59,7 +59,7 @@ public class DubinPathCalculator {
 
     private static double getBestTurnRadiusForPath(Point start, double startHeading, Point end, double endHeading) {
 
-        DubinsTrajectory newTraj = getTraj(start, startHeading, end, endHeading, 1);
+        DubinsTrajectory newTraj = getTraj(start, startHeading, end, endHeading, 0.5);
 
         String idealPathType = newTraj.type.name();
 
