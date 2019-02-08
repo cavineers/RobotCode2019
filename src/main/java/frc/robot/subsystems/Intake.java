@@ -6,7 +6,6 @@ import frc.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 
-
 public class Intake extends Subsystem {
     // Moter
     public WPI_TalonSRX intakeMoter = new WPI_TalonSRX(RobotMap.intakeMoter);
@@ -16,13 +15,11 @@ public class Intake extends Subsystem {
 
     // States
     public enum moterState {
-        ON,
-        OFF
+        ON, OFF
     }
 
     public enum positionState {
-        UP,
-        DOWN
+        UP, DOWN
     }
 
     // State variables
@@ -34,12 +31,26 @@ public class Intake extends Subsystem {
     }
 
     public Intake() {
-        posSol = new Solenoid(RobotMap.PCM, 0);		
+        posSol = new Solenoid(RobotMap.PCM, 0);
+
+        // Method 1
+        intakeMoter.configPeakCurrentLimit(10); // Set max amps to 10
+        intakeMoter.configPeakCurrentDuration(500); // Enable after 500 miliseconds
+        intakeMoter.enableCurrentLimit(true); // Enable
     }
 
     public void on() {
         intakeMoter.set(Constants.intakeSpeed);
         mstate = moterState.ON;
+        currentLimit(); // Run the currentLimit function
+    }
+
+    public void currentLimit() {
+        // Method 2
+        if (intakeMoter.getOutputCurrent() > 10.0) { // If amps is creater than 10
+            intakeMoter.set(0); // Stop the moter
+            mstate = moterState.OFF; // Set the state to off
+        }
     }
 
     public void off() {

@@ -21,6 +21,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
+import frc.robot.subsystems.Fork;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -36,6 +37,7 @@ public class Robot extends TimedRobot {
   public static RobotPosEstimator estimator;
   public static CameraHelper reflectiveTapeCamera;
   public static Elevator elevator;
+  public static Fork fork;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -51,7 +53,7 @@ public class Robot extends TimedRobot {
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
     elevator = new Elevator();
     oi = new OI();
-    
+    fork = new Fork();
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
     gyro.zeroYaw();
