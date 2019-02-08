@@ -15,7 +15,6 @@ public class Climber extends Subsystem {
     private static final int deviceID = 1;
     private CANPIDController m_pidController;
     private CANEncoder m_encoder;
-    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
     private double startingPosition;
 
     @Override
@@ -29,27 +28,18 @@ public class Climber extends Subsystem {
         m_encoder = m_motor.getEncoder();
         startingPosition = m_encoder.getPosition();
 
-        // PID coefficients
-        kP = 0.1;
-        kI = 1e-4;
-        kD = 1;
-        kIz = 0;
-        kFF = 0;
-        kMaxOutput = 1;
-        kMinOutput = -1;
-
         // set PID coefficients
-        m_pidController.setP(kP);
-        m_pidController.setI(kI);
-        m_pidController.setD(kD);
-        m_pidController.setIZone(kIz);
-        m_pidController.setFF(kFF);
-        m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+        m_pidController.setP(Constants.kPClimber);
+        m_pidController.setI(Constants.kIClimber);
+        m_pidController.setD(Constants.kDClimber);
+        m_pidController.setFF(Constants.kFClimber);
 
+        m_pidController.setIZone(Constants.kIZoneClimber);
+        m_pidController.setOutputRange(Constants.kClimberMinOutput, Constants.kClimberMaxOutput);
     }
 
     public void deploy() {
-        m_pidController.setReference(startingPosition + (Constants.climberLength * Constants.climberPPI),
+        m_pidController.setReference(startingPosition + (Constants.kClimberLength * Constants.kClimberPPI),
                 ControlType.kPosition);
     }
 
@@ -58,10 +48,10 @@ public class Climber extends Subsystem {
     }
 
     public double getLength() {
-        return (m_encoder.getPosition() - startingPosition) / Constants.climberPPI;
+        return (m_encoder.getPosition() - startingPosition) / Constants.kClimberPPI;
     }
 
     public double getStartingLength() {
-        return startingPosition / Constants.climberPPI;
+        return startingPosition / Constants.kClimberPPI;
     }
 }

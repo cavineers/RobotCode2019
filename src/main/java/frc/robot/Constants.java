@@ -45,7 +45,7 @@ public class Constants {
     public static final int kTimeoutMs = 10;
     public static final int kPIDLoopIdx = 0;
     
-    //PID stuff
+    //Drive PID stuff
     public static final double kPVelocity = 2;//1.8; //4
     public static final double kIVelocity = 0.0;//0.0; //0
     public static final double kDVelocity = 0.15;//0.15; //10
@@ -100,9 +100,20 @@ public class Constants {
     public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
 
     // Intake
-    public static final double intakeSpeed = 1;
+    public static final double kIntakeSpeed = 1;
 
     // Climber
-    public static final double climberPPI = 1; // Pulses per inch
-    public static final double climberLength = 10.0;
+    public static final double kClimberPPI = 1; // Pulses per inch
+    public static final double kClimberLength = 10.0; // inches
+
+    // Climber PID //TODO: TUNE ONCE WE HAVE A CLIMBER
+    public static final double kPClimber = 0; 
+    public static final double kIClimber = 0;
+    public static final double kDClimber = 0;
+    public static final double kFClimber = 0;
+    public static final double kIZoneClimber = 0;
+
+    public static final double kClimberMaxOutput = 1;
+    public static final double kClimberMinOutput = -1;
+
 }

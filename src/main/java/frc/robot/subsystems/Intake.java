@@ -40,7 +40,7 @@ public class Intake extends Subsystem {
     }
 
     public void on() {
-        intakeMoter.set(Constants.intakeSpeed);
+        intakeMoter.set(Constants.kIntakeSpeed);
         mstate = moterState.ON;
         currentLimit(); // Run the currentLimit function
     }
