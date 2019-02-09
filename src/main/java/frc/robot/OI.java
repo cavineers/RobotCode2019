@@ -18,6 +18,7 @@ import frc.robot.commands.LowerClimber;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator;
 import frc.robot.commands.ElevatorToPos;
+import frc.robot.commands.ToggleGrabber;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /**
@@ -46,6 +47,7 @@ public class OI {
         a_button.whenPressed(new TargetVisionTape());
         b_button.whenPressed(new ElevatorToPos(10));
         x_button.whenPressed(new LowerClimber());
+        y_button.whenPressed(new ToggleGrabber());
     }
 
     public Joystick getJoystick() {
