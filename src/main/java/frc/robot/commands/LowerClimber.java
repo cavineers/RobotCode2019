@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.Climber.Position;
 import frc.robot.Robot;
 
-
 public class LowerClimber extends Command {
     @Override
     public void initialize() {
