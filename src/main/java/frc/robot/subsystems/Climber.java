@@ -16,6 +16,11 @@ public class Climber extends Subsystem {
     private CANPIDController m_pidController;
     private CANEncoder m_encoder;
     private double startingPosition;
+    public Position position;
+
+    public enum Position {
+        DEPLOYED, RETRACTED
+    }
 
     @Override
     public void initDefaultCommand() {
@@ -41,13 +46,15 @@ public class Climber extends Subsystem {
     public void deploy() {
         m_pidController.setReference(startingPosition + (Constants.kClimberLength * Constants.kClimberPPI),
                 ControlType.kPosition);
+                this.position = Position.DEPLOYED;
     }
 
     public void retract() {
         m_pidController.setReference(startingPosition, ControlType.kPosition);
+        this.position = Position.RETRACTED;
     }
 
-    public double getLength() {
+    public double getPosition() {
         return (m_encoder.getPosition() - startingPosition) / Constants.kClimberPPI;
     }
 

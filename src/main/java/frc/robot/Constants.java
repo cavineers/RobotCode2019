@@ -115,7 +115,7 @@ public class Constants {
     public static final double kClimberLength = 10.0; // inches
 
     // Climber PID //TODO: TUNE ONCE WE HAVE A CLIMBER
-    public static final double kPClimber = 0; 
+    public static final double kPClimber = 2; 
     public static final double kIClimber = 0;
     public static final double kDClimber = 0;
     public static final double kFClimber = 0;

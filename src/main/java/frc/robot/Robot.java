@@ -27,6 +27,7 @@ import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Notifier;
+import frc.robot.subsystems.Climber;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
   public static CameraHelper reflectiveTapeCamera;
   public static Elevator elevator;
   public static HatchIntake hatchIntake;
+  public static Climber climber;
 
   // Camera clock sync checking thread
   Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
@@ -61,6 +63,7 @@ public class Robot extends TimedRobot {
     gyro = new AHRS(SPI.Port.kMXP);
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
     elevator = new Elevator();
+    climber = new Climber();
     oi = new OI();
     // hatchIntake = new HatchIntake();
 
