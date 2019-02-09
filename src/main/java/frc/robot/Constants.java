@@ -69,7 +69,11 @@ public class Constants {
                                                                 // rebased by a camera update with the lvl 3 scale factor
     public static final double kCameraToMapPercentLvl3 = 0.2; // the portion of the camera update rebased when the updates are within lvl 3 tolerance
                                                                 // of current map estimates
-
+    // Loop times
+    public static final double kClockSyncLoopTime = 1; // check for clock sync once per second
+    public static final double kOdometryLoopTime = 0.05; // update odometry 20 times per second
+    public static final double kCameraUpdatePeriod = 0.05;
+    public static final double kTargetingUpdatePeriod = 0.01;
 
 
     //Auto Targeting stuff

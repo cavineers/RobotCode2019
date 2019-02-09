@@ -9,10 +9,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants;
+import frc.robot.RobotMap;
 
 public class Climber extends Subsystem {
     private CANSparkMax m_motor;
-    private static final int deviceID = 1;
     private CANPIDController m_pidController;
     private CANEncoder m_encoder;
     private double startingPosition;
@@ -23,7 +23,7 @@ public class Climber extends Subsystem {
     }
 
     public Climber() {
-        m_motor = new CANSparkMax(deviceID, MotorType.kBrushless); // Create the device
+        m_motor = new CANSparkMax(RobotMap.climberMotor, MotorType.kBrushless); // Create the device
         m_pidController = m_motor.getPIDController();
         m_encoder = m_motor.getEncoder();
         startingPosition = m_encoder.getPosition();

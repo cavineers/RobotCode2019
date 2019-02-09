@@ -21,7 +21,12 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
-import frc.robot.subsystems.Fork;
+import frc.robot.subsystems.HatchIntake;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
+import edu.wpi.cscore.VideoMode.PixelFormat;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Notifier;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,13 +36,17 @@ import frc.robot.subsystems.Fork;
  * project.
  */
 public class Robot extends TimedRobot {
+  // Subsystems
   public static DriveTrain drivetrain;
   public static OI oi;
   public static AHRS gyro;
   public static RobotPosEstimator estimator;
   public static CameraHelper reflectiveTapeCamera;
   public static Elevator elevator;
-  public static Fork fork;
+  public static HatchIntake hatchIntake;
+
+  // Camera clock sync checking thread
+  Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -53,12 +62,15 @@ public class Robot extends TimedRobot {
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
     elevator = new Elevator();
     oi = new OI();
-    fork = new Fork();
+    // hatchIntake = new HatchIntake();
 
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
+
     estimator.start(); 
+
+    clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
   }
 
   /**
@@ -71,10 +83,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-            //ensure that the raspberry pi successfully synchronized clocks with the rio
-            if (reflectiveTapeCamera.shouldSyncClocks()) {
-                reflectiveTapeCamera.startClockSync();
-            }
+      TargetUpdate update = this.reflectiveTapeCamera.getUpdate();
+      if (update != null) {
+        System.out.println(update);
+      }
+      
   }
 
   /**
@@ -128,6 +141,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    // System.out.println(estimator.getPos().position);
     Scheduler.getInstance().run();
   }
 
@@ -155,4 +169,13 @@ public class Robot extends TimedRobot {
     return Timer.getFPGATimestamp();
   }
 
+  /**
+   * Resyncs clocks if needed
+   */
+  protected void checkForClockSync() {
+    if (reflectiveTapeCamera.shouldSyncClocks()) {
+        System.out.println("should sync clocks");
+        reflectiveTapeCamera.startClockSync();
+    }
+  }
 }

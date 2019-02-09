@@ -26,6 +26,8 @@ public class RobotMap {
 
   public static int intakeMoter = 6;
 
+  public static int climberMotor = 7;
+
   //pneumatics
   public static int PCM = 4;
 }

@@ -85,26 +85,20 @@ public class CameraHelper {
             return;
         }
         if (this.shouldSyncClocks()) {
+            isRunningClockSync = true;
             netTable.getEntry("RioWantsClockSync").setBoolean(true);
             System.out.println("Attempting to sync clocks");
             // the camera is connected and ready for a clock sync, and has not yet synchronzied
             // run clock synchronization in a seperate thread so that the main thread is not stopped for a long time while updating
-            Thread clockSync = new Thread() {
-                public void run() {
-                    while (shouldSyncClocks()) {
-                        // while the raspberry pi has not grabbed an update, update the riotime update as fast as possible
-                        netTable.getEntry("RioTime").setNumber(Robot.getCurrentTime());
-                        NetworkTableInstance.getDefault().flush();
-                    }
-                    netTable.getEntry("RioWantsClockSync").setBoolean(false);
-                    netTable.getEntry("PiWantsClockSync").setBoolean(false);
-                    netTable.getEntry("RioTime").setNumber(-1);
-                    isRunningClockSync = false;
-                }  
-            };
-
-            clockSync.start();
-            isRunningClockSync = true;
+            while (shouldSyncClocks()) {
+                // while the raspberry pi has not grabbed an update, update the riotime update as fast as possible
+                netTable.getEntry("RioTime").setNumber(Robot.getCurrentTime());
+                NetworkTableInstance.getDefault().flush();
+            }
+            netTable.getEntry("RioWantsClockSync").setBoolean(false);
+            netTable.getEntry("PiWantsClockSync").setBoolean(false);
+            netTable.getEntry("RioTime").setNumber(-1);
+            isRunningClockSync = false;
             this.lastUpdateNum = -1;
         }
     }
@@ -118,7 +112,7 @@ public class CameraHelper {
         String updateString = netTable.getEntry("TargetUpdates").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
         if (updateString.isEmpty()) {
-            System.out.println("EMPTY!!");
+            // System.out.println("EMPTY!!");
             return null; // no update available
         }
         // split the update string into its respective individual values
@@ -146,7 +140,7 @@ public class CameraHelper {
         double timestamp = Double.parseDouble(updateArr[10]);
 
         if (this.lastUpdateNum >= imageNum) {
-            System.out.println("LAST IMG NUM!!");
+            // System.out.println("LAST IMG NUM!!");
             return null; // there is no new update available
         }
 

@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import edu.wpi.first.wpilibj.Notifier;
 import frc.lib.MathHelper;
 import frc.lib.RobotPos;
 import frc.lib.RobotPosMap;
@@ -13,21 +14,19 @@ public class RobotPosEstimator {
 
     ReentrantLock mutex = new ReentrantLock();
     
-    Thread thread;
-
     RobotPosMap map = new RobotPosMap(Constants.kMaxListSize, new RobotPosUpdate(0,0, 0, 0, UpdateType.BASE));
 
     public double rWheelTravel = 0;
     public double lWheelTravel = 0;
     public double heading = 0;
     
-    private volatile boolean running = false;
+    Notifier posUpdater = new Notifier(this::recalcPositionEstimate);
 
     public RobotPosEstimator(double x, double y, double h, double rWT, double lWT) {
         map.clearAndSetPos(new RobotPos(x, y, h, 0, 0));
         rWheelTravel = Robot.drivetrain.getRightPos();
         lWheelTravel = Robot.drivetrain.getLeftPos();
-        heading = this.getHeading();
+        heading = Robot.getAngleRad();
     }
 
     public void updatePos(double newRTravel, double newLTravel, double newHeading) {
@@ -51,7 +50,7 @@ public class RobotPosEstimator {
             dx = Math.cos(newHeading) * mag;
         }
 
-        map.addWheelUpdate(dx, dy, this.getHeading(), Robot.getCurrentTime());
+        map.addWheelUpdate(dx, dy, Robot.getAngleRad(), Robot.getCurrentTime());
         heading = newHeading;
         rWheelTravel = newRTravel;
         lWheelTravel = newLTravel;
@@ -86,14 +85,6 @@ public class RobotPosEstimator {
      */
     public double getLeftWheelTravel() {
         return lWheelTravel; // in inches
-    }
-
-    /**
-     * Get the heading of the robot (from the gyroscope at the time of the last
-     * update)
-     */
-    public double getHeading() {
-        return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle())); // in radians
     }
 
     /**
@@ -136,31 +127,30 @@ public class RobotPosEstimator {
     }
 
     /**
-     * Start a thread to update the position map based on encoder readings
+     * Recalculates the current position based on new info from the wheel encoders
+     */
+    public void recalcPositionEstimate() {
+        mutex.lock();
+        // when locked, continously update position
+        try {
+            this.updatePos(Robot.drivetrain.getRightPos(), Robot.drivetrain.getLeftPos(), Robot.getAngleRad());
+        } finally {
+            mutex.unlock();
+        }
+    }
+
+    /**
+     * Starts updating the position of the robot in an independent thread
      */
     public void start() {
-        this.running = true;
-        thread = new Thread(() -> {
-            while (this.running) {
-
-                mutex.lock();
-                // when locked, continously update position
-                try {
-                    this.updatePos(Robot.drivetrain.getRightPos(), Robot.drivetrain.getLeftPos(), getHeading());
-                } finally {
-                    mutex.unlock();
-                }
-
-            }
-        });
-        thread.start();
+        posUpdater.startPeriodic(Constants.kOdometryLoopTime);
     }
     
     /**
      * Stop the thread that updates the robot's position
      */
     public void end() {
-        this.running = false;
+        posUpdater.close();
     }
 
     /**

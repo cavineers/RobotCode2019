@@ -25,15 +25,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  public enum SENSOR {
-        ENCODER_RIGHT_WHEELS, ENCODER_LEFT_WHEELS, ENCODER_ELEVATOR
-    };
-
-    public enum TRIG_MODE {
-        ELEVATOR, INTAKE, CLIMBER
-    }
-
-    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
 
     public static Joystick joy = new Joystick(0);
     public static JoystickButton a_button = new JoystickButton(joy, 1);

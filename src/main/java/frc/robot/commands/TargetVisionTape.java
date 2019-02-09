@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,161 +22,147 @@ public class TargetVisionTape extends Command {
 
     Path path;
     boolean forceFinish = false;
-    boolean didFinishInit = false;
-    boolean didStartPathPursuit = false;
-    Thread generatePath;
-    Thread pursuePath;
+    boolean didGeneratePath = false;
+
+    Notifier generatePath;  // runs 
 
     public TargetVisionTape() {
         requires(Robot.drivetrain);
         this.setTimeout(10); // set the command timeout to 10 seconds
+        generatePath = new Notifier(this::generatePathFromImgData);
     }
 
     @Override
     protected void initialize() {
-        generatePath = new Thread() {
-            public void run() {
-                TargetUpdate targetUpdate = null; // data received from the camera
+        generatePath.startPeriodic(Constants.kCameraUpdatePeriod);
+    }
 
-                while (targetUpdate == null && !forceFinish && !isTimedOut()) {
-                    System.out.println("update: " + targetUpdate);
-                    SmartDashboard.putString("target status", "getting target");
-                    targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+    protected void generatePathFromImgData() {
+        //do not regenerate a path if we already have one
+        if (didGeneratePath) {
+            return;
+        }
 
-                if (targetUpdate == null || forceFinish || isTimedOut()) {
-                    SmartDashboard.putString("target status", "null 1: " + targetUpdate + ", " + forceFinish);
-                    return; //catch the case where the command is interupted during init
-                }
-                System.out.println("Found Target");
-                SmartDashboard.putString("target status", "found target");
+        //attempt to obtain the image data from the camera
+        TargetUpdate targetUpdate = null; // data received from the camera
+        SmartDashboard.putString("target status", "getting target");
+        targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
 
-                RobotPos robotFieldPos = Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()); // the position of the robot when the picture was taken (field coords)
-                
-                System.out.println("Pos at time: " + robotFieldPos);
-                SmartDashboard.putString("Pos at Time", robotFieldPos.toString());
+        //if we didn't get anything, return
+        if (targetUpdate == null || forceFinish || isTimedOut()) {
+            SmartDashboard.putString("target status", "null 1: " + targetUpdate + ", " + forceFinish);
+            return; //catch the case where the command is interupted during init
+        }
+        
+        //otherwise, generate a path with that info
+        this.path = this.createPath(targetUpdate);
+        if (path != null) {
+            System.out.println(path);
+            didGeneratePath = true;
+        }
+    }
 
-                //convert the target heading vector to the robot's coordinate system
-                Vector3D targetHeadingVect = targetUpdate.getHeadingVector();
-                targetHeadingVect.rotate(Constants.kCameraToRobotMatrix);
+    protected Path createPath(TargetUpdate targetUpdate) {
+        System.out.println("Found Target");
+        SmartDashboard.putString("target status", "found target");
 
-                System.out.println("Target Heading Vect: " + targetHeadingVect);
-                SmartDashboard.putString("Target Heading Vect", targetHeadingVect.toString());
+        RobotPos robotFieldPos = Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()); // the position of the robot when the picture was taken (field coords)
+        
+        System.out.println("Pos at time: " + robotFieldPos);
+        SmartDashboard.putString("Pos at Time", robotFieldPos.toString());
 
-                // compute the target heading
-                double targetHeading = robotFieldPos.getHeading() + Math.atan(targetHeadingVect.getDx() / targetHeadingVect.getDy());
+        //convert the target heading vector to the robot's coordinate system
+        Vector3D targetHeadingVect = targetUpdate.getHeadingVector();
+        targetHeadingVect.rotate(Constants.kCameraToRobotMatrix);
 
-                System.out.println("Target Heading: " + targetHeading);
-                SmartDashboard.putString("Target Heading", targetHeadingVect.toString());
+        System.out.println("Target Heading Vect: " + targetHeadingVect);
+        SmartDashboard.putString("Target Heading Vect", targetHeadingVect.toString());
 
-                // the target in the robot's reference frame
-                Vector3D targetRobotFrameRobotOrigin = Vector3D.add(Constants.kCameraRelativeToRobotCenter, targetUpdate.getCameraVector().rotate(Constants.kCameraToRobotMatrix)); 
+        // compute the target heading
+        double targetHeading = robotFieldPos.getHeading() + Math.atan(targetHeadingVect.getDx() / targetHeadingVect.getDy());
 
-                //the target in a coordinate system alligned with the field, but centered at the robot
-                Vector3D targetFieldFrameRobotOrigin = targetRobotFrameRobotOrigin.rotateZAxis(-robotFieldPos.getHeading());
+        System.out.println("Target Heading: " + targetHeading);
+        SmartDashboard.putString("Target Heading", targetHeadingVect.toString());
 
-                System.out.println("Robot Oriented Robot Origin: " + targetRobotFrameRobotOrigin);
-                SmartDashboard.putString("Robot Oriented Robot Origin", targetRobotFrameRobotOrigin.toString());
+        // the target in the robot's reference frame
+        Vector3D targetRobotFrameRobotOrigin = Vector3D.add(Constants.kCameraRelativeToRobotCenter, targetUpdate.getCameraVector().rotate(Constants.kCameraToRobotMatrix)); 
 
-                System.out.println("Field Oriented Robot Origin: " + targetFieldFrameRobotOrigin);
-                SmartDashboard.putString("Field Oriented Robot Origin", targetFieldFrameRobotOrigin.toString());
+        //the target in a coordinate system alligned with the field, but centered at the robot
+        Vector3D targetFieldFrameRobotOrigin = targetRobotFrameRobotOrigin.rotateZAxis(-robotFieldPos.getHeading());
 
-                // rotate the vector such that its x component is pointing forward to match path pursuit's coordinate system
-                // targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
-                // targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateYAxis(Math.PI);
+        System.out.println("Robot Oriented Robot Origin: " + targetRobotFrameRobotOrigin);
+        SmartDashboard.putString("Robot Oriented Robot Origin", targetRobotFrameRobotOrigin.toString());
 
-                targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
-                targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateXAxis(Math.PI);
+        System.out.println("Field Oriented Robot Origin: " + targetFieldFrameRobotOrigin);
+        SmartDashboard.putString("Field Oriented Robot Origin", targetFieldFrameRobotOrigin.toString());
 
-                //the target's location relative to the field in 2 dimentions
-                Vector2D targetFieldLocation = new Vector2D(targetFieldFrameRobotOrigin.getDx() + robotFieldPos.getX(), targetFieldFrameRobotOrigin.getDy() + robotFieldPos.getY());
+        // rotate the vector such that its x component is pointing forward to match path pursuit's coordinate system
+        // targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
+        // targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateYAxis(Math.PI);
 
-                System.out.println("Target Field Location: " + targetFieldLocation.toString());
+        targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
+        targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateXAxis(Math.PI);
 
-                RobotPos latestFieldPos = Robot.estimator.getPos();
+        //the target's location relative to the field in 2 dimentions
+        Vector2D targetFieldLocation = new Vector2D(targetFieldFrameRobotOrigin.getDx() + robotFieldPos.getX(), targetFieldFrameRobotOrigin.getDy() + robotFieldPos.getY());
 
-                SmartDashboard.putNumber("target heading", targetHeading);
-                SmartDashboard.putNumber("robot heading", latestFieldPos.heading);
-                SmartDashboard.putString("start point", latestFieldPos.position.toString());
-                SmartDashboard.putString("end point", targetFieldLocation.toString());
+        System.out.println("Target Field Location: " + targetFieldLocation.toString());
 
-                DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), targetFieldLocation.getPoint(), targetHeading);
-                
-                if (!dubinsPath.isValid()) {
-                    System.out.println("INVALID PATH");
-                    forceFinish = true;
-                }
-                path = dubinsPath.getPath();
-                System.out.println(path);
-                didFinishInit = true;
-                System.out.println("planned path");
-                SmartDashboard.putString("target status", "planned path");
-            }
-        };
-        generatePath.start();
+        RobotPos latestFieldPos = Robot.estimator.getPos();
+
+        SmartDashboard.putNumber("target heading", targetHeading);
+        SmartDashboard.putNumber("robot heading", latestFieldPos.heading);
+        SmartDashboard.putString("start point", latestFieldPos.position.toString());
+        SmartDashboard.putString("end point", targetFieldLocation.toString());
+
+        DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), targetFieldLocation.getPoint(), targetHeading);
+        
+        if (!dubinsPath.isValid()) {
+            System.out.println("INVALID PATH");
+            forceFinish = true;
+        }
+        System.out.println("planned path");
+        SmartDashboard.putString("target status", "planned path");
+        return dubinsPath.getPath();
     }
   
     @Override
     protected void execute() {
-        int loopNum = 0;
-        loopNum++;
-        if (!didFinishInit) {
-            SmartDashboard.putString("exec status", "no finish init " + loopNum);
+        if (!didGeneratePath) {
+            SmartDashboard.putString("exec status", "no finish path plan");
             return;
         }
-        // if (didStartPathPursuit) {
-        //     SmartDashboard.putString("exec status", "started path pursuit " + loopNum);
-        //     return;
-        // }
-        SmartDashboard.putString("exec status", "running " + loopNum);
-        // pursuePath = new Thread() {
-        //     public void run() {
-        //         while (!isFinished()) {
-                    RobotPos latestPos = Robot.estimator.getPos();
-                    latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
-                    System.out.println(latestPos.getX() + ", " + latestPos.getY());
-                    
-                    RobotCmd cmd = path.update(latestPos);
-                    // System.out.println(latestPos.getX() + ", " + latestPos.getY());
-                    
-                    Robot.drivetrain.setLeftVel(cmd.getLeftVel());
-                    Robot.drivetrain.setRightVel(cmd.getRightVel());
+        generatePath.stop();
 
-        //             try {
-        //                 Thread.sleep(10);
-        //             } catch (InterruptedException e) {
-        //                 e.printStackTrace();
-        //             }
-        //         }
-        //     }
-        // };
-        // pursuePath.start();
-        // didStartPathPursuit = true;
+        RobotPos latestPos = Robot.estimator.getPos();
+        latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
+        System.out.println(latestPos.getX() + ", " + latestPos.getY());
+        RobotCmd cmd = path.update(latestPos);
+        Robot.drivetrain.setLeftVel(cmd.getLeftVel());
+        Robot.drivetrain.setRightVel(cmd.getRightVel());
+
     }
   
     @Override
     protected boolean isFinished() {
-        if ((path != null && path.isFinished()) || forceFinish || this.isTimedOut()) {
-            System.out.println("ENDED");
-            System.out.println(path);
-            System.out.println(path.isFinished());
-            System.out.println(forceFinish);
-            System.out.println(this.isTimedOut());
-        }
+        // if ((path != null && path.isFinished()) || forceFinish || this.isTimedOut()) {
+        //     System.out.println("ENDED");
+        //     System.out.println(path);
+        //     System.out.println(path.isFinished());
+        //     System.out.println(forceFinish);
+        //     System.out.println(this.isTimedOut());
+        // }
         return (path != null && path.isFinished()) || forceFinish || this.isTimedOut();
     }
   
     @Override
     protected void end() {
         SmartDashboard.putString("exec status", "END ");
+        generatePath.close();
     }
   
     @Override
     protected void interrupted() {
+        generatePath.close();
     }
 }

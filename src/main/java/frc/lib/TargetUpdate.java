@@ -74,6 +74,6 @@ public class TargetUpdate {
 
     @Override
     public String toString() {
-        return headingX + "," + headingY + "," + headingZ + targX + "," + targY + "," + targZ + "," + camX + "," + camY + "," + camZ + "," + updateNum + "," + timestamp;
+        return headingX + "," + headingY + "," + headingZ + "," + targX + "," + targY + "," + targZ + "," + camX + "," + camY + "," + camZ + "," + updateNum + "," + timestamp;
     }
 }
