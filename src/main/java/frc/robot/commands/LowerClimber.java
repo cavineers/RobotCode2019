@@ -20,6 +20,7 @@ public class LowerClimber extends Command {
     }
 
     protected boolean isFinished() {
-        return Robot.climber.position == Position.DEPLOYED;
+        return false;
+        // return Robot.climber.position == Position.DEPLOYED;
     }
 }
