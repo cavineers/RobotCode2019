@@ -14,6 +14,11 @@ public class LowerClimber extends Command {
         requires(Robot.climber);
     }
 
+    @Override
+    public void execute() {
+        System.out.println(Robot.climber.getPosition());
+    }
+
     protected boolean isFinished() {
         return Robot.climber.position == Position.DEPLOYED;
     }

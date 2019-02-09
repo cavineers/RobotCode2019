@@ -54,7 +54,7 @@ public class Climber extends Subsystem {
         this.position = Position.RETRACTED;
     }
 
-    public double getLength() {
+    public double getPosition() {
         return (m_encoder.getPosition() - startingPosition) / Constants.kClimberPPI;
     }
 
