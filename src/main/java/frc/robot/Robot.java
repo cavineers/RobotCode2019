@@ -19,6 +19,7 @@ import frc.lib.Vector3D;
 import frc.robot.commands.TargetVisionTape;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.subsystems.HatchIntake;
@@ -46,6 +47,7 @@ public class Robot extends TimedRobot {
   public static Elevator elevator;
   public static HatchIntake hatchIntake;
   public static Climber climber;
+  public static Intake intake;
 
   // Camera clock sync checking thread
   Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
     elevator = new Elevator();
     climber = new Climber();
+    intake = new Intake();
     oi = new OI();
     // hatchIntake = new HatchIntake();
 
