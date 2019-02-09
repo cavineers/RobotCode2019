@@ -46,10 +46,14 @@ public class Constants {
     public static final int kPIDLoopIdx = 0;
     
     //Drive PID stuff
-    public static final double kPVelocity = 2;//1.8; //4
-    public static final double kIVelocity = 0.0;//0.0; //0
-    public static final double kDVelocity = 0.15;//0.15; //10
-    public static final double kFVelocity = 1.8;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
+    // public static final double kPVelocity = 2;//1.8; //4
+    // public static final double kIVelocity = 0.0;//0.0; //0
+    // public static final double kDVelocity = 0.15;//0.15; //10
+    // public static final double kFVelocity = 1.5;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
+    public static final double kPVelocity = 4.5;//1.8; //4
+	public static final double kIVelocity = 0.0;//0.0; //0
+	public static final double kDVelocity = 25;//0.15; //10
+	public static final double kFVelocity = 0.9;//1.5//0.6
     public static final int kVelocityIZone = 0;
     public static final double kAVelocity = 0.0001; // TODO: Tune/Test
     public static final double kDriveVoltageRampRate = 0.0;
@@ -73,11 +77,11 @@ public class Constants {
     public static final double kClockSyncLoopTime = 1; // check for clock sync once per second
     public static final double kOdometryLoopTime = 0.05; // update odometry 20 times per second
     public static final double kCameraUpdatePeriod = 0.05;
-    public static final double kTargetingUpdatePeriod = 0.01;
+    public static final double kTargetingUpdatePeriod = 0.05;
 
 
     //Auto Targeting stuff
-    public static final double kMaxTargetSpeed = 120; //in inches per second; max speed of the robot when it is targeting vision tape
+    public static final double kMaxTargetSpeed = 50; //in inches per second; max speed of the robot when it is targeting vision tape
     public static final double kMaxTargetAccel = 120;
 
     // public static final double kMinLookAheadTargeting = 3.0; // inches
@@ -85,13 +89,13 @@ public class Constants {
     // public static final double kMaxLookAheadTargeting = 10.0; // inches
     // public static final double kMaxLookAheadSpeedTargeting = 120.0; // inches per second
 
-    public static final double kMinLookAheadTargeting = 12.0; // inches
-    public static final double kMinLookAheadSpeedTargeting = 9.0; // inches per second
-    public static final double kMaxLookAheadTargeting = 24.0; // inches
-    public static final double kMaxLookAheadSpeedTargeting = 120.0; // inches per second
+    public static final double kMinLookAheadTargeting = 3.0; // inches
+    public static final double kMinLookAheadSpeedTargeting = 3.0; // inches per second
+    public static final double kMaxLookAheadTargeting = 12.0; // inches
+    public static final double kMaxLookAheadSpeedTargeting = 50.0; // inches per second
 
 
-    public static final double kStraightLineDistance = 3; // distance in inches of the straight line path at the end of a target
+    public static final double kStraightLineDistance = 2; // distance in inches of the straight line path at the end of a target
     public static final double kMinRadiusTargeting = 5; // radius in inches of the minimum allowed radius for a dubin's path
 
     // Robot Vector constants

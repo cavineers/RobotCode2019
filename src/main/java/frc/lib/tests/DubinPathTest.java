@@ -34,11 +34,11 @@ public class DubinPathTest {
 
     // static double minRad = 30;
 
-    static Point startPoint = new Point(7.769695932137786, 0.7880266999897699);
-    static double startHeading = 0.11065387723960159;
+    static Point startPoint = new Point(-0.07724603391119139,0.0012551598892283694);
+    static double startHeading = -0.024783674629305422;
 
-    static Point endPoint = new Point(37.3861478587509, 8.268122838004851);
-    static double endHeading = 0.2127759890603868;//2.3573910734479835;
+    // static Point endPoint = new Point(37.3861478587509, 8.268122838004851);
+    // static double endHeading = 0.2127759890603868;//2.3573910734479835;
     static double straightLineAmount = 3;
 
     static RobotPosMap map = new RobotPosMap(200, new RobotPosUpdate(startPoint.getX(), startPoint.getY(), startHeading, 0, UpdateType.BASE));
@@ -48,7 +48,7 @@ public class DubinPathTest {
 
         double startVel = 0;
         
-        Path path = createPath(new TargetUpdate(-0.0459279882427,0.180026117449,0.982589037661,2.11689361403,-3.13849081634,18.4149891824,-2.54299922099,-0.0264904277322,18.6272822222,0,201.44901371002197));
+        Path path = createPath(new TargetUpdate(0.0155049936645,0.280920635208,0.959605748152,0.63722241386,-4.11429654723,23.8722069873,-0.425705147813,2.78770529811,24.0678879262,204,156.7497000694275));
 
         RobotPos currentPos = map.getLastestFieldRelativePosition();
         currentPos.setVelocities(startVel, startVel);
@@ -79,7 +79,6 @@ public class DubinPathTest {
             }
 
             double heading = currentPos.heading + ((cmd.getLeftVel() - cmd.getRightVel()) / Constants.kWheelBase) * path.manager.dt;
-            
             double dx = (lVel + rVel)/2 * path.manager.dt * Math.cos(heading);
             double dy = (lVel  + rVel)/2 * path.manager.dt * Math.sin(heading);
 
@@ -104,7 +103,7 @@ public class DubinPathTest {
     protected static Path createPath(TargetUpdate targetUpdate) {
         System.out.println("Found Target");
 
-        RobotPos robotFieldPos = new RobotPos(0,0,  0,  0,0); // the position of the robot when the picture was taken (field coords)
+        RobotPos robotFieldPos = new RobotPos(-0.07724603391119139,0.0012551598892283694,  -0.024783674629305422,  0,0); // the position of the robot when the picture was taken (field coords)
         
         System.out.println("Pos at time: " + robotFieldPos);
 

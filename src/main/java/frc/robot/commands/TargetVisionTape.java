@@ -21,20 +21,23 @@ import frc.robot.Constants;
 public class TargetVisionTape extends Command {
 
     Path path;
-    boolean forceFinish = false;
-    boolean didGeneratePath = false;
+    boolean forceFinish;
+    boolean didGeneratePath;
 
     Notifier generatePath;  // runs 
 
     public TargetVisionTape() {
         requires(Robot.drivetrain);
-        this.setTimeout(10); // set the command timeout to 10 seconds
-        generatePath = new Notifier(this::generatePathFromImgData);
     }
 
     @Override
     protected void initialize() {
+        this.setTimeout(10); // set the command timeout to 10 seconds
+        generatePath = new Notifier(this::generatePathFromImgData);
         generatePath.startPeriodic(Constants.kCameraUpdatePeriod);
+        path = null;
+        forceFinish = false;
+        didGeneratePath = false;
     }
 
     protected void generatePathFromImgData() {

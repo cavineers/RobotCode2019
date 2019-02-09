@@ -21,6 +21,7 @@ public class FollowPath extends Command {
     
     public FollowPath(PATH_TYPE pathType) {
         this.path = this.getPathFromType(pathType);
+        Robot.estimator.zero();
         requires(Robot.drivetrain);
     }
     

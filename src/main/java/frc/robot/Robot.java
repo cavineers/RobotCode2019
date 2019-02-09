@@ -83,10 +83,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-      TargetUpdate update = this.reflectiveTapeCamera.getUpdate();
-      if (update != null) {
-        System.out.println(update);
-      }
+    //   TargetUpdate update = reflectiveTapeCamera.getUpdate();
+    //   if (update != null) {
+    //     System.out.println("UPD:  " + update);
+    //     System.out.println("RPOS: " + estimator.getPositionAtTime(update.getTimestamp()));
+    //   }
       
   }
 

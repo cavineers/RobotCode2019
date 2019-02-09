@@ -44,7 +44,8 @@ public class OI {
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
         a_button.whenPressed(new TargetVisionTape());
-        b_button.whenPressed(new ElevatorToPos(10));
+        // b_button.whenPressed(new ElevatorToPos(10));
+        b_button.whenPressed(new FollowPath(PATH_TYPE.TEST_PATH_CURVE));
     }
 
     public Joystick getJoystick() {

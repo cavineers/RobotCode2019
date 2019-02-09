@@ -16,10 +16,11 @@ package frc.robot;
 public class RobotMap {
 
   //drive motors
-  public static int leftDriveMotor1  = 0;
-  public static int leftDriveMotor2  = 1;
-  public static int rightDriveMotor1 = 2;
-  public static int rightDriveMotor2 = 3;
+  public static int rightDriveMotor1 = 0;
+  public static int rightDriveMotor2 = 1;
+  public static int leftDriveMotor1  = 2;
+  public static int leftDriveMotor2  = 3;
+
 
   public static int elevatorMotor1 = 4;
   public static int elevatorMotor2 = 5;
