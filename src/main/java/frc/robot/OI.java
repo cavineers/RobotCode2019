@@ -14,9 +14,10 @@ import frc.robot.commands.FollowPath;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.FollowPath.PATH_TYPE;
-import frc.robot.commands.LowerClimber;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Climber.LegState;
+import frc.robot.commands.ChangeClimberState;
 import frc.robot.commands.ElevatorToPos;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -45,7 +46,7 @@ public class OI {
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
         a_button.whenPressed(new TargetVisionTape());
         b_button.whenPressed(new ElevatorToPos(10));
-        x_button.whenPressed(new LowerClimber());
+        x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
     }
 
     public Joystick getJoystick() {

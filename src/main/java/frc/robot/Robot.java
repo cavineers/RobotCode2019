@@ -21,13 +21,15 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
-import frc.robot.subsystems.HatchIntake;
+import frc.robot.subsystems.HatchScoop;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.CargoIntake;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,19 +41,19 @@ import frc.robot.subsystems.Climber;
 public class Robot extends TimedRobot {
   // Subsystems
   public static DriveTrain drivetrain;
-  public static OI oi;
-  public static AHRS gyro;
-  public static RobotPosEstimator estimator;
-  public static CameraHelper reflectiveTapeCamera;
   public static Elevator elevator;
-  public static HatchIntake hatchIntake;
   public static Climber climber;
+  public static HatchScoop hatchScoop;
+  public static CargoIntake cargoIntake;
+
+  public static AHRS gyro;
+  public static OI oi;
+  public static RobotPosEstimator estimator;
+
+  public static CameraHelper reflectiveTapeCamera;
 
   // Camera clock sync checking thread
   Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
-
-  Command m_autonomousCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -59,21 +61,28 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // initialize subsystems
     drivetrain = new DriveTrain();
-    gyro = new AHRS(SPI.Port.kMXP);
-    estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
     elevator = new Elevator();
     climber = new Climber();
+    hatchScoop = new HatchScoop();
+    cargoIntake = new CargoIntake();
+    gyro = new AHRS(SPI.Port.kMXP);
     oi = new OI();
-    // hatchIntake = new HatchIntake();
+    estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
 
+    //initialize sensors
     reflectiveTapeCamera = new CameraHelper("reflectiveTape");
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
 
+    //begin positional estimation
     estimator.start(); 
 
+    //start ensuring that vision coprocessor(s) have properly synchronized clocks
     clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
+
+
   }
 
   /**
@@ -86,12 +95,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    //   TargetUpdate update = reflectiveTapeCamera.getUpdate();
-    //   if (update != null) {
-    //     System.out.println("UPD:  " + update);
-    //     System.out.println("RPOS: " + estimator.getPositionAtTime(update.getTimestamp()));
-    //   }
-      
   }
 
   /**
@@ -134,10 +137,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    gyro.zeroYaw();
-    gyro.setAngleAdjustment(0);
-    estimator.zero();
-    //TODO: remove this
   }
 
   /**
@@ -171,6 +170,13 @@ public class Robot extends TimedRobot {
    */
   public static double getCurrentTime() {
     return Timer.getFPGATimestamp();
+  }
+
+  /**
+   * Returns true if the robot is currently in the end game period
+   */
+  public static boolean isEndGame() {
+      return DriverStation.getInstance().isOperatorControl() && DriverStation.getInstance().getMatchTime() < 30;
   }
 
   /**

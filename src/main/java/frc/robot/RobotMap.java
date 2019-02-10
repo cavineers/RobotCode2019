@@ -21,7 +21,7 @@ public class RobotMap {
   public static int leftDriveMotor1  = 2;
   public static int leftDriveMotor2  = 3;
 
-
+  //elevator motors
   public static int elevatorMotor1 = 4;
   public static int elevatorMotor2 = 5;
 
@@ -30,5 +30,6 @@ public class RobotMap {
   public static int climberMotor = 7;
 
   //pneumatics
-  public static int PCM = 4;
+  public static int PCM1 = 8;
+  public static int PCM2 = 9;
 }

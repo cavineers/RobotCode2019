@@ -13,52 +13,86 @@ import frc.robot.RobotMap;
 
 public class Climber extends Subsystem {
     private CANSparkMax m_motor;
-    private CANPIDController m_pidController;
-    private CANEncoder m_encoder;
-    private double startingPosition;
-    public Position position;
+    public LegState desiredState;
 
-    public enum Position {
-        DEPLOYED, RETRACTED
-    }
-
-    @Override
-    public void initDefaultCommand() {
-
+    public enum LegState {
+        DEPLOYED, RETRACTED, INVALID
     }
 
     public Climber() {
         m_motor = new CANSparkMax(RobotMap.climberMotor, MotorType.kBrushless); // Create the device
-        m_pidController = m_motor.getPIDController();
-        m_encoder = m_motor.getEncoder();
-        startingPosition = m_encoder.getPosition();
+        m_motor.getEncoder().setPosition(0);
 
         // set PID coefficients
-        m_pidController.setP(Constants.kPClimber);
-        m_pidController.setI(Constants.kIClimber);
-        m_pidController.setD(Constants.kDClimber);
-        m_pidController.setFF(Constants.kFClimber);
-
-        m_pidController.setIZone(Constants.kIZoneClimber);
-        m_pidController.setOutputRange(Constants.kClimberMinOutput, Constants.kClimberMaxOutput);
+        m_motor.getPIDController().setP(Constants.kPClimber);
+        m_motor.getPIDController().setI(Constants.kIClimber);
+        m_motor.getPIDController().setD(Constants.kDClimber);
+        m_motor.getPIDController().setFF(Constants.kFClimber);
+        m_motor.getPIDController().setIZone(Constants.kIZoneClimber);
+        m_motor.getPIDController().setOutputRange(Constants.kClimberMinOutput, Constants.kClimberMaxOutput);
     }
 
+    @Override
+    public void initDefaultCommand() {
+    }
+
+    /**
+     * Deploys the climber legs to the height needed for climbing
+     */
     public void deploy() {
-        m_pidController.setReference(startingPosition + (Constants.kClimberLength * Constants.kClimberPPI),
-                ControlType.kPosition);
-                this.position = Position.DEPLOYED;
+        this.setSetpoint(Constants.kClimberDeployPos * Constants.kClimberRPI);
+        this.desiredState = LegState.DEPLOYED;
     }
-
+    
+    /**
+     * Retracts the climber's legs to their upright position
+     */
     public void retract() {
-        m_pidController.setReference(startingPosition, ControlType.kPosition);
-        this.position = Position.RETRACTED;
+        this.setSetpoint(0);
+        this.desiredState = LegState.RETRACTED;
     }
 
+    private void setSetpoint(double setpointRotations) {
+        this.m_motor.getPIDController().setReference(0, ControlType.kPosition);
+    }
+
+    /**
+     * Sets the state of the legs (whether they are deployed or retracted)
+     */
+    public void setState(LegState state) {
+        if (state == LegState.DEPLOYED) {
+            this.deploy();
+        } else {
+            this.retract();
+        }
+    }
+
+    /**
+     * Gets the desired state of the legs based on the last movement command
+     */
+    public LegState getDesiredState() {
+        return this.desiredState;
+    }
+
+    /**
+     * Gets the actual state of the legs based on the motor encoder
+     */
+    public LegState getState() {
+        if (Math.abs(this.getPosition() - Constants.kClimberDeployPos) <= Constants.kClimberTolerance) {
+            return LegState.DEPLOYED;
+        } else if (Math.abs(this.getPosition() - 0) <= Constants.kClimberTolerance) {
+            return LegState.RETRACTED;
+        } else {
+            return LegState.INVALID;
+        }
+    }
+
+    /**
+     * Gets the position of the legs below the ground in inches
+     * 
+     * @return position of the legs below the ground in inches
+     */
     public double getPosition() {
-        return (m_encoder.getPosition() - startingPosition) / Constants.kClimberPPI;
-    }
-
-    public double getStartingLength() {
-        return startingPosition / Constants.kClimberPPI;
+        return m_motor.getEncoder().getPosition() / Constants.kClimberRPI;
     }
 }

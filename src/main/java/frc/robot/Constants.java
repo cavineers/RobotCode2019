@@ -110,9 +110,10 @@ public class Constants {
     // Intake
     public static final double kIntakeSpeed = 1;
 
-    // Climber
-    public static final double kClimberPPI = 1; // Pulses per inch
-    public static final double kClimberLength = 10.0; // inches
+    // Climber //TODO: TUNE
+    public static final double kClimberRPI = 1; // Rotations per inch
+    public static final double kClimberDeployPos = 10.0; // inches
+    public static final double kClimberTolerance = 1;
 
     // Climber PID //TODO: TUNE ONCE WE HAVE A CLIMBER
     public static final double kPClimber = 2; 

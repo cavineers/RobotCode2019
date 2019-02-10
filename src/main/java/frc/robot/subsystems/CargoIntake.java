@@ -6,7 +6,7 @@ import frc.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 
-public class Intake extends Subsystem {
+public class CargoIntake extends Subsystem {
     // Moter
     public WPI_TalonSRX intakeMoter = new WPI_TalonSRX(RobotMap.intakeMoter);
 
@@ -30,8 +30,8 @@ public class Intake extends Subsystem {
 
     }
 
-    public Intake() {
-        posSol = new Solenoid(RobotMap.PCM, 0);
+    public CargoIntake() {
+        posSol = new Solenoid(RobotMap.PCM1, 0);
 
         // Method 1
         intakeMoter.configPeakCurrentLimit(10); // Set max amps to 10
