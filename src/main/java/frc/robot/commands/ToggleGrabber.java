@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.Intake.moterState;
+import frc.robot.subsystems.CargoIntake.moterState;
 import frc.robot.Robot;
 
 public class ToggleGrabber extends Command {
@@ -9,20 +9,20 @@ public class ToggleGrabber extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.intake.mstate == moterState.OFF) {
-            Robot.intake.on();
+        if (Robot.cargoIntake.mstate == moterState.OFF) {
+            Robot.cargoIntake.on();
             toState = moterState.ON;
         } else {
-            Robot.intake.off();
+            Robot.cargoIntake.off();
             toState = moterState.OFF;
         }
     }
 
     public ToggleGrabber() {
-        requires(Robot.intake);
+        requires(Robot.cargoIntake);
     }
 
     protected boolean isFinished() {
-        return Robot.intake.mstate == toState;
+        return Robot.cargoIntake.mstate == toState;
     }
 }
