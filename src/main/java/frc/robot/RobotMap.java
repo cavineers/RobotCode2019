@@ -15,6 +15,8 @@ package frc.robot;
  */
 public class RobotMap {
 
+  // CAN IDs
+
   //drive motors
   public static int rightDriveMotor1 = 0; //talon (cim) (40A)
   public static int rightDriveMotor2 = 1; //talon (cim) (40A)
@@ -22,16 +24,16 @@ public class RobotMap {
   public static int leftDriveMotor2  = 3; //talon (cim) (40A)
 
   //elevator motors
-  public static int elevatorMotor = 4; //sparkmax (40A)
+  public static int elevatorMotor = 4; //sparkmax (neo) (40A)
 
   //cargo intake motor
   public static int intakeMoter = 5; //talon (775 pro) (30A)
   
   //climber winch motor
-  public static int climberMotor = 6; //sparkmax (40A)
+  public static int climberMotor = 6; //sparkmax (neo) (40A)
 
   // arm movement motor
-  public static int armMotor = 7; // sparkmax (40A)
+  public static int armMotor = 7; // sparkmax (neo) (40A)
 
   // grabber intake motor
   public static int grabber = 8; //talon (bag) (30A)
