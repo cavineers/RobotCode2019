@@ -17,7 +17,7 @@ public class HatchScoop extends Subsystem {
     }
 
     public HatchScoop() {
-        hatchSol = new DoubleSolenoid(RobotMap.PCM1, 0);
+        hatchSol = new DoubleSolenoid(RobotMap.PCM1, RobotMap.hatchScoop1, RobotMap.hatchScoop2);
     }
 
     public void toggleFork() {

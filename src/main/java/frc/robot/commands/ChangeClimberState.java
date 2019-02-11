@@ -13,7 +13,7 @@ public class ChangeClimberState extends Command {
     
     @Override
     public void initialize() {
-        Robot.climber.setState(desiredState);
+        Robot.climber.setLegState(desiredState);
     }
 
     @Override

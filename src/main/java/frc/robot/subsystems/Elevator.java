@@ -21,8 +21,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
  * The Elevator subsystem 
  */
 public class Elevator extends Subsystem {
-    //TODO: add two sparkmax
-	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor1);
+	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor);
     VelocityTrapezoid velTrapezoid = new VelocityTrapezoid(Constants.kElevatorMaxAcceleration, Constants.kElevatorMaxSpeed, Constants.kDefaultDt);
     DigitalInput limitSwitch;
 

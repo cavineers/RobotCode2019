@@ -4,13 +4,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 public class CargoIntake extends Subsystem {
     // Moter
     public WPI_TalonSRX intakeMoter = new WPI_TalonSRX(RobotMap.intakeMoter);
 
     // DoubleSolenoid
-    private Solenoid posSol;
+    private DoubleSolenoid posSol;
 
     // States
     public enum moterState {
@@ -30,19 +31,13 @@ public class CargoIntake extends Subsystem {
     }
 
     public CargoIntake() {
-        posSol = new Solenoid(RobotMap.PCM1, 0);
+        posSol = new DoubleSolenoid(RobotMap.PCM1, RobotMap.cargoIntake1, RobotMap.cargoIntake2);
 
         // Method 1
         intakeMoter.configPeakCurrentLimit(2, 10);
         intakeMoter.configPeakCurrentDuration(200, 10);
         intakeMoter.configContinuousCurrentLimit(1, 10);
         intakeMoter.enableCurrentLimit(true);
-    }
-
-    public void on() {
-        intakeMoter.set(Constants.kIntakeSpeed);
-        mstate = moterState.ON;
-        currentLimit(); // Run the currentLimit function
     }
 
     public void currentLimit() {
@@ -53,25 +48,48 @@ public class CargoIntake extends Subsystem {
         // }
     }
 
+    /**
+     * Turn on the intake motors
+     */
+    public void on() {
+        intakeMoter.set(Constants.kIntakeSpeed);
+        mstate = moterState.ON;
+        currentLimit(); // Run the currentLimit function
+    }
+
+    /**
+     * Turn off the intake motors
+     */
     public void off() {
         intakeMoter.set(0);
         mstate = moterState.OFF;
     }
 
-    public void up() {
-        posSol.set(true);
-    }
-
-    public void down() {
-        posSol.set(false);
-    }
-
+    /**
+     * Gets whether the intake motor is activated
+     */
     public moterState getMoterState() {
         return mstate;
     }
 
-    public positionState getPositionState() {
-        if (posSol.get() == true) {
+    /**
+     * Sets the position of the state to the desired state.
+     * 
+     * @param state the desired state of the cargo intake's arm
+     */
+    public void setPosition(positionState state) {
+        if (state == positionState.UP) {
+            posSol.set(Value.kForward);
+        } else {
+            posSol.set(Value.kReverse);
+        }
+    }
+    
+    /**
+     * Gets the position of the intake arm (whether it is up or down)
+     */
+    public positionState getPosition() {
+        if (posSol.get() == Value.kForward) {
             return positionState.UP;
         } else {
             return positionState.DOWN;

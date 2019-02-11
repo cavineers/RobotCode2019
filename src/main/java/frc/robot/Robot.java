@@ -9,14 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.lib.MathHelper;
-import frc.lib.RobotPos;
-import frc.lib.TargetUpdate;
-import frc.lib.Vector3D;
-import frc.robot.commands.TargetVisionTape;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj.SPI;
@@ -63,8 +57,14 @@ public class Robot extends TimedRobot {
     climber = new Climber();
     hatchScoop = new HatchScoop();
     cargoIntake = new CargoIntake();
+
+    //initialize gyro
     gyro = new AHRS(SPI.Port.kMXP);
+
+    //initialize operator interface / controls
     oi = new OI();
+
+    //start estimating position of the robot
     estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
 
     //initialize sensors
@@ -78,8 +78,7 @@ public class Robot extends TimedRobot {
     //start ensuring that vision coprocessor(s) have properly synchronized clocks
     clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
 
-
-  }
+    }
 
   /**
    * This function is called every robot packet, no matter the mode. Use

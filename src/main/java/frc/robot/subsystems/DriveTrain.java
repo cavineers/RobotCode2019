@@ -18,22 +18,16 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-
-
-/**
- * The DriveTrain subsystem incorporates the sensors and actuators attached to
- * the robots chassis. These include four drive motors, a left and right encoder
- * and a gyro.
- */
 public class DriveTrain extends Subsystem {
     public WPI_TalonSRX leftMotor1  = new WPI_TalonSRX(RobotMap.leftDriveMotor1);
     public WPI_TalonSRX leftMotor2  = new WPI_TalonSRX(RobotMap.leftDriveMotor2);
     
     public WPI_TalonSRX rightMotor1 = new WPI_TalonSRX(RobotMap.rightDriveMotor1);
     public WPI_TalonSRX rightMotor2 = new WPI_TalonSRX(RobotMap.rightDriveMotor2);
-    // private DoubleSolenoid sol;
     
     private DifferentialDrive drive = new DifferentialDrive(leftMotor1, rightMotor1);
+
+    private DoubleSolenoid shiftingSol;
     
     private boolean mIsBrakeMode;
 
@@ -48,7 +42,7 @@ public class DriveTrain extends Subsystem {
         this.configTalons();
         leftMotor2.follow(leftMotor1);
         rightMotor2.follow(rightMotor1);
-        // sol = new DoubleSolenoid(RobotMap.PCM, 0, 1);
+        shiftingSol = new DoubleSolenoid(RobotMap.PCM1, RobotMap.driveShifter1, RobotMap.driveShifter2);
         this.setBrakeMode(false);
         this.setDriveGear(DriveGear.LOW_GEAR); //shift into low gear
     }
@@ -68,9 +62,9 @@ public class DriveTrain extends Subsystem {
      */
     public void setDriveGear(DriveGear gear){
         if (gear == DriveGear.LOW_GEAR) {
-            // sol.set(DoubleSolenoid.Value.kReverse);
+            shiftingSol.set(DoubleSolenoid.Value.kReverse);
         } else if (gear == DriveGear.HIGH_GEAR) {
-            // sol.set(DoubleSolenoid.Value.kForward);
+            shiftingSol.set(DoubleSolenoid.Value.kForward);
         }
     }
     
@@ -80,12 +74,11 @@ public class DriveTrain extends Subsystem {
      * @return if the DriveTrain is in high or low gear
      */
     public DriveGear getDriveGear() {
-        // if (sol.get() == DoubleSolenoid.Value.kReverse) {
-        //     return DriveGear.LOW_GEAR;
-        // } else {
-        //     return DriveGear.HIGH_GEAR;
-        // }
-        return DriveGear.LOW_GEAR;
+        if (shiftingSol.get() == DoubleSolenoid.Value.kReverse) {
+            return DriveGear.LOW_GEAR;
+        } else {
+            return DriveGear.HIGH_GEAR;
+        }
     }
     
     /**
