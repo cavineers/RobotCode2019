@@ -16,6 +16,8 @@ public class Climber extends Subsystem {
     public LegState desiredState;
     public DoubleSolenoid armSol;
 
+    double positionOffset = 0;
+
     public enum LegState {
         DEPLOYED,  //legs are down
         RETRACTED,  //legs are up
@@ -32,7 +34,7 @@ public class Climber extends Subsystem {
         m_motor = new CANSparkMax(RobotMap.climberMotor, MotorType.kBrushless);
 
         //zero the motor's encoder
-        m_motor.getEncoder().setPosition(0);
+        m_motor.getEncoder().getPosition();
 
         // set PID coefficients
         m_motor.getPIDController().setP(Constants.kPClimber);
@@ -45,6 +47,8 @@ public class Climber extends Subsystem {
         // initialize the double solenoid in charge of controlling the climber arms
         armSol = new DoubleSolenoid(RobotMap.PCM2, RobotMap.climberArms1, RobotMap.climberArms2);
         this.retractArms();
+        this.setPosition(0);
+        this.retractLegs();
     }
 
     @Override
@@ -55,7 +59,7 @@ public class Climber extends Subsystem {
      * Deploys the climber legs to the height needed for climbing
      */
     public void deployLegs() {
-        this.setLegSetpoint(Constants.kClimberDeployPos * Constants.kClimberRPI);
+        this.setLegSetpoint((Constants.kClimberDeployPos + this.positionOffset) * Constants.kClimberRPI);
         this.desiredState = LegState.DEPLOYED;
     }
     
@@ -63,7 +67,7 @@ public class Climber extends Subsystem {
      * Retracts the climber's legs to their upright position
      */
     public void retractLegs() {
-        this.setLegSetpoint(0);
+        this.setLegSetpoint(this.positionOffset);
         this.desiredState = LegState.RETRACTED;
     }
 
@@ -111,7 +115,14 @@ public class Climber extends Subsystem {
      * @return position of the legs below the ground in inches
      */
     public double getLegPosition() {
-        return m_motor.getEncoder().getPosition() / Constants.kClimberRPI;
+        return (m_motor.getEncoder().getPosition() - this.positionOffset) / Constants.kClimberRPI;
+    }
+
+    /**
+     * Sets the current position of the climber legs
+     */
+    public void setPosition(double position) {
+        this.positionOffset = m_motor.getEncoder().getPosition() - position;
     }
 
     /**

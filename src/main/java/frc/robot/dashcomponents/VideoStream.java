@@ -62,9 +62,9 @@ public class VideoStream {
 
     public String getJson(boolean addComma) {
         if (addComma) {
-            return "{\"type\": \"VideoStream\", \"path\": \""+path+"\", \"x\": \""+loc_x+"\", \"y\": \""+loc_y+"\", \"z\": \""+loc_z+"\"}, \"width\": \""+width+"\", \"height\": \""+height+"\",";
+            return "{\"type\": \"VideoStream\", \"path\": \""+path+"\", \"x\": \""+loc_x+"\", \"y\": \""+loc_y+"\", \"z\": \""+loc_z+"\", \"width\": \""+width+"\", \"height\": \""+height+"\"},";
         } else  {
-            return "{\"type\": \"VideoStream\", \"path\": \""+path+"\", \"x\": \""+loc_x+"\", \"y\": \""+loc_y+"\", \"z\": \""+loc_z+"\"}, \"width\": \""+width+"\", \"height\": \""+height+"\"";
+            return "{\"type\": \"VideoStream\", \"path\": \""+path+"\", \"x\": \""+loc_x+"\", \"y\": \""+loc_y+"\", \"z\": \""+loc_z+"\", \"width\": \""+width+"\", \"height\": \""+height+"\"}";
         }
     }
 }
