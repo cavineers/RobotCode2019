@@ -51,6 +51,11 @@ public class Constants {
 
     public static final double kElevSensorLocation = 0;
 
+    public static final double kMaxMoveGrabber = 0;
+    public static final double kMinMoveGrabber = 0;
+
+
+
 
     
     //Talon stuff
