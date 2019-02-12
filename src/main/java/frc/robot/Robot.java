@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.subsystems.HatchScoop;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CargoIntake;
+import frc.robot.DankDash;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,6 +37,9 @@ public class Robot extends TimedRobot {
   public static Climber climber;
   public static HatchScoop hatchScoop;
   public static CargoIntake cargoIntake;
+  public static Grabber grabber;
+
+  public DankDash dankDash;
 
   public static AHRS gyro;
   public static OI oi;
@@ -61,6 +66,7 @@ public class Robot extends TimedRobot {
     climber = new Climber();
     hatchScoop = new HatchScoop();
     cargoIntake = new CargoIntake();
+    grabber = new Grabber();
 
     //initialize gyro
     gyro = new AHRS(SPI.Port.kMXP);
@@ -87,6 +93,11 @@ public class Robot extends TimedRobot {
 
     //start ensuring that vision coprocessor(s) have properly synchronized clocks
     clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
+
+    // Init and export profile to network tables
+    dankDash = new DankDash();
+    dankDash.export();
+
     }
 
   /**

@@ -125,4 +125,7 @@ public class Constants {
     public static final double kClimberMaxOutput = 1;
     public static final double kClimberMinOutput = -1;
 
+    // Grabber
+    public static final double kGrabberHomingSpeed = -0.1;
+
 }
