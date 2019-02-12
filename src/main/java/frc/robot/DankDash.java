@@ -5,6 +5,8 @@ import edu.wpi.first.networktables.*;
 
 // ===== Available Components =====
 //
+// Button
+// Checkbox
 // Container
 // Heartbeat
 // Image
@@ -15,14 +17,13 @@ import edu.wpi.first.networktables.*;
 
 public class DankDash {
     private VideoStream fisheye;
-    private Heartbeat heartbeat;
     private String exportData;
     private NetworkTable netTable;
     private UpdatingText matchNum;
 
     DankDash() {
         // Nettables
-        NetworkTable netTable = NetworkTableInstance.getDefault().getTable("DankDash");
+        this.netTable = NetworkTableInstance.getDefault().getTable("DankDash");
 
         // fisheye video stream
         fisheye = new VideoStream();
@@ -30,6 +31,8 @@ public class DankDash {
         fisheye.setXPos(20);
         fisheye.setYPos(50);
         fisheye.setZPos(1);
+        fisheye.setWidth("100px");
+        fisheye.setHeight("100px");
         System.out.println(fisheye.getJson(false));
 
         // // heartbeat
@@ -48,8 +51,8 @@ public class DankDash {
     }
 
     public void export() {
-        exportData = "{"+fisheye.getJson(true)+heartbeat.getJson(false)+"}";
-        netTable.getEntry("profileData").setString(exportData);
-        netTable.getEntry("profileName").setString("TestChassis");
+        exportData = "["+fisheye.getJson(false)+"]";
+        netTable.getEntry("ProfileData").setString(exportData);
+        netTable.getEntry("ProfileName").setString("Test Chassis");
     }
 }
