@@ -1,51 +1,108 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.VelocityTrapezoid;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
-import frc.robot.commands.ElevatorToPos;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /**
  * The Elevator subsystem 
  */
 public class Elevator extends Subsystem {
-	public WPI_TalonSRX elevatorMotor = new WPI_TalonSRX(RobotMap.elevatorMotor);
-    VelocityTrapezoid velTrapezoid = new VelocityTrapezoid(Constants.kElevatorMaxAcceleration, Constants.kElevatorMaxSpeed, Constants.kDefaultDt);
+	public CANSparkMax elevatorMotor = new CANSparkMax(RobotMap.elevatorMotor, MotorType.kBrushless);
     DigitalInput limitSwitch;
+    private PIDController pidAccel;
+    private double manualVelocity = 9999;
+	private double prevOutput = 0;
+	private int loop = 0;
 
     public Elevator() {
-        velTrapezoid.setDecelLock(false);
         limitSwitch = new DigitalInput(0); // change input later
-        elevatorMotor.setSensorPhase(true); /* keep sensor and motor in phase */
 
-        this.getElevatorTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        this.getElevatorTalon().config_kP(Constants.kPIDLoopIdx, Constants.kPVelocityElev);
-        this.getElevatorTalon().config_kI(Constants.kPIDLoopIdx, Constants.kIVelocityElev);
-        this.getElevatorTalon().config_kD(Constants.kPIDLoopIdx, Constants.kDVelocityElev);
-        this.getElevatorTalon().config_kF(Constants.kPIDLoopIdx, Constants.kFVelocityElev);
-        this.getElevatorTalon().enableVoltageCompensation(true);
-        this.getElevatorTalon().configVoltageCompSaturation(12.0, Constants.kTimeoutMs);
-        this.getElevatorTalon().configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.kTimeoutMs);
-        this.getElevatorTalon().configVelocityMeasurementWindow(1, Constants.kTimeoutMs);
-        this.getElevatorTalon().setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, 100);
+        //zero the motor's encoder
+        this.getElevatorMotor().set(0);
 
-        // set the peak, nominal outputs
-        this.getElevatorTalon().configNominalOutputForward(0, Constants.kTimeoutMs);
-        this.getElevatorTalon().configNominalOutputReverse(0, Constants.kTimeoutMs);
-        this.getElevatorTalon().configPeakOutputForward(1, Constants.kTimeoutMs);
-        this.getElevatorTalon().configPeakOutputReverse(-1, Constants.kTimeoutMs);
+        // set PID coefficients
+        this.getElevatorMotor().getPIDController().setP(Constants.kPVelocityElev);
+        this.getElevatorMotor().getPIDController().setI(Constants.kIVelocityElev);
+        this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
+        this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElev);
+        this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
+
+        this.getElevatorMotor().set(-500);
+        this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
+    
+
+        
+
+        pidAccel = new PIDController(Constants.kPAccelElev, Constants.kIAccelElev, Constants.kDAccelElev, new PIDSource() {
+			PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
+
+			@Override
+			public double pidGet() {
+				return elevatorMotor.getEncoder().getPosition();
+			}
+
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+				vel_sourceType = pidSource;
+			}
+
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return vel_sourceType;
+			}
+
+		}, new PIDOutput() {
+			@Override
+			public void pidWrite(double d) {
+				// compare what PID says to trigger
+				if(Math.abs(d-prevOutput) > Constants.kElevatorMaxAcceleration/4) {
+					if(d>prevOutput) {
+						d=prevOutput + Constants.kElevatorMaxAcceleration/4;
+					}
+					else {
+						d=prevOutput - Constants.kElevatorMaxAcceleration/4;
+					}
+				}
+				
+				prevOutput = d;
+     
+				if (manualVelocity == 9999)
+					elevatorMotor.getPIDController().setReference(d, ControlType.kVelocity);
+
+				else if (manualVelocity > 0) {
+					elevatorMotor.getPIDController().setReference(Math.min(d, manualVelocity), ControlType.kVelocity);
+					loop = 0;
+				}
+				else if (manualVelocity < 0) {
+					elevatorMotor.getPIDController().setReference(Math.max(d, manualVelocity), ControlType.kVelocity);
+					loop = 0;
+				}
+				else if (manualVelocity == 0) {
+					elevatorMotor.getPIDController().setReference(0, ControlType.kVelocity);
+					loop++;
+				}
+				if(loop == 10) {
+					manualVelocity = 9999;
+					loop = 0;
+				}
+
+			}
+		}, Constants.kElevPIDAccelPeriod);
+
+		pidAccel.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
+		pidAccel.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
+		pidAccel.setContinuous(false);
+		pidAccel.setPercentTolerance(Constants.kElevPercentTolerance);
     }
 
     /**
@@ -60,7 +117,7 @@ public class Elevator extends Subsystem {
      * get the talon of elevator motor
      * @return talon of elevator motor
      */
-    public WPI_TalonSRX getElevatorTalon() {
+    public CANSparkMax getElevatorMotor() {
         return this.elevatorMotor;
     }
     
@@ -69,30 +126,25 @@ public class Elevator extends Subsystem {
 	}
 
 	public double getElevatorVel() {
-		return elevatorMotor.getSelectedSensorVelocity(0);
+		return this.getElevatorMotor().getEncoder().getVelocity();
 	}
 
     public void setVel(double vel) {
-        elevatorMotor.set(ControlMode.Velocity, vel);
-        //elevatorMotor.set(vel);
-    }
-
-    public VelocityTrapezoid getVelTrapezoid(){
-        return this.velTrapezoid;
+        this.getElevatorMotor().set(vel);
     }
 
     /**
      * returns the current velocity of the elevator in inches per second
      */
     public double getVelInchesPerSecond() {
-        return (this.getElevatorTalon().getSelectedSensorVelocity(0)/Constants.kElevatorPulsesPerInch) * 10;
+        return (this.getElevatorMotor().getEncoder().getVelocity()/Constants.kElevatorPulsesPerInch) * 10;
     }
 
     /**
      * returns the current height of the elevator in inches
      */
     public double getCurrentHeight() {
-        return this.getElevatorTalon().getSelectedSensorPosition(0)/Constants.kElevatorPulsesPerInch;
+        return this.getElevatorMotor().getEncoder().getPosition()/Constants.kElevatorPulsesPerInch;
     }
 
     /**
@@ -101,5 +153,14 @@ public class Elevator extends Subsystem {
     public static double convertToPulsesPer100Ms(double velInPerSec) {
         return (velInPerSec / 10) * Constants.kElevatorPulsesPerInch;
     }
+
+    public PIDController getPIDAccel(){
+        return pidAccel;
+    }
+
+    public void setManualVelocity(double trigger) {
+		manualVelocity = trigger;
+    }
+    
 
 }
