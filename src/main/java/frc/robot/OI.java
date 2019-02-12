@@ -42,6 +42,12 @@ public class OI {
     public static JoystickButton right_stick = new JoystickButton(joy, 10);
     public int lastDpad = -1;
 
+    public enum TRIG_MODE {
+		ELEVATOR, CLIMBER
+    }
+    
+    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
+
     public OI() {
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
