@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CargoIntake;
+import frc.robot.DankDash;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,6 +38,8 @@ public class Robot extends TimedRobot {
   public static HatchScoop hatchScoop;
   public static CargoIntake cargoIntake;
   public static Grabber grabber;
+
+  public DankDash dankDash;
 
   public static AHRS gyro;
   public static OI oi;
@@ -80,6 +83,10 @@ public class Robot extends TimedRobot {
 
     //start ensuring that vision coprocessor(s) have properly synchronized clocks
     clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
+
+    // Init and export profile to network tables
+    dankDash = new DankDash();
+    dankDash.export();
 
     }
 
