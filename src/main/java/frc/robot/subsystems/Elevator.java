@@ -17,12 +17,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  * The Elevator subsystem 
  */
 public class Elevator extends Subsystem {
-	public CANSparkMax elevatorMotor = new CANSparkMax(RobotMap.elevatorMotor, MotorType.kBrushless);
+    public CANSparkMax elevatorMotor = new CANSparkMax(RobotMap.elevatorMotor, MotorType.kBrushless);
     DigitalInput limitSwitch;
     private PIDController pidAccel;
     private double manualVelocity = 9999;
-	private double prevOutput = 0;
-	private int loop = 0;
+    private double prevOutput = 0;
+    private int loop = 0;
 
     public Elevator() {
         limitSwitch = new DigitalInput(0); // change input later
@@ -44,65 +44,65 @@ public class Elevator extends Subsystem {
         
 
         pidAccel = new PIDController(Constants.kPAccelElev, Constants.kIAccelElev, Constants.kDAccelElev, new PIDSource() {
-			PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
+            PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
 
-			@Override
-			public double pidGet() {
-				return elevatorMotor.getEncoder().getPosition();
-			}
+            @Override
+            public double pidGet() {
+                return elevatorMotor.getEncoder().getPosition();
+            }
 
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-				vel_sourceType = pidSource;
-			}
+            @Override
+            public void setPIDSourceType(PIDSourceType pidSource) {
+                vel_sourceType = pidSource;
+            }
 
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				return vel_sourceType;
-			}
+            @Override
+            public PIDSourceType getPIDSourceType() {
+                return vel_sourceType;
+            }
 
-		}, new PIDOutput() {
-			@Override
-			public void pidWrite(double d) {
-				// compare what PID says to trigger
-				if(Math.abs(d-prevOutput) > Constants.kElevatorMaxAcceleration/4) {
-					if(d>prevOutput) {
-						d=prevOutput + Constants.kElevatorMaxAcceleration/4;
-					}
-					else {
-						d=prevOutput - Constants.kElevatorMaxAcceleration/4;
-					}
-				}
-				
-				prevOutput = d;
+        }, new PIDOutput() {
+            @Override
+            public void pidWrite(double d) {
+                // compare what PID says to trigger
+                if(Math.abs(d-prevOutput) > Constants.kElevatorMaxAcceleration/4) {
+                    if(d>prevOutput) {
+                        d=prevOutput + Constants.kElevatorMaxAcceleration/4;
+                    }
+                    else {
+                        d=prevOutput - Constants.kElevatorMaxAcceleration/4;
+                    }
+                }
+                
+                prevOutput = d;
      
-				if (manualVelocity == 9999)
-					elevatorMotor.getPIDController().setReference(d, ControlType.kVelocity);
+                if (manualVelocity == 9999)
+                    elevatorMotor.getPIDController().setReference(d, ControlType.kVelocity);
 
-				else if (manualVelocity > 0) {
-					elevatorMotor.getPIDController().setReference(Math.min(d, manualVelocity), ControlType.kVelocity);
-					loop = 0;
-				}
-				else if (manualVelocity < 0) {
-					elevatorMotor.getPIDController().setReference(Math.max(d, manualVelocity), ControlType.kVelocity);
-					loop = 0;
-				}
-				else if (manualVelocity == 0) {
-					elevatorMotor.getPIDController().setReference(0, ControlType.kVelocity);
-					loop++;
-				}
-				if(loop == 10) {
-					manualVelocity = 9999;
-					loop = 0;
-				}
+                else if (manualVelocity > 0) {
+                    elevatorMotor.getPIDController().setReference(Math.min(d, manualVelocity), ControlType.kVelocity);
+                    loop = 0;
+                }
+                else if (manualVelocity < 0) {
+                    elevatorMotor.getPIDController().setReference(Math.max(d, manualVelocity), ControlType.kVelocity);
+                    loop = 0;
+                }
+                else if (manualVelocity == 0) {
+                    elevatorMotor.getPIDController().setReference(0, ControlType.kVelocity);
+                    loop++;
+                }
+                if(loop == 10) {
+                    manualVelocity = 9999;
+                    loop = 0;
+                }
 
-			}
-		}, Constants.kElevPIDAccelPeriod);
+            }
+        }, Constants.kElevPIDAccelPeriod);
 
-		pidAccel.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
-		pidAccel.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
-		pidAccel.setContinuous(false);
-		pidAccel.setPercentTolerance(Constants.kElevPercentTolerance);
+        pidAccel.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
+        pidAccel.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
+        pidAccel.setContinuous(false);
+        pidAccel.setPercentTolerance(Constants.kElevPercentTolerance);
     }
 
     /**
@@ -110,7 +110,7 @@ public class Elevator extends Subsystem {
      */
     @Override
     public void initDefaultCommand() {
-		//setDefaultCommand(new ElevatorToPos(Constants.pulsesPerInch*10));
+        //setDefaultCommand(new ElevatorToPos(Constants.pulsesPerInch*10));
     }
 
     /**
@@ -122,12 +122,12 @@ public class Elevator extends Subsystem {
     }
     
     public DigitalInput getLimitSwitch() {
-		return limitSwitch;
-	}
+        return limitSwitch;
+    }
 
-	public double getElevatorVel() {
-		return this.getElevatorMotor().getEncoder().getVelocity();
-	}
+    public double getElevatorVel() {
+        return this.getElevatorMotor().getEncoder().getVelocity();
+    }
 
     public void setVel(double vel) {
         this.getElevatorMotor().set(vel);
@@ -159,7 +159,7 @@ public class Elevator extends Subsystem {
     }
 
     public void setManualVelocity(double trigger) {
-		manualVelocity = trigger;
+        manualVelocity = trigger;
     }
     
 
