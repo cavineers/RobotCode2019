@@ -19,7 +19,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Elevator extends Subsystem {
     public CANSparkMax elevatorMotor = new CANSparkMax(RobotMap.elevatorMotor, MotorType.kBrushless);
     DigitalInput limitSwitch;
-    private PIDController pidAccel;
+    private PIDController pidPos;
     private double manualVelocity = 9999;
     private double prevOutput = 0;
     private int loop = 0;
@@ -43,7 +43,7 @@ public class Elevator extends Subsystem {
 
         
 
-        pidAccel = new PIDController(Constants.kPAccelElev, Constants.kIAccelElev, Constants.kDAccelElev, new PIDSource() {
+        pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
 
             @Override
@@ -99,10 +99,10 @@ public class Elevator extends Subsystem {
             }
         }, Constants.kElevPIDAccelPeriod);
 
-        pidAccel.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
-        pidAccel.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
-        pidAccel.setContinuous(false);
-        pidAccel.setPercentTolerance(Constants.kElevPercentTolerance);
+        pidPos.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
+        pidPos.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
+        pidPos.setContinuous(false);
+        pidPos.setPercentTolerance(Constants.kElevPercentTolerance);
     }
 
     /**
@@ -154,8 +154,8 @@ public class Elevator extends Subsystem {
         return (velInPerSec / 10) * Constants.kElevatorPulsesPerInch;
     }
 
-    public PIDController getPIDAccel(){
-        return pidAccel;
+    public PIDController getPIDPos(){
+        return pidPos;
     }
 
     public void setManualVelocity(double trigger) {
@@ -169,6 +169,10 @@ public class Elevator extends Subsystem {
         else{
             return false;
         }
+    }
+
+    public void moveElevator(double p){
+        getPIDPos().setSetpoint(p);
     }
     
 
