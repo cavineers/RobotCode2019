@@ -13,13 +13,13 @@ import frc.lib.pathPursuit.Path;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
+import frc.robot.commands.ToggleCargoIntake;
 import frc.robot.commands.FollowPath.PATH_TYPE;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber.LegState;
 import frc.robot.commands.ChangeClimberState;
 import frc.robot.commands.ElevatorToPos;
-import frc.robot.commands.ToggleGrabber;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /**
@@ -48,7 +48,7 @@ public class OI {
         a_button.whenPressed(new TargetVisionTape());
         b_button.whenPressed(new ElevatorToPos(10));
         x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
-        y_button.whenPressed(new ToggleGrabber());
+        y_button.whenPressed(new ToggleCargoIntake());
     }
 
     public Joystick getJoystick() {

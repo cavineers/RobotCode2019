@@ -13,64 +13,66 @@ public class Grabber extends Subsystem {
     public enum GrabberState {
         EXTENDED,
         RETRACTED,
-        HALFWAY,
-        HOMING,
-        UNKOWN
+        START_POS,
+        HOMED,
+        UNKNOWN
     }
-    public double backPosition;
     public GrabberState grabberState;
-    public boolean finishedHoming;
 
     CANSparkMax armMotor; // motor responcible moving the arm forward and backward
 
     DoubleSolenoid grabberSol; // double solenoid for control of both the 
                                // ball's endstop and the hatch grabber
 
+    double positionOffset;
+
     public Grabber() {
-        grabberState = GrabberState.UNKOWN;
+        grabberState = GrabberState.UNKNOWN;
         armMotor = new CANSparkMax(RobotMap.armMotor, MotorType.kBrushless);
         grabberSol = new DoubleSolenoid(RobotMap.grabber1, RobotMap.grabber2);
-        finishedHoming = false;
+        positionOffset = 0;
     }
 
-    public void findEnd() {
-        grabberState = GrabberState.HOMING;
-        finishedHoming = false;
+    public void beginHoming() {
         armMotor.set(Constants.kGrabberHomingSpeed);
     }
 
-    public void center() {
-        grabberState = GrabberState.HALFWAY;
-        armMotor.getPIDController().setReference(backPosition + 0, ControlType.kPosition);
-    }
-
-    public void extend() {
-        grabberState = GrabberState.EXTENDED;
-        armMotor.getPIDController().setReference(backPosition + 0, ControlType.kPosition);
-    }
-
-    public void retract() {
-        grabberState = GrabberState.RETRACTED;
-        armMotor.getPIDController().setReference(backPosition + 0, ControlType.kPosition);
-    }
-
-    public boolean currentLimit() {
-        if (armMotor.getOutputCurrent() > 1.0) { // If amps is creater than 10
-            armMotor.getPIDController().setReference(0, ControlType.kVoltage);
-            grabberState = GrabberState.RETRACTED; // Set the state to off
-            finishedHoming = true;
-            return true;
+    public void setPosition(GrabberState state) {
+        if (state == GrabberState.EXTENDED) {
+            armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberExtendedPos, ControlType.kPosition);
+        } else if (state == GrabberState.RETRACTED) {
+            armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberRetractedPos, ControlType.kPosition);
+        } else if (state == GrabberState.START_POS) {
+            armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberStartPos, ControlType.kPosition);
         } else {
-            return false;
+            System.out.println("Attepted to set the grabber to an ineligible position");
         }
     }
 
-    public void zero() {
-        backPosition = armMotor.getEncoder().getPosition();
+    public boolean exceedsCurrentLimit() {
+        return armMotor.getOutputCurrent() > Constants.kGrabberMaxHomingCurrent; 
     }
 
-    public boolean getHoming() {
-        return !finishedHoming;
+    public void setEncoderPosition(double newPos) {
+        positionOffset = armMotor.getEncoder().getPosition() - newPos;
+    }
+
+    public double getPosition() {
+        return armMotor.getEncoder().getPosition() - positionOffset;
+    }
+
+    public GrabberState getState() {
+        if (Math.abs(this.getPosition() - Constants.kGrabberExtendedPos) < Constants.kGrabberTolerance) {
+            return GrabberState.EXTENDED;
+        } else if (Math.abs(this.getPosition() - Constants.kGrabberRetractedPos) < Constants.kGrabberTolerance) {
+            return GrabberState.RETRACTED;
+        } else if (Math.abs(this.getPosition() - Constants.kGrabberStartPos) < Constants.kGrabberTolerance) {
+            return GrabberState.START_POS;
+        } else if (Math.abs(this.getPosition() - Constants.kGrabberHomePos) < Constants.kGrabberTolerance) {
+            return GrabberState.HOMED;
+        } else {
+            return GrabberState.UNKNOWN;
+        }
     }
 
     @Override

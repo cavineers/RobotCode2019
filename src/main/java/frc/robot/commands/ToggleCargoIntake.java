@@ -4,8 +4,12 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.CargoIntake.moterState;
 import frc.robot.Robot;
 
-public class ToggleGrabber extends Command {
+public class ToggleCargoIntake extends Command {
     public moterState toState;
+
+    public ToggleCargoIntake() {
+        requires(Robot.cargoIntake);
+    }
 
     @Override
     public void initialize() {
@@ -16,10 +20,6 @@ public class ToggleGrabber extends Command {
             Robot.cargoIntake.off();
             toState = moterState.OFF;
         }
-    }
-
-    public ToggleGrabber() {
-        requires(Robot.cargoIntake);
     }
 
     protected boolean isFinished() {
