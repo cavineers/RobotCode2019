@@ -1,10 +1,7 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.MathHelper;
 import frc.lib.RobotPos;
 import frc.lib.TargetUpdate;
 import frc.lib.Vector2D;
@@ -14,17 +11,12 @@ import frc.lib.dubinPath.DubinsPath;
 import frc.lib.pathPursuit.Path;
 import frc.lib.pathPursuit.RobotCmd;
 import frc.robot.Robot;
-import frc.lib.RobotPos;
-import frc.lib.pathPursuit.Point;
 import frc.robot.Constants;
 
 public class TargetVisionTape extends Command {
 
     Path path;
     boolean forceFinish;
-    boolean didGeneratePath;
-
-    Notifier generatePath;  // runs 
 
     public TargetVisionTape() {
         requires(Robot.drivetrain);
@@ -33,35 +25,22 @@ public class TargetVisionTape extends Command {
     @Override
     protected void initialize() {
         this.setTimeout(10); // set the command timeout to 10 seconds
-        generatePath = new Notifier(this::generatePathFromImgData);
-        generatePath.startPeriodic(Constants.kCameraUpdatePeriod);
         path = null;
         forceFinish = false;
-        didGeneratePath = false;
-    }
-
-    protected void generatePathFromImgData() {
-        //do not regenerate a path if we already have one
-        if (didGeneratePath) {
+        if (!Robot.cameraManager.hasValidCameraUpdate()) {
+            forceFinish = true; //stop if there is no camera update
             return;
         }
+        // otherwise generate a path using this vision data
 
         //attempt to obtain the image data from the camera
         TargetUpdate targetUpdate = null; // data received from the camera
-        SmartDashboard.putString("target status", "getting target");
-        targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
+        targetUpdate = Robot.cameraManager.getLatestUpdate();
 
-        //if we didn't get anything, return
-        if (targetUpdate == null || forceFinish || isTimedOut()) {
-            SmartDashboard.putString("target status", "null 1: " + targetUpdate + ", " + forceFinish);
-            return; //catch the case where the command is interupted during init
-        }
-        
         //otherwise, generate a path with that info
         this.path = this.createPath(targetUpdate);
-        if (path != null) {
-            System.out.println(path);
-            didGeneratePath = true;
+        if (path == null) {
+            forceFinish = true;
         }
     }
 
@@ -131,11 +110,9 @@ public class TargetVisionTape extends Command {
   
     @Override
     protected void execute() {
-        if (!didGeneratePath) {
-            SmartDashboard.putString("exec status", "no finish path plan");
+        if (forceFinish) {
             return;
         }
-        generatePath.stop();
 
         RobotPos latestPos = Robot.estimator.getPos();
         latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
@@ -143,29 +120,19 @@ public class TargetVisionTape extends Command {
         RobotCmd cmd = path.update(latestPos);
         Robot.drivetrain.setLeftVel(cmd.getLeftVel());
         Robot.drivetrain.setRightVel(cmd.getRightVel());
-
     }
   
     @Override
     protected boolean isFinished() {
-        // if ((path != null && path.isFinished()) || forceFinish || this.isTimedOut()) {
-        //     System.out.println("ENDED");
-        //     System.out.println(path);
-        //     System.out.println(path.isFinished());
-        //     System.out.println(forceFinish);
-        //     System.out.println(this.isTimedOut());
-        // }
         return (path != null && path.isFinished()) || forceFinish || this.isTimedOut();
     }
   
     @Override
     protected void end() {
         SmartDashboard.putString("exec status", "END ");
-        generatePath.close();
     }
   
     @Override
     protected void interrupted() {
-        generatePath.close();
     }
 }

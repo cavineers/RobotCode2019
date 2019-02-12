@@ -71,7 +71,7 @@ public class Constants {
     public static final double kDriveVoltageRampRate = 0.0;
     
     //Position mapping stuff
-    public static final int kMaxListSize = 3000;
+    public static final int kMaxListSize = (int)(1 / Constants.kOdometryLoopTime) * 3; // max size of position lists is 
 
     public static final double kCameraToMapToleranceLvl1 = 1.5; // in inches, the max distance where the robot's position map can be completely 
                                                                 // rebased by a camera update

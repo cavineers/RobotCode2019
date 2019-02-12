@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CargoIntake;
+import frc.robot.DankDash;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,11 +39,17 @@ public class Robot extends TimedRobot {
   public static CargoIntake cargoIntake;
   public static Grabber grabber;
 
+  public DankDash dankDash;
+
   public static AHRS gyro;
   public static OI oi;
   public static RobotPosEstimator estimator;
 
   public static CameraHelper reflectiveTapeCamera;
+
+  public static CameraManager cameraManager;
+
+  public static LEDHelper leds;
 
   // Camera clock sync checking thread
   Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
@@ -75,11 +82,21 @@ public class Robot extends TimedRobot {
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
 
+    // start up the camera manager
+    cameraManager = new CameraManager();
+
+    // start up the led manager
+    leds = new LEDHelper();
+
     //begin positional estimation
     estimator.start(); 
 
     //start ensuring that vision coprocessor(s) have properly synchronized clocks
     clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
+
+    // Init and export profile to network tables
+    dankDash = new DankDash();
+    dankDash.export();
 
     }
 
@@ -93,6 +110,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    cameraManager.checkForCamUpdates();
+    leds.update();
+    
   }
 
   /**
@@ -185,5 +205,12 @@ public class Robot extends TimedRobot {
         System.out.println("should sync clocks");
         reflectiveTapeCamera.startClockSync();
     }
+  }
+
+  /**
+   * Returns true if the robot is in climber mode
+   */
+  public static boolean isClimbing() {
+    return false; //TODO: implement
   }
 }
