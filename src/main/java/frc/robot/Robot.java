@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.subsystems.HatchScoop;
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   public static Climber climber;
   public static HatchScoop hatchScoop;
   public static CargoIntake cargoIntake;
+  public static Grabber grabber;
 
   public static AHRS gyro;
   public static OI oi;
@@ -57,6 +59,7 @@ public class Robot extends TimedRobot {
     climber = new Climber();
     hatchScoop = new HatchScoop();
     cargoIntake = new CargoIntake();
+    grabber = new Grabber();
 
     //initialize gyro
     gyro = new AHRS(SPI.Port.kMXP);
