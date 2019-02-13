@@ -10,10 +10,10 @@ public class ChangeCargoIntakeState extends Command {
     MotorState desiredMotorState;
     PositionState desiredPositionState;
 
-    public ChangeCargoIntakeState(MotorState desiredMotorState, PositionState desiredPositionState) {
+    public ChangeCargoIntakeState(PositionState desiredPositionState, MotorState desiredMotorState) {
         requires(Robot.cargoIntake);
-        this.desiredMotorState = desiredMotorState;
         this.desiredPositionState = desiredPositionState;
+        this.desiredMotorState = desiredMotorState;
     }
     
     @Override

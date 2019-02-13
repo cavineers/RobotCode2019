@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
@@ -18,6 +19,12 @@ public class Grabber extends Subsystem {
         HOMED,
         UNKNOWN
     }
+
+    public enum MotorState {
+        OFF,
+        INTAKE_BALL,
+        EJECT_BALL
+    }
     public GrabberState grabberState;
 
     CANSparkMax armMotor; // motor responcible moving the arm forward and backward
@@ -27,6 +34,9 @@ public class Grabber extends Subsystem {
                                // ball's endstop and the hatch grabber
 
     double positionOffset; // a correction value used to offset position from homing
+
+    DigitalInput cargoLimitSwitch = new DigitalInput(Constants.kGrabberCargoLimitSwitch);
+    DigitalInput hatchLimitSwitch = new DigitalInput(Constants.kGrabberHatchLimitSwitch);
 
     public Grabber() {
         grabberState = GrabberState.UNKNOWN;
@@ -95,6 +105,35 @@ public class Grabber extends Subsystem {
         } else {
             return GrabberState.UNKNOWN;
         }
+    }
+
+
+        /**
+     * Sets the current state of the grabber
+     * @param state the desired state of the grabber
+     */
+    public void setMotorState(MotorState state) {
+        if (state == MotorState.OFF) {
+            this.ballMotor.set(0);
+        } else if (state == MotorState.INTAKE_BALL) {
+            this.ballMotor.set(Constants.kGrabberIntakeSpeed);
+        } else if (state == MotorState.EJECT_BALL) {
+            this.ballMotor.set(Constants.kGrabberEjectionSpeed);
+        } 
+    }
+
+    /**
+     * Returns if the limit switch for cargo on the grabber is currently pressed 
+     */
+    public boolean hasCargo() {
+        return this.cargoLimitSwitch.get();
+    }
+
+    /**
+     * Returns if the limit switch for hatches on the grabber is currently pressed 
+     */
+    public boolean hasHatch() {
+        return this.hatchLimitSwitch.get();
     }
 
     @Override

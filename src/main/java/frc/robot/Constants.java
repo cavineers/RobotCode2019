@@ -132,7 +132,7 @@ public class Constants {
     public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
 
     // Intake
-    public static final double kIntakeSpeed = 1;
+    public static final double kCargoIntakeSpeed = 1;
 
     // Climber //TODO: TUNE
     public static final double kClimberRPI = 1; // Rotations per inch
@@ -154,11 +154,31 @@ public class Constants {
     public static final double kGrabberMaxHomingCurrent = 10; // once the grabber motor exceeds this when homing, it will be considered homed
     public static final double kGrabberHomePos = 0; //TODO set // the position of the hard stop that the elevator stalls against
 
+    // grabber movement speeds
+    public static final double kGrabberIntakeSpeed = 0.1;
+    public static final double kGrabberEjectionSpeed = 1;
+
     public static final double kGrabberTolerance = 0.1; //TODO set
 
     public static final double kGrabberRetractedPos = 0; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
     
     public static final double kGrabberStartPos = 0; //TODO: set
+
+    //Digital In/Output mapping
+
+    //auto selection
+    public static final int kAutoPos0 = 0;
+    public static final int kAutoPos1 = 1;
+    public static final int kAutoPos2 = 2;
+    public static final int kAutoPos3 = 3;
+    public static final int kAutoPos4 = 4;
+
+    public static final int kDIO5 = 5;
+    public static final int kDIO6 = 6;
+    public static final int kDIO7 = 7;
+    public static final int kGrabberHatchLimitSwitch = 8;
+    public static final int kGrabberCargoLimitSwitch = 9;
+    
     
 }

@@ -73,7 +73,7 @@ public class CargoIntake extends Subsystem {
         if (state == MotorState.OFF) {
             intakeMoter.set(0);
         } else {
-            intakeMoter.set(Constants.kIntakeSpeed);
+            intakeMoter.set(Constants.kCargoIntakeSpeed);
         }
     }
     

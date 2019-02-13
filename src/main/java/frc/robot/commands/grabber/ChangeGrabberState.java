@@ -3,14 +3,25 @@ package frc.robot.commands.grabber;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Grabber.GrabberState;
+import frc.robot.subsystems.Grabber.MotorState;
 
 public class ChangeGrabberState extends Command {
-    GrabberState desiredState;
+    GrabberState desiredPos;
+    MotorState desiredMotorState;
     
-    public ChangeGrabberState(GrabberState desiredState) {
+    public ChangeGrabberState(GrabberState desiredPos, MotorState desiredMotorState) {
         requires(Robot.elevator);
         requires(Robot.grabber);
-        this.desiredState = desiredState;
+        this.desiredPos = desiredPos;
+        this.desiredMotorState = desiredMotorState;
+    }
+
+    public ChangeGrabberState(GrabberState desiredPos) {
+        this(desiredPos, null);
+    }
+
+    public ChangeGrabberState(MotorState desiredMotorState) {
+        this(null, desiredMotorState);
     }
 
     @Override
@@ -22,7 +33,13 @@ public class ChangeGrabberState extends Command {
         if (!Robot.elevator.canMoveGrabber()) {
             return;
         }
-        Robot.grabber.setState(desiredState);
+        if (this.desiredPos != null) {
+            Robot.grabber.setState(desiredPos);
+        }
+        
+        if (this.desiredMotorState != null) {
+            Robot.grabber.setMotorState(desiredMotorState);
+        }
     }
 
     @Override
@@ -32,7 +49,7 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected boolean isFinished() {
-        return Robot.grabber.getState() == desiredState || !Robot.elevator.canMoveGrabber();
+        return Robot.grabber.getState() == desiredPos || !Robot.elevator.canMoveGrabber();
     }
 
 }

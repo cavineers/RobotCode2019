@@ -55,7 +55,7 @@ public class OI {
         // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
         // y_button.whenPressed(new ToggleCargoIntake());
         
-        a_button.toggleWhenPressed(new IntakeCargo());
+        a_button.whenPressed(new IntakeCargo());
     }
 
     public Joystick getJoystick() {
