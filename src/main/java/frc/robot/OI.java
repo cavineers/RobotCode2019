@@ -14,13 +14,11 @@ import frc.robot.commands.FollowPath;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
-import frc.robot.commands.ToggleCargoIntake;
 import frc.robot.commands.FollowPath.PATH_TYPE;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber.LegState;
 import frc.robot.commands.ChangeClimberState;
-import frc.robot.commands.ElevatorToPos;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 /**

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
@@ -6,11 +6,6 @@ import frc.robot.Robot;
 import com.revrobotics.ControlType;
 import frc.robot.OI.TRIG_MODE;
 
-
-
-/**
- *
- */
 public class ManualElev extends Command {
 	double elevPos;
 	double upTrig;
@@ -26,7 +21,7 @@ public class ManualElev extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		if (!Robot.elevator.getPIDPos().isEnabled()) {
-			elevPos = Robot.elevator.getCurrentHeight();
+			elevPos = Robot.elevator.getPosition();
 			Robot.elevator.getPIDPos().setSetpoint(elevPos);
             Robot.elevator.getElevatorMotor().getPIDController().setReference(0, ControlType.kPosition);
 			Robot.elevator.getPIDPos().enable();

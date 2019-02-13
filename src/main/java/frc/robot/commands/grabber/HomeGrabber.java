@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.grabber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
@@ -29,7 +29,7 @@ public class HomeGrabber extends Command {
 
     @Override
     public void end() {
-        Robot.grabber.setPosition(GrabberState.EXTENDED);
+        Robot.grabber.setState(GrabberState.EXTENDED);
     }
 
     public boolean isFinished() {

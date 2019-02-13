@@ -29,19 +29,26 @@ public class Constants {
     public static final double kAngleTolerance = 0.5; // in degrees; the tolerance of turn to angle
     
     //elevator stuff
-    public static final double kElevatorPosTolerance = 5;
+    public static final double kElevatorPosTolerance = 0.1;
     public static final double kElevatorMaxAcceleration = 40; //800
     public static final double kElevatorMaxSpeed = 70; //3000
-    public static final double kElevatorMaxHeight  = 42000; //TODO: set actual max height (native units)
-	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (native units)
+    public static final double kElevatorMaxHeight  = 42000; //TODO: set actual max height (rotations)
+	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (rotations)
     public static final double kElevatorPulsesPerInch = 500;
+
+    //TODO: set these values
+    public static final double kElevatorGroundLvl = 0; 
+    public static final double kElevatorIntakeLvl = 0;
+    public static final double kElevatorLvl1 = 0;
+    public static final double kElevatorLvl2 = 0;
+    public static final double kElevatorLvl3 = 0;
     
     public static final double kPVelocityElev = 0;
     public static final double kIVelocityElev = 0;
     public static final double kDVelocityElev = 0;
     public static final double kFVelocityElev = 0;
     
-    public static final double kElevPIDAccelPeriod = .025; //seconds
+    public static final double kElevPIDPosPeriod = .025; //seconds
     public static final double kElevPercentTolerance = 5;
     
     public static final double kPPosElev = 0;

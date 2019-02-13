@@ -7,8 +7,9 @@ import frc.robot.subsystems.HatchScoop.HatchScoopState;
 
 public class ChangeHatchScoopState extends Command {
     protected HatchScoopState desiredState;
+    protected double motorSpeed;
 
-    public ChangeHatchScoopState(DoubleSolenoid hatchSol, HatchScoopState state) {
+    public ChangeHatchScoopState(HatchScoopState state) {
         requires(Robot.hatchScoop);
         desiredState = state;
     }
@@ -16,9 +17,6 @@ public class ChangeHatchScoopState extends Command {
     @Override
     public void initialize() {
         Robot.hatchScoop.setState(desiredState);
-    }
-
-    public void setUp(boolean setup) {
     }
 
     protected boolean isFinished() {

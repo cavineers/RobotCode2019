@@ -14,16 +14,16 @@ public class CargoIntake extends Subsystem {
     private DoubleSolenoid posSol;
 
     // States
-    public enum moterState {
+    public enum MotorState {
         ON, OFF
     }
 
-    public enum positionState {
+    public enum PositionState {
         UP, DOWN
     }
 
     // State variables
-    public moterState mstate = moterState.ON;
+    public MotorState mstate = MotorState.ON;
 
     @Override
     public void initDefaultCommand() {
@@ -48,27 +48,11 @@ public class CargoIntake extends Subsystem {
         // }
     }
 
-    /**
-     * Turn on the intake motors
-     */
-    public void on() {
-        intakeMoter.set(Constants.kIntakeSpeed);
-        mstate = moterState.ON;
-        currentLimit(); // Run the currentLimit function
-    }
-
-    /**
-     * Turn off the intake motors
-     */
-    public void off() {
-        intakeMoter.set(0);
-        mstate = moterState.OFF;
-    }
 
     /**
      * Gets whether the intake motor is activated
      */
-    public moterState getMoterState() {
+    public MotorState getMoterState() {
         return mstate;
     }
 
@@ -77,22 +61,30 @@ public class CargoIntake extends Subsystem {
      * 
      * @param state the desired state of the cargo intake's arm
      */
-    public void setPosition(positionState state) {
-        if (state == positionState.UP) {
+    public void setPosition(PositionState state) {
+        if (state == PositionState.UP) {
             posSol.set(Value.kForward);
         } else {
             posSol.set(Value.kReverse);
+        }
+    }
+
+    public void setMotorState(MotorState state) {
+        if (state == MotorState.OFF) {
+            intakeMoter.set(0);
+        } else {
+            intakeMoter.set(Constants.kIntakeSpeed);
         }
     }
     
     /**
      * Gets the position of the intake arm (whether it is up or down)
      */
-    public positionState getPosition() {
+    public PositionState getPosition() {
         if (posSol.get() == Value.kForward) {
-            return positionState.UP;
+            return PositionState.UP;
         } else {
-            return positionState.DOWN;
+            return PositionState.DOWN;
         }
     }
 }

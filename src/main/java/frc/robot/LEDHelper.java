@@ -1,18 +1,18 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DigitalOutput;
-import frc.robot.subsystems.CargoIntake.positionState;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
+import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.HatchScoop.HatchScoopState;
 
 public class LEDHelper {
-    DigitalOutput redD5, purpleD6, blueD7, orangeD8, greenD9;
+    Relay purpleR0, blueR1, orangeR2, greenR3;
     LEDColor currentColor = LEDColor.NONE;
     public LEDHelper () {
-        redD5    = new DigitalOutput(5);
-        purpleD6 = new DigitalOutput(6);
-        blueD7   = new DigitalOutput(7);
-        orangeD8 = new DigitalOutput(8);
-        greenD9  = new DigitalOutput(9);
+        purpleR0 = new Relay(0);
+        blueR1   = new Relay(1);
+        orangeR2 = new Relay(2);
+        greenR3  = new Relay(3);
         
         this.setLEDColor(LEDColor.NONE);
     }
@@ -37,57 +37,51 @@ public class LEDHelper {
     }
 
     /**
-     * Converts a color into the required digital outputs to communcate 
+     * Converts a color into the required relay outputs to communcate 
      * the desired color to the arduino
      */
     public void setLEDColor(LEDColor color) {
         switch (color) {
             case BLINKING_RED:
-                redD5.set(true);
-                purpleD6.set(false);
-                blueD7.set(false);
-                orangeD8.set(false);
-                greenD9.set(false);
+                purpleR0.set(Value.kForward);
+                blueR1.set(Value.kForward);
+                orangeR2.set(Value.kForward);
+                greenR3.set(Value.kForward);
                 currentColor = LEDColor.BLINKING_RED;
                 break;
             case PURPLE:
-                redD5.set(false);
-                purpleD6.set(true);
-                blueD7.set(false);
-                orangeD8.set(false);
-                greenD9.set(false);
+                purpleR0.set(Value.kForward);
+                blueR1.set(Value.kOff);
+                orangeR2.set(Value.kOff);
+                greenR3.set(Value.kOff);
                 currentColor = LEDColor.PURPLE;
                 break;
             case BLUE:
-                redD5.set(false);
-                purpleD6.set(false);
-                blueD7.set(true);
-                orangeD8.set(false);
-                greenD9.set(false);
+                purpleR0.set(Value.kOff);
+                blueR1.set(Value.kForward);
+                orangeR2.set(Value.kOff);
+                greenR3.set(Value.kOff);
                 currentColor = LEDColor.BLUE;
                 break;
             case ORANGE:
-                redD5.set(false);
-                purpleD6.set(false);
-                blueD7.set(false);
-                orangeD8.set(true);
-                greenD9.set(false);
+                purpleR0.set(Value.kOff);
+                blueR1.set(Value.kOff);
+                orangeR2.set(Value.kForward);
+                greenR3.set(Value.kOff);
                 currentColor = LEDColor.ORANGE;
                 break;
             case GREEN:
-                redD5.set(false);
-                purpleD6.set(false);
-                blueD7.set(false);
-                orangeD8.set(false);
-                greenD9.set(true);
+                purpleR0.set(Value.kOff);
+                blueR1.set(Value.kOff);
+                orangeR2.set(Value.kOff);
+                greenR3.set(Value.kForward);
                 currentColor = LEDColor.GREEN;
                 break;
             case NONE:
-                redD5.set(false);
-                purpleD6.set(false);
-                blueD7.set(false);
-                orangeD8.set(false);
-                greenD9.set(false);
+                purpleR0.set(Value.kOff);
+                blueR1.set(Value.kOff);
+                orangeR2.set(Value.kOff);
+                greenR3.set(Value.kOff);
                 currentColor = LEDColor.NONE;
                 break;
         }
@@ -103,7 +97,7 @@ public class LEDHelper {
             return LEDColor.PURPLE;
         } else if (Robot.hatchScoop.getState() == HatchScoopState.DOWN) {
             return LEDColor.BLUE;
-        } else if (Robot.cargoIntake.getPosition() == positionState.DOWN) {
+        } else if (Robot.cargoIntake.getPosition() == PositionState.DOWN) {
             return LEDColor.ORANGE;
         } else if (Robot.cameraManager.hasValidCameraUpdate()) {
             return LEDColor.GREEN;
