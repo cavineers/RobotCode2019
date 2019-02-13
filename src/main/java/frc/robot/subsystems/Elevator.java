@@ -162,7 +162,7 @@ public class Elevator extends Subsystem {
         manualVelocity = trigger;
     }
 
-    public boolean moveGrabber() {
+    public boolean canMoveGrabber() {
         if(this.getElevatorMotor().getEncoder().getPosition() <= Constants.kMaxMoveGrabber && this.getElevatorMotor().getEncoder().getPosition() >= Constants.kMinMoveGrabber) {
             return true;
         }

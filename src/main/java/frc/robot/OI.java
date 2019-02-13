@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.lib.pathPursuit.Path;
 import frc.robot.commands.FollowPath;
+import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.ToggleCargoIntake;
@@ -51,10 +52,12 @@ public class OI {
     public OI() {
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
-        a_button.whenPressed(new TargetVisionTape());
-        b_button.whenPressed(new ElevatorToPos(10));
-        x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
-        y_button.whenPressed(new ToggleCargoIntake());
+        // a_button.whenPressed(new TargetVisionTape());
+        // b_button.whenPressed(new ElevatorToPos(10));
+        // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
+        // y_button.whenPressed(new ToggleCargoIntake());
+        
+        a_button.toggleWhenPressed(new IntakeCargo());
     }
 
     public Joystick getJoystick() {
