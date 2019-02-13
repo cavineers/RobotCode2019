@@ -18,7 +18,7 @@ public class HomeElev extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		Robot.elevator.getPIDAccel().reset();
+		Robot.elevator.getPIDPos().reset();
 		Robot.elevator.getElevatorMotor().setIdleMode(IdleMode.kBrake);
 		Robot.elevator.getElevatorMotor().set(.7);
 		step = 1;
@@ -39,7 +39,7 @@ public class HomeElev extends Command {
 		case 2:
 			if (!Robot.elevator.getLimitSwitch().get()) {
 				Robot.elevator.getElevatorMotor().set(0);
-				Robot.elevator.getPIDAccel().setSetpoint(0);
+				Robot.elevator.getPIDPos().setSetpoint(0);
 				Robot.elevator.getElevatorMotor().stopMotor();
 				step = 3;
 			}

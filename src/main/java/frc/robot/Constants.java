@@ -44,10 +44,10 @@ public class Constants {
     public static final double kElevPIDAccelPeriod = .025; //seconds
     public static final double kElevPercentTolerance = 5;
     
-    public static final double kPAccelElev = 0;
-    public static final double kIAccelElev = 0;
-    public static final double kDAccelElev = 0;
-    public static final double kFAccelElev = 0;
+    public static final double kPPosElev = 0;
+    public static final double kIPosElev = 0;
+    public static final double kDPosElev = 0;
+    public static final double kFPosElev = 0;
 
     public static final double kElevSensorLocation = 0;
 
