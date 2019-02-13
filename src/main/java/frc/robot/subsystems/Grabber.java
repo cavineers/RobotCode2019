@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -20,11 +21,12 @@ public class Grabber extends Subsystem {
     public GrabberState grabberState;
 
     CANSparkMax armMotor; // motor responcible moving the arm forward and backward
+    WPI_TalonSRX ballMotor; // motor responcible for minipulating the ball in the grabber
 
     DoubleSolenoid grabberSol; // double solenoid for control of both the 
                                // ball's endstop and the hatch grabber
 
-    double positionOffset;
+    double positionOffset; // a correction value used to offset position from homing
 
     public Grabber() {
         grabberState = GrabberState.UNKNOWN;
@@ -33,11 +35,39 @@ public class Grabber extends Subsystem {
         positionOffset = 0;
     }
 
+    /**
+     * Starts moving the arm motor forwards at a given percent output for homing
+     */
     public void beginHoming() {
         armMotor.set(Constants.kGrabberHomingSpeed);
     }
 
-    public void setPosition(GrabberState state) {
+    /**
+     * returns true if the grabber exceeds the current limit from constants
+     */
+    public boolean exceedsCurrentLimit() {
+        return armMotor.getOutputCurrent() > Constants.kGrabberMaxHomingCurrent; 
+    }
+
+    /**
+     * Sets the position offset of the grabber such that newPos is the current position
+     */
+    public void setEncoderPosition(double newPos) {
+        positionOffset = armMotor.getEncoder().getPosition() - newPos;
+    }
+
+    /**
+     * Gets the current position of the grabber, with corrections from homing (in rotations)
+     */
+    public double getPosition() {
+        return armMotor.getEncoder().getPosition() - positionOffset;
+    }
+
+    /**
+     * Sets the current state of the grabber
+     * @param state the desired state of the grabber
+     */
+    public void setState(GrabberState state) {
         if (state == GrabberState.EXTENDED) {
             armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberExtendedPos, ControlType.kPosition);
         } else if (state == GrabberState.RETRACTED) {
@@ -49,18 +79,10 @@ public class Grabber extends Subsystem {
         }
     }
 
-    public boolean exceedsCurrentLimit() {
-        return armMotor.getOutputCurrent() > Constants.kGrabberMaxHomingCurrent; 
-    }
-
-    public void setEncoderPosition(double newPos) {
-        positionOffset = armMotor.getEncoder().getPosition() - newPos;
-    }
-
-    public double getPosition() {
-        return armMotor.getEncoder().getPosition() - positionOffset;
-    }
-
+    /**
+     * Get the current state of the grabber
+     * @return the current state of the grabber
+     */
     public GrabberState getState() {
         if (Math.abs(this.getPosition() - Constants.kGrabberExtendedPos) < Constants.kGrabberTolerance) {
             return GrabberState.EXTENDED;

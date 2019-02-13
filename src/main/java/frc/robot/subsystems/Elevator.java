@@ -23,6 +23,16 @@ public class Elevator extends Subsystem {
     private double manualVelocity = 9999;
     private double prevOutput = 0;
     private int loop = 0;
+    private double positionOffset = 0;
+
+    public enum ElevatorLevel {
+        GROUND,
+        CARGO_INTAKE,
+        LVL1,
+        LVL2,
+        LVL3,
+        INVALID
+    }
 
     public Elevator() {
         limitSwitch = new DigitalInput(0); // change input later
@@ -40,9 +50,6 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().set(-500);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
     
-
-        
-
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
 
@@ -97,7 +104,7 @@ public class Elevator extends Subsystem {
                 }
 
             }
-        }, Constants.kElevPIDAccelPeriod);
+        }, Constants.kElevPIDPosPeriod);
 
         pidPos.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
         pidPos.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
@@ -105,12 +112,8 @@ public class Elevator extends Subsystem {
         pidPos.setPercentTolerance(Constants.kElevPercentTolerance);
     }
 
-    /**
-     * Initialize normal driving as a default command
-     */
     @Override
     public void initDefaultCommand() {
-        //setDefaultCommand(new ElevatorToPos(Constants.pulsesPerInch*10));
     }
 
     /**
@@ -121,49 +124,41 @@ public class Elevator extends Subsystem {
         return this.elevatorMotor;
     }
     
+    /**
+     * returns the limit switch responcible for elevator homing
+     */
     public DigitalInput getLimitSwitch() {
         return limitSwitch;
     }
-
-    public double getElevatorVel() {
-        return this.getElevatorMotor().getEncoder().getVelocity();
-    }
-
-    public void setVel(double vel) {
-        this.getElevatorMotor().set(vel);
+    
+    /**
+     * Sets the percent output of the elevator motor
+     */
+    public void setMotorOutput(double output) {
+        this.getElevatorMotor().set(output);
     }
 
     /**
-     * returns the current velocity of the elevator in inches per second
+     * return the outer (position) controller of the cascading pid system
      */
-    public double getVelInchesPerSecond() {
-        return (this.getElevatorMotor().getEncoder().getVelocity()/Constants.kElevatorPulsesPerInch) * 10;
-    }
-
-    /**
-     * returns the current height of the elevator in inches
-     */
-    public double getCurrentHeight() {
-        return this.getElevatorMotor().getEncoder().getPosition()/Constants.kElevatorPulsesPerInch;
-    }
-
-    /**
-     * Converts a given speed in inches/sec to pulses per 100ms
-     */
-    public static double convertToPulsesPer100Ms(double velInPerSec) {
-        return (velInPerSec / 10) * Constants.kElevatorPulsesPerInch;
-    }
-
     public PIDController getPIDPos(){
         return pidPos;
     }
 
+    /**
+     * manually set the velocity of the inner control loop for manual elevator control
+     * 
+     * @param trigger the desired velocity for the elevator
+     */
     public void setManualVelocity(double trigger) {
         manualVelocity = trigger;
     }
 
+    /**
+     * Returns whether the grabber can safely move back at the current elevator position
+     */
     public boolean canMoveGrabber() {
-        if(this.getElevatorMotor().getEncoder().getPosition() <= Constants.kMaxMoveGrabber && this.getElevatorMotor().getEncoder().getPosition() >= Constants.kMinMoveGrabber) {
+        if(this.getPosition() <= Constants.kMaxMoveGrabber && this.getPosition() >= Constants.kMinMoveGrabber) {
             return true;
         }
         else{
@@ -171,9 +166,70 @@ public class Elevator extends Subsystem {
         }
     }
 
+    /**
+     * Moves the elevator to the given setpoint (in rotations)
+     */
     public void moveElevator(double p){
-        getPIDPos().setSetpoint(p);
+        getPIDPos().setSetpoint(p + this.positionOffset);
     }
-    
+
+    /**
+     * Moves the elevator to the given level
+     */
+    public void moveElevator(ElevatorLevel level) {
+        switch (level) {
+            case GROUND:
+                this.moveElevator(Constants.kElevatorGroundLvl);
+                break;
+            case CARGO_INTAKE:
+                this.moveElevator(Constants.kElevatorIntakeLvl);
+                break;
+            case LVL1:
+                this.moveElevator(Constants.kElevatorLvl1);
+                break;
+            case LVL2:
+                this.moveElevator(Constants.kElevatorLvl2);
+                break;
+            case LVL3:
+                this.moveElevator(Constants.kElevatorLvl3);
+                break;
+            case INVALID:
+                System.out.println("cannot raise the elevator to an invalid level");
+                break;
+        }
+    }
+
+    /**
+     * Sets the position offset of the elevator such that newPos is the current position
+     */
+    public void setEncoderPosition(double newPos) {
+        positionOffset = elevatorMotor.getEncoder().getPosition() - newPos;
+    }
+
+    /**
+     * Gets the position of the elevator in rotations, with the offset from homing
+     */
+    public double getPosition() {
+        return elevatorMotor.getEncoder().getPosition() - positionOffset;
+    }
+
+    /**
+     * Gets the current level of the elevator, or invalid if the elevator is in between levels
+     */
+    public ElevatorLevel getLevel() {
+        if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.GROUND;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorIntakeLvl) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.CARGO_INTAKE;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL1;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL2;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL3;
+        } else {
+            return ElevatorLevel.INVALID;
+        }
+    }
 
 }
