@@ -17,6 +17,7 @@ import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.subsystems.HatchScoop;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
@@ -40,6 +41,10 @@ public class Robot extends TimedRobot {
   public static Grabber grabber;
 
   public DankDash dankDash;
+
+  public static double lastHeartbeatTime;
+  public static NetworkTable netTable;
+  public static double heartbeatValue;
 
   public static AHRS gyro;
   public static OI oi;
@@ -99,6 +104,8 @@ public class Robot extends TimedRobot {
     dankDash.setProfileLocation("TestChassis");
     dankDash.setProfileName("Test Chassis");
     dankDash.export();
+
+    netTable = NetworkTableInstance.getDefault().getTable("DankDash");
 
     }
 
