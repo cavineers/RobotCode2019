@@ -38,7 +38,8 @@ public class Constants {
 
     //TODO: set these values
     public static final double kElevatorGroundLvl = 0; 
-    public static final double kElevatorIntakeLvl = 0;
+    public static final double kElevatorHatchPickupLvl = 0;
+    public static final double kElevatorCargoPickupLvl = 0;
     public static final double kElevatorLvl1Hatch = 0;
     public static final double kElevatorLvl1Cargo = 0;
     public static final double kElevatorLvl2Hatch = 0;

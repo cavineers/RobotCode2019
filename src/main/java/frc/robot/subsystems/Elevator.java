@@ -28,6 +28,7 @@ public class Elevator extends Subsystem {
     public enum ElevatorLevel {
         GROUND,
         CARGO_INTAKE,
+        HATCH_INTAKE,
         LVL1_HATCH,
         LVL1_CARGO,
         LVL2_HATCH,
@@ -184,8 +185,11 @@ public class Elevator extends Subsystem {
             case GROUND:
                 this.moveElevator(Constants.kElevatorGroundLvl);
                 break;
+            case HATCH_INTAKE:
+                this.moveElevator(Constants.kElevatorHatchPickupLvl);
+                break;
             case CARGO_INTAKE:
-                this.moveElevator(Constants.kElevatorIntakeLvl);
+                this.moveElevator(Constants.kElevatorCargoPickupLvl);
                 break;
             case LVL1_HATCH:
                 this.moveElevator(Constants.kElevatorLvl1Hatch);
@@ -231,8 +235,10 @@ public class Elevator extends Subsystem {
     public ElevatorLevel getLevel() {
         if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kGrabberTolerance) {
             return ElevatorLevel.GROUND;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorIntakeLvl) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorCargoPickupLvl) < Constants.kGrabberTolerance) {
             return ElevatorLevel.CARGO_INTAKE;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorHatchPickupLvl) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.HATCH_INTAKE;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Hatch) < Constants.kGrabberTolerance) {
             return ElevatorLevel.LVL1_HATCH;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Cargo) < Constants.kGrabberTolerance) {
