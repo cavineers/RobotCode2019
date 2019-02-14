@@ -27,15 +27,25 @@ public class IntakeCargo extends CommandGroup {
     }
    
     @Override
+    protected void end() {
+        Command shutoffIntake = new ChangeCargoIntakeState(CargoIntake.PositionState.UP, CargoIntake.MotorState.OFF);
+        shutoffIntake.start();
+        shutoffIntake.close();
+    }
+
+    @Override
     protected boolean isFinished() {
         return super.isFinished() || OI.a_button.get() || Robot.grabber.hasCargo(); //TODO: finish if there is a ball already in the grabber
     }
 
     @Override
-    protected void end() {
-        Command shutoffIntake = new ChangeCargoIntakeState(CargoIntake.PositionState.UP, CargoIntake.MotorState.OFF);
-        shutoffIntake.start();
-        shutoffIntake.close();
+    public boolean isCanceled() {
+        return super.isCanceled() || isFinished(); //stop the command from running when isFinished = false
+    }
+
+    @Override
+    protected void interrupted() {
+        this.end(); //make sure that the end method is called even if the command is interrupted / canceled 
     }
   
 
