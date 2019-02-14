@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.lib.pathPursuit.Path;
@@ -16,10 +17,19 @@ import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.FollowPath.PATH_TYPE;
 import frc.robot.subsystems.DriveTrain.DriveGear;
+import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber.LegState;
 import frc.robot.commands.ChangeClimberState;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.commands.Rumble;
+import frc.robot.commands.Rumble.ControllerSide;
+import frc.robot.LEDHelper;
+import frc.robot.LEDHelper.LEDColor;
+
+
+
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -39,14 +49,17 @@ public class OI {
     public static JoystickButton right_middle = new JoystickButton(joy, 8);
     public static JoystickButton left_stick = new JoystickButton(joy, 9);
     public static JoystickButton right_stick = new JoystickButton(joy, 10);
+
+    LEDHelper led;
+
     public int lastDpad = -1;
 
     public enum TRIG_MODE {
 		ELEVATOR, CLIMBER
     }
-    
-    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
 
+    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
+    
     public OI() {
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
@@ -54,9 +67,89 @@ public class OI {
         // b_button.whenPressed(new ElevatorToPos(10));
         // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
         // y_button.whenPressed(new ToggleCargoIntake());
-        
-        a_button.whenPressed(new IntakeCargo());
+
+        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
+            a_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
+            y_button.whenPressed(new ChangeClimberState(LegState.RETRACTED));
+        }
+        else{
+            a_button.whenPressed(new IntakeCargo());
+        }
+
+        left_middle.whenPressed(new Command() { //Toggle between elevator and climber
+            protected void initialize() { 
+               if (Robot.oi.currentTriggerSetting == TRIG_MODE.ELEVATOR && Robot.isEndGame()) {
+                   Robot.oi.currentTriggerSetting = TRIG_MODE.CLIMBER;
+                   new Rumble(0.25, ControllerSide.BOTH).start();
+                   led.setLEDColor(LEDColor.PURPLE);
+                   Robot.climber.toggleArms();
+               } else {
+                   Robot.oi.currentTriggerSetting = TRIG_MODE.ELEVATOR;
+               }
+            }
+           @Override
+           protected boolean isFinished() {
+               return true;
+           }
+           
+       });
+
     }
+
+    
+
+    public void getDPad(){
+        if (lastDpad != joy.getPOV()) {
+			switch (joy.getPOV()) {
+			case 0: {
+                // Top
+                if(Robot.grabber.hasCargo()){
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_CARGO);
+                }
+                else if(Robot.grabber.hasHatch()){
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_HATCH);
+                }
+                else{
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_CARGO); 
+                }
+				break;
+			}
+			case 90: {
+				// Right
+                if(Robot.grabber.hasCargo()){
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL2_CARGO);
+                }
+                else if(Robot.grabber.hasHatch()){
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL2_HATCH);
+                }
+                else{
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL2_CARGO); 
+                }
+				break;
+			}
+			case 180: {
+				// Bottom
+				Robot.elevator.moveElevator(ElevatorLevel.GROUND);
+				break;
+			}
+			case 270: {
+				// Left
+				if(Robot.grabber.hasCargo()){
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL1_CARGO);
+                }
+                else if(Robot.grabber.hasHatch()){
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL1_HATCH);
+                }
+                else{
+                    Robot.elevator.moveElevator(ElevatorLevel.LVL1_CARGO); 
+                }
+				break;
+			}
+			}
+		}
+		lastDpad = joy.getPOV();
+    }
+       
 
     public Joystick getJoystick() {
         return joy;
@@ -71,4 +164,6 @@ public class OI {
             input = Math.pow(input, 2);
         return input;
     }
+
+    
 }

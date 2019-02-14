@@ -28,10 +28,13 @@ public class Elevator extends Subsystem {
     public enum ElevatorLevel {
         GROUND,
         CARGO_INTAKE,
-        LVL1,
-        LVL2,
-        LVL3,
-        INVALID
+        LVL1_HATCH,
+        LVL1_CARGO,
+        LVL2_HATCH,
+        LVL2_CARGO,
+        LVL3_HATCH,
+        LVL3_CARGO,
+        INVALID;
     }
 
     public Elevator() {
@@ -184,14 +187,23 @@ public class Elevator extends Subsystem {
             case CARGO_INTAKE:
                 this.moveElevator(Constants.kElevatorIntakeLvl);
                 break;
-            case LVL1:
-                this.moveElevator(Constants.kElevatorLvl1);
+            case LVL1_HATCH:
+                this.moveElevator(Constants.kElevatorLvl1Hatch);
                 break;
-            case LVL2:
-                this.moveElevator(Constants.kElevatorLvl2);
+            case LVL1_CARGO:
+                this.moveElevator(Constants.kElevatorLvl1Cargo);
                 break;
-            case LVL3:
-                this.moveElevator(Constants.kElevatorLvl3);
+            case LVL2_HATCH:
+                this.moveElevator(Constants.kElevatorLvl2Hatch);
+                break;
+            case LVL2_CARGO:
+                this.moveElevator(Constants.kElevatorLvl2Cargo);
+                break;
+            case LVL3_HATCH:
+                this.moveElevator(Constants.kElevatorLvl3Hatch);
+                break;
+            case LVL3_CARGO:
+                this.moveElevator(Constants.kElevatorLvl3Cargo);
                 break;
             case INVALID:
                 System.out.println("cannot raise the elevator to an invalid level");
@@ -221,12 +233,18 @@ public class Elevator extends Subsystem {
             return ElevatorLevel.GROUND;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorIntakeLvl) < Constants.kGrabberTolerance) {
             return ElevatorLevel.CARGO_INTAKE;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1) < Constants.kGrabberTolerance) {
-            return ElevatorLevel.LVL1;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2) < Constants.kGrabberTolerance) {
-            return ElevatorLevel.LVL2;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3) < Constants.kGrabberTolerance) {
-            return ElevatorLevel.LVL3;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Hatch) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL1_HATCH;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Cargo) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL1_CARGO;    
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Hatch) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL2_HATCH;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Cargo) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL2_CARGO;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Hatch) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL3_HATCH;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Cargo) < Constants.kGrabberTolerance) {
+            return ElevatorLevel.LVL3_CARGO;
         } else {
             return ElevatorLevel.INVALID;
         }

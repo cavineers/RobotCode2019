@@ -161,4 +161,29 @@ public class Climber extends Subsystem {
         }
     }
 
+    public CANSparkMax getClimberMotor() {
+        return this.m_motor;
+    }
+
+    public void setEncoderPosition(double newPos) {
+        positionOffset = m_motor.getEncoder().getPosition() - newPos;
+    }
+
+    public double getPosition() {
+        return m_motor.getEncoder().getPosition() - positionOffset;
+    }
+
+    public LegState getLeg(){
+        if (Math.abs(this.getPosition() - Constants.kClimbLegDeployed) < Constants.kClimberTolerance) {
+            return LegState.DEPLOYED;
+        }
+        else if (Math.abs(this.getPosition() - Constants.kClimbLegRetracted) < Constants.kClimberTolerance) {
+            return LegState.RETRACTED;
+        }
+        else{
+            return LegState.INVALID;
+        }
+
+    }
+
 }

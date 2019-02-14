@@ -39,9 +39,13 @@ public class Constants {
     //TODO: set these values
     public static final double kElevatorGroundLvl = 0; 
     public static final double kElevatorIntakeLvl = 0;
-    public static final double kElevatorLvl1 = 0;
-    public static final double kElevatorLvl2 = 0;
-    public static final double kElevatorLvl3 = 0;
+    public static final double kElevatorLvl1Hatch = 0;
+    public static final double kElevatorLvl1Cargo = 0;
+    public static final double kElevatorLvl2Hatch = 0;
+    public static final double kElevatorLvl2Cargo = 0;
+    public static final double kElevatorLvl3Hatch = 0;
+    public static final double kElevatorLvl3Cargo = 0;
+
     
     public static final double kPVelocityElev = 0;
     public static final double kIVelocityElev = 0;
@@ -148,6 +152,14 @@ public class Constants {
 
     public static final double kClimberMaxOutput = 1;
     public static final double kClimberMinOutput = -1;
+
+    public static final double kClimbTime = 40.0; //earliest time to deploy climber (seconds)
+
+    public static final double kClimbLegDeployed = 0;
+    public static final double kClimbLegRetracted = 0;
+    public static final double kClimbArmDeployed = 0;
+    public static final double kClimbArmRetracted = 0;
+
 
     // Grabber
     public static final double kGrabberHomingSpeed = -0.1;
