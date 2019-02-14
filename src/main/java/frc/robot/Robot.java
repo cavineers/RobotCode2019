@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
 
     // Init and export profile to network tables
     dankDash = new DankDash();
+    dankDash.setProfileLocation("TestChassis");
+    dankDash.setProfileName("Test Chassis");
     dankDash.export();
 
     }
@@ -112,7 +114,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     cameraManager.checkForCamUpdates();
     leds.update();
-    
+    heartbeat();
   }
 
   /**
@@ -212,5 +214,14 @@ public class Robot extends TimedRobot {
    */
   public static boolean isClimbing() {
     return false; //TODO: implement
+  }
+
+  public void heartbeat() {
+    if (Robot.getCurrentTime() - lastHeartbeatTime > 1) {
+        NetworkTable netTable = NetworkTableInstance.getDefault().getTable("DankDash");
+        lastHeartbeatTime = Robot.getCurrentTime();
+        netTable.getEntry("Heartbeat").setDouble(heartbeatValue);
+        heartbeatValue++;
+    }
   }
 }
