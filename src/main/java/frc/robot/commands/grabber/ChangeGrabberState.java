@@ -26,10 +26,6 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected void initialize() {
-    }
-
-    @Override
-    protected void execute() {
         if (!Robot.elevator.canMoveGrabber()) {
             return;
         }
@@ -40,6 +36,10 @@ public class ChangeGrabberState extends Command {
         if (this.desiredMotorState != null) {
             Robot.grabber.setMotorState(desiredMotorState);
         }
+    }
+
+    @Override
+    protected void execute() {
     }
 
     @Override
