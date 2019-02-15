@@ -256,7 +256,7 @@ public class Robot extends TimedRobot {
   public void sendMatchTime() {
       if (Robot.getCurrentTime() - lastMatchTime >= 1) {
         lastMatchTime = Robot.getCurrentTime();
-        dankDash.sendDash("MatchTime", Double.toString(DriverStation.getInstance().getMatchTime()));
+        dankDash.sendDash("MatchTime", Double.toString(Math.round(DriverStation.getInstance().getMatchTime())));
       }
   }
 }
