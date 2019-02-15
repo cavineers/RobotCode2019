@@ -40,14 +40,15 @@ public class Constants {
     public static final double kElevatorGroundLvl = 0; 
     public static final double kElevatorHatchPickupLvl = 0;
     public static final double kElevatorCargoPickupLvl = 0;
-    public static final double kElevatorLvl1Hatch = 0;
-    public static final double kElevatorLvl1Cargo = 0;
-    public static final double kElevatorLvl2Hatch = 0;
-    public static final double kElevatorLvl2Cargo = 0;
-    public static final double kElevatorLvl3Hatch = 0;
-    public static final double kElevatorLvl3Cargo = 0;
+    public static final double kElevatorLvl1Hatch = 4.5*kElevatorPulsesPerInch;
+    public static final double kElevatorLvl1Cargo = 3*kElevatorPulsesPerInch;
+    public static final double kElevatorLvl2Hatch = 32.5*kElevatorPulsesPerInch;
+    public static final double kElevatorLvl2Cargo = 31*kElevatorPulsesPerInch;
+    public static final double kElevatorLvl3Hatch = 60.5*kElevatorPulsesPerInch;
+    public static final double kElevatorLvl3Cargo = 58.5*kElevatorPulsesPerInch;
 
-    
+    public static final double kElevatorHomeHeight = -.5;
+
     public static final double kPVelocityElev = 0;
     public static final double kIVelocityElev = 0;
     public static final double kDVelocityElev = 0;
@@ -65,6 +66,12 @@ public class Constants {
 
     public static final double kMaxMoveGrabber = 0;
     public static final double kMinMoveGrabber = 0;
+
+    public static final double kHomeTimeout = 180; //seconds
+    public static final double kHomeMotorSpeed = -.1; //percent motor output
+    public static final double kHomeCurrentThreshold = 1;
+    public static final double kHomeEncoderVelTolerance = 1000;
+    public static final int kHomeEncoderCurrentCycle = 250;
 
 
 

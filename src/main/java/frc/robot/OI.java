@@ -23,10 +23,15 @@ import frc.robot.subsystems.Climber.LegState;
 import frc.robot.commands.ChangeClimberState;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Rumble;
 import frc.robot.commands.Rumble.ControllerSide;
+import frc.robot.commands.elevator.HomeElev;
+import frc.robot.commands.elevator.ManualElev;
+import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.LEDHelper;
 import frc.robot.LEDHelper.LEDColor;
+
 
 
 
@@ -68,13 +73,36 @@ public class OI {
         // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
         // y_button.whenPressed(new ToggleCargoIntake());
 
-        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
-            a_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
-            y_button.whenPressed(new ChangeClimberState(LegState.RETRACTED));
-        }
-        else{
-            a_button.whenPressed(new IntakeCargo());
-        }
+        
+        //testing only
+        /*x_button.whenPressed(new HomeElev());
+        y_button.whenPressed(new ElevatorToLevel(ElevatorLevel.LVL1_CARGO)); //3 inches
+        a_button.whenPressed(new Command() {
+            protected void initialize() { 
+               Robot.elevator.getElevatorMotor().set(.3);
+             }
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+            
+        });
+
+        b_button.whenPressed(new Command() {
+            protected void initialize() { 
+               Robot.elevator.getElevatorMotor().stopMotor();
+             }
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+            
+        });*/
+
+        a_button.whenPressed(getAButton());
+        y_button.whenPressed(getYButton());
+       
+        System.out.println("Motor Rotations: " + Robot.elevator.getElevatorMotor().getEncoder().getPosition());
 
         left_middle.whenPressed(new Command() { //Toggle between elevator and climber
             protected void initialize() { 
@@ -163,6 +191,36 @@ public class OI {
         else
             input = Math.pow(input, 2);
         return input;
+    }
+
+    
+
+
+    public Command getAButton(){
+        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
+            return new ChangeClimberState(LegState.DEPLOYED);
+        }
+        else{
+            return new IntakeCargo();
+        }
+    }
+
+    public Command getYButton(){
+        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
+            return new ChangeClimberState(LegState.RETRACTED);
+        }
+        else{
+            return new Command() {
+                protected void initialize() { 
+                    isFinished();
+                 }
+                @Override
+                protected boolean isFinished() {
+                    return true;
+                }
+                
+            };
+        }
     }
 
     

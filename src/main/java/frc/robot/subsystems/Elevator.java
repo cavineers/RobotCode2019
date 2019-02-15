@@ -50,8 +50,6 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
         this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElev);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
-
-        this.getElevatorMotor().set(-500);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
     
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, new PIDSource() {
@@ -227,6 +225,10 @@ public class Elevator extends Subsystem {
      */
     public double getPosition() {
         return elevatorMotor.getEncoder().getPosition() - positionOffset;
+    }
+
+    public void freezeElevator(){
+        pidPos.setSetpoint(this.getPosition());
     }
 
     /**
