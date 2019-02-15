@@ -195,7 +195,9 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given level
      */
     public void moveElevator(ElevatorLevel level) {
-        
+        if(!getPIDPos().isEnabled()){
+            getPIDPos().enable();
+        }
         switch (level) {
             case GROUND:
                 this.moveElevator(Constants.kElevatorGroundLvl);
