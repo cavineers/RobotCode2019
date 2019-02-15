@@ -114,9 +114,6 @@ public class Robot extends TimedRobot {
     dankDash.setProfileLocation("TestChassis");
     dankDash.setProfileName("Test Chassis");
     dankDash.export();
-
-    netTable = NetworkTableInstance.getDefault().getTable("DankDash");
-
     }
 
   /**
@@ -247,9 +244,8 @@ public class Robot extends TimedRobot {
 
   public void heartbeat() {
     if (Robot.getCurrentTime() - lastHeartbeatTime > 1) {
-        NetworkTable netTable = NetworkTableInstance.getDefault().getTable("DankDash");
         lastHeartbeatTime = Robot.getCurrentTime();
-        netTable.getEntry("Heartbeat").setDouble(heartbeatValue);
+        dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
         heartbeatValue++;
     }
   }
