@@ -46,6 +46,8 @@ public class Robot extends TimedRobot {
   public static NetworkTable netTable;
   public static double heartbeatValue;
 
+  public static double lastMatchTime;
+
   public static AHRS gyro;
   public static OI oi;
   public static RobotPosEstimator estimator;
@@ -129,6 +131,7 @@ public class Robot extends TimedRobot {
     cameraManager.checkForCamUpdates();
     leds.update();
     heartbeat();
+    sendMatchTime();
     posWant = Robot.elevator.getPIDPos().getSetpoint();
     posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
     posError = Math.abs(posWant-posGot);
@@ -248,5 +251,12 @@ public class Robot extends TimedRobot {
         dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
         heartbeatValue++;
     }
+  }
+
+  public void sendMatchTime() {
+      if (Robot.getCurrentTime() - lastMatchTime >= 1) {
+        lastMatchTime = Robot.getCurrentTime();
+        dankDash.sendDash("MatchTime", Double.toString(DriverStation.getInstance().getMatchTime()));
+      }
   }
 }
