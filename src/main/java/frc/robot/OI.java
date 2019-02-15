@@ -20,6 +20,7 @@ import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber.LegState;
+import frc.robot.subsystems.Grabber.GrabberState;
 import frc.robot.commands.ChangeClimberState;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
@@ -28,6 +29,7 @@ import frc.robot.commands.Rumble;
 import frc.robot.commands.Rumble.ControllerSide;
 import frc.robot.commands.elevator.HomeElev;
 import frc.robot.commands.elevator.ManualElev;
+import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.LEDHelper;
 import frc.robot.LEDHelper.LEDColor;
@@ -98,7 +100,7 @@ public class OI {
         });*/
 
         a_button.whenPressed(getAButton());
-        y_button.whenPressed(getYButton());
+        y_button.whenPressed(new EjectBall());
        
         left_middle.whenPressed(new Command() { //Toggle between elevator and climber
             protected void initialize() { 
@@ -201,23 +203,23 @@ public class OI {
         }
     }
 
-    public Command getYButton(){
-        if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
-            return new ChangeClimberState(LegState.RETRACTED);
-        }
-        else{
-            return new Command() {
-                protected void initialize() { 
-                    isFinished();
-                 }
-                @Override
-                protected boolean isFinished() {
-                    return true;
-                }
+    // public Command getYButton(){
+    //     if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
+    //         return new ChangeClimberState(LegState.RETRACTED);
+    //     }
+    //     else{
+    //         return new Command() {
+    //             protected void initialize() { 
+    //                 isFinished();
+    //              }
+    //             @Override
+    //             protected boolean isFinished() {
+    //                 return true;
+    //             }
                 
-            };
-        }
-    }
+    //         };
+    //     }
+    // }
 
     
 }

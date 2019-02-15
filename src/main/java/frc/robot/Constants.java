@@ -176,6 +176,7 @@ public class Constants {
     // grabber movement speeds
     public static final double kGrabberIntakeSpeed = 0.1;
     public static final double kGrabberEjectionSpeed = 1;
+    public static final double kGrabberEjectionTime = 1;
 
     public static final double kGrabberTolerance = 0.1; //TODO set
 
