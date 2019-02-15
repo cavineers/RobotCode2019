@@ -45,4 +45,8 @@ public class DankDash {
         netTable.getEntry("ProfileData").setString(this.profileLocation);
         netTable.getEntry("ProfileName").setString(this.profileName);
     }
+
+    public void sendDash(String id, String data){
+        netTable.getEntry(id).setString(data);
+    }
 }

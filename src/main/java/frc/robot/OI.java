@@ -32,10 +32,6 @@ import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.LEDHelper;
 import frc.robot.LEDHelper.LEDColor;
 
-
-
-
-
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -55,17 +51,19 @@ public class OI {
     public static JoystickButton left_stick = new JoystickButton(joy, 9);
     public static JoystickButton right_stick = new JoystickButton(joy, 10);
 
-    LEDHelper led;
+    
 
+    LEDHelper led;
     public int lastDpad = -1;
 
-    public enum TRIG_MODE {
+    public enum BUTTON_MODE {
 		ELEVATOR, CLIMBER
     }
 
-    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
+    public BUTTON_MODE currentTriggerSetting = BUTTON_MODE.ELEVATOR;
     
     public OI() {
+        
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
         // a_button.whenPressed(new TargetVisionTape());
@@ -102,17 +100,15 @@ public class OI {
         a_button.whenPressed(getAButton());
         y_button.whenPressed(getYButton());
        
-        System.out.println("Motor Rotations: " + Robot.elevator.getElevatorMotor().getEncoder().getPosition());
-
         left_middle.whenPressed(new Command() { //Toggle between elevator and climber
             protected void initialize() { 
-               if (Robot.oi.currentTriggerSetting == TRIG_MODE.ELEVATOR && Robot.isEndGame()) {
-                   Robot.oi.currentTriggerSetting = TRIG_MODE.CLIMBER;
+               if (Robot.oi.currentTriggerSetting == BUTTON_MODE.ELEVATOR && Robot.isEndGame()) {
+                   Robot.oi.currentTriggerSetting = BUTTON_MODE.CLIMBER;
                    new Rumble(0.25, ControllerSide.BOTH).start();
                    led.setLEDColor(LEDColor.PURPLE);
                    Robot.climber.toggleArms();
                } else {
-                   Robot.oi.currentTriggerSetting = TRIG_MODE.ELEVATOR;
+                   Robot.oi.currentTriggerSetting = BUTTON_MODE.ELEVATOR;
                }
             }
            @Override
@@ -197,7 +193,7 @@ public class OI {
 
 
     public Command getAButton(){
-        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
+        if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
             return new ChangeClimberState(LegState.DEPLOYED);
         }
         else{
@@ -206,7 +202,7 @@ public class OI {
     }
 
     public Command getYButton(){
-        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
+        if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
             return new ChangeClimberState(LegState.RETRACTED);
         }
         else{

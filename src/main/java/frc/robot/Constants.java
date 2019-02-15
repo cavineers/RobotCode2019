@@ -40,14 +40,13 @@ public class Constants {
     public static final double kElevatorGroundLvl = 0; 
     public static final double kElevatorHatchPickupLvl = 0;
     public static final double kElevatorCargoPickupLvl = 0;
-    public static final double kElevatorLvl1Hatch = 4.5*kElevatorPulsesPerInch;
-    public static final double kElevatorLvl1Cargo = 3*kElevatorPulsesPerInch;
-    public static final double kElevatorLvl2Hatch = 32.5*kElevatorPulsesPerInch;
-    public static final double kElevatorLvl2Cargo = 31*kElevatorPulsesPerInch;
-    public static final double kElevatorLvl3Hatch = 60.5*kElevatorPulsesPerInch;
-    public static final double kElevatorLvl3Cargo = 58.5*kElevatorPulsesPerInch;
-
-    public static final double kElevatorHomeHeight = -.5;
+    public static final double kElevatorHomeHeight = -.25;
+    public static final double kElevatorLvl1Hatch = (4.5*kElevatorPulsesPerInch) + Math.abs(kElevatorHomeHeight);
+    public static final double kElevatorLvl1Cargo = 3*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
+    public static final double kElevatorLvl2Hatch = 32.5*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
+    public static final double kElevatorLvl2Cargo = 31*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
+    public static final double kElevatorLvl3Hatch = 60.5*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
+    public static final double kElevatorLvl3Cargo = 58.5*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
 
     public static final double kPVelocityElev = 0;
     public static final double kIVelocityElev = 0;

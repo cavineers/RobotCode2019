@@ -56,6 +56,16 @@ public class Robot extends TimedRobot {
 
   public static LEDHelper leds;
 
+  double posError;
+  double posWant;
+  double posGot;
+  double velError;
+  double velWant;
+  double velGot;
+
+  String posData;
+  String velData;
+
   // Camera clock sync checking thread
   Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
 
@@ -122,6 +132,18 @@ public class Robot extends TimedRobot {
     cameraManager.checkForCamUpdates();
     leds.update();
     heartbeat();
+    posWant = Robot.elevator.getPIDPos().getSetpoint();
+    posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
+    posError = Math.abs(posWant-posGot);
+
+    velWant = Robot.elevator.getPIDPosOutput();
+    velGot = Robot.elevator.getElevatorMotor().getEncoder().getVelocity();
+    velError = Math.abs(velWant-velGot);
+
+    posData = Double.toString(posError) + "," + Double.toString(posWant) + "," + Double.toString(posGot);
+    velData = Double.toString(velError) + "," + Double.toString(velWant) + "," + Double.toString(velGot);
+    dankDash.sendDash("/DankDash/Pos", posData);
+    dankDash.sendDash("vel", velData);
   }
 
   /**
