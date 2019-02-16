@@ -41,9 +41,6 @@ public class Elevator extends Subsystem {
     public Elevator() {
         limitSwitch = new DigitalInput(0); // change input later
 
-        //zero the motor's encoder
-        this.getElevatorMotor().set(0);
-
         // set PID coefficients
         this.getElevatorMotor().getPIDController().setP(Constants.kPVelocityElev);
         this.getElevatorMotor().getPIDController().setI(Constants.kIVelocityElev);
@@ -51,7 +48,6 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElev);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
 
-        this.getElevatorMotor().set(-500);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
     
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, new PIDSource() {

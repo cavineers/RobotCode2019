@@ -97,7 +97,6 @@ public class Robot extends TimedRobot {
     // Init and export profile to network tables
     dankDash = new DankDash();
     dankDash.export();
-
     }
 
   /**

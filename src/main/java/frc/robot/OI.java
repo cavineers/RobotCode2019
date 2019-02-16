@@ -25,11 +25,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.Rumble;
 import frc.robot.commands.Rumble.ControllerSide;
+import frc.robot.commands.elevator.HomeElev;
+import frc.robot.commands.grabber.ToggleGrabber;
 import frc.robot.LEDHelper;
 import frc.robot.LEDHelper.LEDColor;
-
-
-
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -55,11 +54,11 @@ public class OI {
     public int lastDpad = -1;
 
     public enum TRIG_MODE {
-		ELEVATOR, CLIMBER
+        ELEVATOR, CLIMBER
     }
 
     public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
-    
+
     public OI() {
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
@@ -68,13 +67,10 @@ public class OI {
         // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
         // y_button.whenPressed(new ToggleCargoIntake());
 
-        if(currentTriggerSetting == TRIG_MODE.CLIMBER){
-            a_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
-            y_button.whenPressed(new ChangeClimberState(LegState.RETRACTED));
-        }
-        else{
-            a_button.whenPressed(new IntakeCargo());
-        }
+        a_button.whenPressed(new IntakeCargo());
+        b_button.whenPressed(new ToggleGrabber());
+        x_button.whenPressed(new HomeElev());
+
 
         left_middle.whenPressed(new Command() { //Toggle between elevator and climber
             protected void initialize() { 
