@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import com.revrobotics.ControlType;
-import frc.robot.OI.TRIG_MODE;
+import frc.robot.OI.BUTTON_MODE;
 
 public class ManualElev extends Command {
 	double elevPos;
@@ -34,12 +34,12 @@ public class ManualElev extends Command {
 	protected void execute() {
 		upTrig = Robot.oi.getJoystick().getRawAxis(3);
 		downTrig = Robot.oi.getJoystick().getRawAxis(2);
-		if (upTrig > 0.05 && downTrig < 0.05 && Robot.oi.currentTriggerSetting == TRIG_MODE.ELEVATOR) {
+		if (upTrig > 0.05 && downTrig < 0.05 && Robot.oi.currentTriggerSetting == BUTTON_MODE.ELEVATOR) {
 			Robot.elevator.setManualVelocity(Constants.kElevatorMaxSpeed * Math.pow(upTrig, 2));
 			Robot.elevator.getPIDPos().setSetpoint(Constants.kElevatorMaxHeight);
 		}
 
-		else if (downTrig > 0.05 && upTrig < 0.05 && Robot.oi.currentTriggerSetting == TRIG_MODE.ELEVATOR) {
+		else if (downTrig > 0.05 && upTrig < 0.05 && Robot.oi.currentTriggerSetting == BUTTON_MODE.ELEVATOR) {
 			Robot.elevator.setManualVelocity(-1 * (Constants.kElevatorMaxSpeed * Math.pow(downTrig, 2)));
 			Robot.elevator.getPIDPos().setSetpoint(Constants.kElevatorMinHeight);
 

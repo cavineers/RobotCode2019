@@ -2,8 +2,7 @@ package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.OI.TRIG_MODE;
-
+import frc.robot.OI.BUTTON_MODE;
 /**
  *
  */
@@ -36,7 +35,7 @@ public class ElevatorToPos extends Command {
 	protected boolean isFinished() {
 		double upTrig = Robot.oi.getJoystick().getRawAxis(3);
 		double downTrig = Robot.oi.getJoystick().getRawAxis(2);
-		return Robot.elevator.getPIDPos().onTarget() || ((upTrig > 0.05 || downTrig > 0.05) && Robot.oi.currentTriggerSetting == TRIG_MODE.ELEVATOR);
+		return Robot.elevator.getPIDPos().onTarget() || ((upTrig > 0.05 || downTrig > 0.05) && Robot.oi.currentTriggerSetting == BUTTON_MODE.ELEVATOR);
 	}
 
 	protected void end() {

@@ -24,6 +24,7 @@ public class Elevator extends Subsystem {
     private double prevOutput = 0;
     private int loop = 0;
     private double positionOffset = 0;
+    double output;
 
     public enum ElevatorLevel {
         GROUND,
@@ -47,9 +48,9 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
         this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElev);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
-
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
-    
+
+        
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
 
@@ -83,19 +84,24 @@ public class Elevator extends Subsystem {
                 
                 prevOutput = d;
      
-                if (manualVelocity == 9999)
+                if (manualVelocity == 9999) {
                     elevatorMotor.getPIDController().setReference(d, ControlType.kVelocity);
-
+                    setPIDPosOutput(d);
+                }
                 else if (manualVelocity > 0) {
                     elevatorMotor.getPIDController().setReference(Math.min(d, manualVelocity), ControlType.kVelocity);
+                    setPIDPosOutput(Math.min(d, manualVelocity));
                     loop = 0;
+                    
                 }
                 else if (manualVelocity < 0) {
                     elevatorMotor.getPIDController().setReference(Math.max(d, manualVelocity), ControlType.kVelocity);
+                    setPIDPosOutput(Math.max(d, manualVelocity));
                     loop = 0;
                 }
                 else if (manualVelocity == 0) {
                     elevatorMotor.getPIDController().setReference(0, ControlType.kVelocity);
+                    setPIDPosOutput(0);
                     loop++;
                 }
                 if(loop == 10) {
@@ -111,6 +117,15 @@ public class Elevator extends Subsystem {
         pidPos.setContinuous(false);
         pidPos.setPercentTolerance(Constants.kElevPercentTolerance);
     }
+
+    public double getPIDPosOutput(){
+        return output;
+    }
+
+    public void setPIDPosOutput(double newOutput){
+        output = newOutput;
+    }
+
 
     @Override
     public void initDefaultCommand() {
@@ -177,6 +192,9 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given level
      */
     public void moveElevator(ElevatorLevel level) {
+        if(!getPIDPos().isEnabled()){
+            getPIDPos().enable();
+        }
         switch (level) {
             case GROUND:
                 this.moveElevator(Constants.kElevatorGroundLvl);
@@ -225,6 +243,10 @@ public class Elevator extends Subsystem {
         return elevatorMotor.getEncoder().getPosition() - positionOffset;
     }
 
+    public void freezeElevator(){
+        pidPos.setSetpoint(this.getPosition());
+    }
+
     /**
      * Gets the current level of the elevator, or invalid if the elevator is in between levels
      */
@@ -251,5 +273,7 @@ public class Elevator extends Subsystem {
             return ElevatorLevel.INVALID;
         }
     }
+
+    
 
 }

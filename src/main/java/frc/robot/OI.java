@@ -20,13 +20,18 @@ import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber.LegState;
+import frc.robot.subsystems.Grabber.GrabberState;
 import frc.robot.commands.ChangeClimberState;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Rumble;
 import frc.robot.commands.Rumble.ControllerSide;
 import frc.robot.commands.elevator.HomeElev;
 import frc.robot.commands.grabber.ToggleGrabber;
+import frc.robot.commands.elevator.ManualElev;
+import frc.robot.commands.grabber.EjectBall;
+import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.LEDHelper;
 import frc.robot.LEDHelper.LEDColor;
 
@@ -49,17 +54,19 @@ public class OI {
     public static JoystickButton left_stick = new JoystickButton(joy, 9);
     public static JoystickButton right_stick = new JoystickButton(joy, 10);
 
-    LEDHelper led;
+    
 
+    LEDHelper led;
     public int lastDpad = -1;
 
-    public enum TRIG_MODE {
-        ELEVATOR, CLIMBER
+    public enum BUTTON_MODE {
+		ELEVATOR, CLIMBER
     }
 
-    public TRIG_MODE currentTriggerSetting = TRIG_MODE.ELEVATOR;
-
+    public BUTTON_MODE currentTriggerSetting = BUTTON_MODE.ELEVATOR;
+    
     public OI() {
+        
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
         // a_button.whenPressed(new TargetVisionTape());
@@ -72,15 +79,18 @@ public class OI {
         x_button.whenPressed(new HomeElev());
 
 
+        a_button.whenPressed(getAButton());
+        y_button.whenPressed(new EjectBall());
+       
         left_middle.whenPressed(new Command() { //Toggle between elevator and climber
             protected void initialize() { 
-               if (Robot.oi.currentTriggerSetting == TRIG_MODE.ELEVATOR && Robot.isEndGame()) {
-                   Robot.oi.currentTriggerSetting = TRIG_MODE.CLIMBER;
+               if (Robot.oi.currentTriggerSetting == BUTTON_MODE.ELEVATOR && Robot.isEndGame()) {
+                   Robot.oi.currentTriggerSetting = BUTTON_MODE.CLIMBER;
                    new Rumble(0.25, ControllerSide.BOTH).start();
                    led.setLEDColor(LEDColor.PURPLE);
                    Robot.climber.toggleArms();
                } else {
-                   Robot.oi.currentTriggerSetting = TRIG_MODE.ELEVATOR;
+                   Robot.oi.currentTriggerSetting = BUTTON_MODE.ELEVATOR;
                }
             }
            @Override
@@ -160,6 +170,36 @@ public class OI {
             input = Math.pow(input, 2);
         return input;
     }
+
+    
+
+
+    public Command getAButton(){
+        if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
+            return new ChangeClimberState(LegState.DEPLOYED);
+        }
+        else{
+            return new IntakeCargo();
+        }
+    }
+
+    // public Command getYButton(){
+    //     if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
+    //         return new ChangeClimberState(LegState.RETRACTED);
+    //     }
+    //     else{
+    //         return new Command() {
+    //             protected void initialize() { 
+    //                 isFinished();
+    //              }
+    //             @Override
+    //             protected boolean isFinished() {
+    //                 return true;
+    //             }
+                
+    //         };
+    //     }
+    // }
 
     
 }

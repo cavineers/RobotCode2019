@@ -17,6 +17,7 @@ import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.subsystems.HatchScoop;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
@@ -41,6 +42,12 @@ public class Robot extends TimedRobot {
 
   public DankDash dankDash;
 
+  public static double lastHeartbeatTime;
+  public static NetworkTable netTable;
+  public static double heartbeatValue;
+
+  public static double lastMatchTime;
+
   public static AHRS gyro;
   public static OI oi;
   public static RobotPosEstimator estimator;
@@ -50,6 +57,16 @@ public class Robot extends TimedRobot {
   public static CameraManager cameraManager;
 
   public static LEDHelper leds;
+
+  double posError;
+  double posWant;
+  double posGot;
+  double velError;
+  double velWant;
+  double velGot;
+
+  String posData;
+  String velData;
 
   // Camera clock sync checking thread
   Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
@@ -96,6 +113,8 @@ public class Robot extends TimedRobot {
 
     // Init and export profile to network tables
     dankDash = new DankDash();
+    dankDash.setProfileLocation("TestChassis");
+    dankDash.setProfileName("Test Chassis");
     dankDash.export();
     }
 
@@ -111,7 +130,20 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     cameraManager.checkForCamUpdates();
     leds.update();
-    
+    heartbeat();
+    sendMatchTime();
+    posWant = Robot.elevator.getPIDPos().getSetpoint();
+    posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
+    posError = Math.abs(posWant-posGot);
+
+    velWant = Robot.elevator.getPIDPosOutput();
+    velGot = Robot.elevator.getElevatorMotor().getEncoder().getVelocity();
+    velError = Math.abs(velWant-velGot);
+
+    posData = Double.toString(posError) + "," + Double.toString(posWant) + "," + Double.toString(posGot);
+    velData = Double.toString(velError) + "," + Double.toString(velWant) + "," + Double.toString(velGot);
+    dankDash.sendDash("/DankDash/Pos", posData);
+    dankDash.sendDash("vel", velData);
   }
 
   /**
@@ -211,5 +243,20 @@ public class Robot extends TimedRobot {
    */
   public static boolean isClimbing() {
     return false; //TODO: implement
+  }
+
+  public void heartbeat() {
+    if (Robot.getCurrentTime() - lastHeartbeatTime > 1) {
+        lastHeartbeatTime = Robot.getCurrentTime();
+        dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
+        heartbeatValue++;
+    }
+  }
+
+  public void sendMatchTime() {
+      if (Robot.getCurrentTime() - lastMatchTime >= 1) {
+        lastMatchTime = Robot.getCurrentTime();
+        dankDash.sendDash("MatchTime", Double.toString(Math.round(DriverStation.getInstance().getMatchTime())));
+      }
   }
 }
