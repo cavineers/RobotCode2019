@@ -3,6 +3,7 @@ package frc.robot.commands.elevator;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
+import frc.robot.subsystems.Grabber.GrabberState;
 
 public class ElevatorToLevel extends Command {
 
@@ -15,6 +16,10 @@ public class ElevatorToLevel extends Command {
     @Override
     protected void initialize() {
         requires(Robot.elevator);
+        requires(Robot.grabber);
+         if(Robot.grabber.getState().equals(GrabberState.EXTENDED)){
+            Robot.grabber.setState(GrabberState.EXTENDED);
+        }
         Robot.elevator.moveElevator(this.desiredLevel);
     }
 
@@ -29,5 +34,10 @@ public class ElevatorToLevel extends Command {
     @Override
     protected boolean isFinished() {
         return Robot.elevator.getLevel() == desiredLevel;
+        //TODO: add interruptible if driver tries to rehome
     }
+
+    protected void interrupted() {
+		end();
+	}
 }
