@@ -1,64 +1,52 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
-import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants;
 import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
+import com.revrobotics.ControlType;
+
 
 /**
  *
  */
 public class HomeElev extends Command {
-    int step = 0;
-    boolean homed = false;
-    int count = 0;
 
-    PIDSource currentSource = new PIDSource() {
-        PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
-
-        @Override
-        public double pidGet() {
-            return Robot.elevator.getElevatorMotor().getOutputCurrent();
-        }
-
-        @Override
-        public void setPIDSourceType(PIDSourceType pidSource) {
-            vel_sourceType = pidSource;
-        }
-
-        @Override
-        public PIDSourceType getPIDSourceType() {
-            return vel_sourceType;
-        }
-
-    };
+	int step = 0;
 
 	public HomeElev() {
 		requires(Robot.elevator);
 	}
 
 	// Called just before this Command runs the first time
-	protected void initialize() {
+	protected void initialize() {        
+        //TODO clear vel pid
 		Robot.elevator.getPIDPos().reset();
         Robot.elevator.getElevatorMotor().setIdleMode(IdleMode.kBrake);
-        Robot.elevator.getElevatorMotor().set(Constants.kHomeMotorSpeed);
-		setTimeout(Constants.kHomeTimeout);
+		Robot.elevator.getElevatorMotor().set(.2);
+		step = 1;
+		setTimeout(20);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-        LinearDigitalFilter averageCurrent = LinearDigitalFilter.movingAverage(currentSource, Constants.kHomeEncoderCurrentCycle);
-        System.out.println("Velocity" + Robot.elevator.getElevatorMotor().getEncoder().getVelocity());
-        System.out.println("Current" + Robot.elevator.getElevatorMotor().getOutputCurrent());
-        System.out.println("Average" + averageCurrent.get());
-        if ((Robot.elevator.getElevatorMotor().getEncoder().getVelocity() <= Constants.kHomeEncoderVelTolerance) && (Robot.elevator.getElevatorMotor().getOutputCurrent() >= (averageCurrent.get() + Constants.kHomeCurrentThreshold))) {
-            Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
-            Robot.elevator.getPIDPos().setSetpoint(0);
-            Robot.elevator.getElevatorMotor().stopMotor();
-            homed = true;
+
+		switch (step) {
+		case 1:
+			if (Robot.elevator.getPosition() >= (Constants.kElevatorRotationsPerInch*2)) {
+				Robot.elevator.getElevatorMotor().set(-.1);
+				step = 2;
+			}
+			break;
+
+		case 2:
+			if (!Robot.elevator.getLimitSwitch().get()) {
+				Robot.elevator.setEncoderPosition(0);
+				Robot.elevator.getElevatorMotor().getPIDController().setReference(0, ControlType.kVelocity);
+				Robot.elevator.getElevatorMotor().stopMotor();
+				step = 3;
+			}
+			break;
 
 		}
 
@@ -66,13 +54,13 @@ public class HomeElev extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return homed || isTimedOut();
+		return step == 3 || isTimedOut();
 
 	}
 
 	// Called once after isFinished returns true
 	protected void end() {
-		homed = false;
+		
 		Robot.elevator.elevatorMotor.stopMotor();
 
 	}
@@ -81,6 +69,6 @@ public class HomeElev extends Command {
 	// subsystems is scheduled to run
 	protected void interrupted() {
 		end();
-    }
+	}
 
 }
