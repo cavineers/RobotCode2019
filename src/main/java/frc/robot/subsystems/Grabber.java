@@ -140,4 +140,8 @@ public class Grabber extends Subsystem {
     protected void initDefaultCommand() {
     }
 
+    public CANSparkMax getGrabberMotor(){
+        return armMotor;
+    }
+
 }

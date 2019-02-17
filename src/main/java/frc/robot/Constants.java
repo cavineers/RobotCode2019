@@ -34,28 +34,32 @@ public class Constants {
     public static final double kElevatorMaxSpeed = 70; //3000
     public static final double kElevatorMaxHeight  = 42000; //TODO: set actual max height (rotations)
 	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (rotations)
-    public static final double kElevatorPulsesPerInch = 500;
+    public static final double kElevatorRotationsPerInch = .178;
 
     //TODO: set these values
     public static final double kElevatorGroundLvl = 0; 
     public static final double kElevatorHatchPickupLvl = 0;
     public static final double kElevatorCargoPickupLvl = 0;
     public static final double kElevatorHomeHeight = -.25;
-    public static final double kElevatorLvl1Hatch = (4.5*kElevatorPulsesPerInch) + Math.abs(kElevatorHomeHeight);
-    public static final double kElevatorLvl1Cargo = 3*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
-    public static final double kElevatorLvl2Hatch = 32.5*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
-    public static final double kElevatorLvl2Cargo = 31*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
-    public static final double kElevatorLvl3Hatch = 60.5*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
-    public static final double kElevatorLvl3Cargo = 58.5*kElevatorPulsesPerInch + Math.abs(kElevatorHomeHeight);
+    public static final double kElevatorHomeHeightRotations = kElevatorHomeHeight*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl1Hatch = (4.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl1Cargo = (3*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl2Hatch = (32.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl2Cargo = (31*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl3Hatch = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl3Cargo = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
 
-    public static final double kPVelocityElev = 0;
+    //On NEO
+    public static final double kPVelocityElev = 0.0001;
     public static final double kIVelocityElev = 0;
     public static final double kDVelocityElev = 0;
-    public static final double kFVelocityElev = 0;
+    public static final double kFVelocityElev = 0.00018;
     
     public static final double kElevPIDPosPeriod = .025; //seconds
     public static final double kElevPercentTolerance = 5;
     
+    //On RIO
     public static final double kPPosElev = 0;
     public static final double kIPosElev = 0;
     public static final double kDPosElev = 0;
@@ -71,9 +75,6 @@ public class Constants {
     public static final double kHomeCurrentThreshold = 1;
     public static final double kHomeEncoderVelTolerance = 1000;
     public static final int kHomeEncoderCurrentCycle = 250;
-
-
-
 
     
     //Talon stuff

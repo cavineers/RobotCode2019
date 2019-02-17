@@ -24,7 +24,7 @@ public class RobotMap {
   public static int leftDriveMotor2  = 3; //talon (cim) (40A)
 
   //elevator motors
-  public static int elevatorMotor = 4; //sparkmax (neo) (40A) 
+  public static int elevatorMotor = 4; //sparkmax (neo) (40A) //TODO 4
 
   //cargo intake motor
   public static int intakeMoter = 5; //talon (775 pro) (30A)

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.PIDSourceType;
  *
  */
 public class HomeElev extends Command {
-    LinearDigitalFilter filter;
     int step = 0;
     boolean homed = false;
     int count = 0;
@@ -36,9 +35,6 @@ public class HomeElev extends Command {
         }
 
     };
-    
-    LinearDigitalFilter averageCurrent = filter.movingAverage(currentSource, Constants.kHomeEncoderCurrentCycle);
-
 
 	public HomeElev() {
 		requires(Robot.elevator);
@@ -54,8 +50,11 @@ public class HomeElev extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-        
-		if ((Robot.elevator.getElevatorMotor().getEncoder().getVelocity() <= Constants.kHomeEncoderVelTolerance) && (Robot.elevator.getElevatorMotor().getOutputCurrent() >= (averageCurrent.get() + Constants.kHomeCurrentThreshold))) {
+        LinearDigitalFilter averageCurrent = LinearDigitalFilter.movingAverage(currentSource, Constants.kHomeEncoderCurrentCycle);
+        System.out.println("Velocity" + Robot.elevator.getElevatorMotor().getEncoder().getVelocity());
+        System.out.println("Current" + Robot.elevator.getElevatorMotor().getOutputCurrent());
+        System.out.println("Average" + averageCurrent.get());
+        if ((Robot.elevator.getElevatorMotor().getEncoder().getVelocity() <= Constants.kHomeEncoderVelTolerance) && (Robot.elevator.getElevatorMotor().getOutputCurrent() >= (averageCurrent.get() + Constants.kHomeCurrentThreshold))) {
             Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
             Robot.elevator.getPIDPos().setSetpoint(0);
             Robot.elevator.getElevatorMotor().stopMotor();

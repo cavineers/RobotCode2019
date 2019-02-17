@@ -3,7 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Grabber.GrabberState;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -41,10 +43,6 @@ public class Elevator extends Subsystem {
 
     public Elevator() {
         limitSwitch = new DigitalInput(0); // change input later
-
-        //zero the motor's encoder
-        this.getElevatorMotor().set(0);
-
         // set PID coefficients
         this.getElevatorMotor().getPIDController().setP(Constants.kPVelocityElev);
         this.getElevatorMotor().getPIDController().setI(Constants.kIVelocityElev);
@@ -189,6 +187,7 @@ public class Elevator extends Subsystem {
      */
     public void moveElevator(double p){
         getPIDPos().setSetpoint(p + this.positionOffset);
+        System.out.println("Setting Setpoint to: " + Double.toString(p + this.positionOffset));
     }
 
     /**
@@ -218,6 +217,7 @@ public class Elevator extends Subsystem {
                 this.moveElevator(Constants.kElevatorLvl2Hatch);
                 break;
             case LVL2_CARGO:
+                System.out.println("GOING TO LEVEL 2 CARGO");
                 this.moveElevator(Constants.kElevatorLvl2Cargo);
                 break;
             case LVL3_HATCH:
