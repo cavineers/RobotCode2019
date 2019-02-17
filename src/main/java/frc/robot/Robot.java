@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.DankDash;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -116,6 +117,12 @@ public class Robot extends TimedRobot {
     dankDash.setProfileLocation("TestChassis");
     dankDash.setProfileName("Test Chassis");
     dankDash.export();
+
+    SmartDashboard.putNumber("f-val", Constants.kFVelocityElev);
+    SmartDashboard.putNumber("p-val", Constants.kPVelocityElev);
+    SmartDashboard.putNumber("i-val", Constants.kIVelocityElev);
+    SmartDashboard.putNumber("d-val", Constants.kDVelocityElev);
+    SmartDashboard.putNumber("setpoint", 0);
     }
 
   /**
@@ -144,6 +151,8 @@ public class Robot extends TimedRobot {
     velData = Double.toString(velError) + "," + Double.toString(velWant) + "," + Double.toString(velGot);
     dankDash.sendDash("/DankDash/Pos", posData);
     dankDash.sendDash("vel", velData);
+
+    SmartDashboard.putNumber("elevator vel", elevator.getElevatorMotor().getEncoder().getVelocity());
   }
 
   /**

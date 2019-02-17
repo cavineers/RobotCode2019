@@ -51,18 +51,18 @@ public class Constants {
     public static final double kElevatorLvl3Cargo = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
 
     //On NEO
-    public static final double kPVelocityElev = 0.0001;
+    public static final double kPVelocityElev = 0.0005;
     public static final double kIVelocityElev = 0;
-    public static final double kDVelocityElev = 0;
-    public static final double kFVelocityElev = 0.00018;
+    public static final double kDVelocityElev = 0.00001;
+    public static final double kFVelocityElev = 0.000285714;
     
     public static final double kElevPIDPosPeriod = .025; //seconds
     public static final double kElevPercentTolerance = 5;
     
     //On RIO
-    public static final double kPPosElev = 0;
+    public static final double kPPosElev = 1000;
     public static final double kIPosElev = 0;
-    public static final double kDPosElev = 0;
+    public static final double kDPosElev = 800;
     public static final double kFPosElev = 0;
 
     public static final double kElevSensorLocation = 0;
