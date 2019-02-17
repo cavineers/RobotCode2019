@@ -2,21 +2,21 @@ package frc.robot.commands.grabber;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Grabber.GrabberState;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 import frc.robot.subsystems.Grabber.MotorState;
 
 public class ChangeGrabberState extends Command {
-    GrabberState desiredPos;
+    GrabberPosition desiredPos;
     MotorState desiredMotorState;
     
-    public ChangeGrabberState(GrabberState desiredPos, MotorState desiredMotorState) {
+    public ChangeGrabberState(GrabberPosition desiredPos, MotorState desiredMotorState) {
         requires(Robot.elevator);
         requires(Robot.grabber);
         this.desiredPos = desiredPos;
         this.desiredMotorState = desiredMotorState;
     }
 
-    public ChangeGrabberState(GrabberState desiredPos) {
+    public ChangeGrabberState(GrabberPosition desiredPos) {
         this(desiredPos, null);
     }
 

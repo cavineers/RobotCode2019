@@ -17,6 +17,7 @@ import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.subsystems.HatchScoop;
+import frc.robot.subsystems.Grabber.HatchGrabberState;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
@@ -42,19 +43,18 @@ public class Robot extends TimedRobot {
 
   public DankDash dankDash;
 
-  public static double lastHeartbeatTime;
+  public static double lastUpdateTime;
+  public static double lastLEDUpdateTime;
+
   public static NetworkTable netTable;
   public static double heartbeatValue;
 
-  public static double lastMatchTime;
 
   public static AHRS gyro;
   public static OI oi;
   public static RobotPosEstimator estimator;
 
   public static CameraHelper reflectiveTapeCamera;
-
-  public static CameraManager cameraManager;
 
   public static LEDHelper leds;
 
@@ -99,9 +99,6 @@ public class Robot extends TimedRobot {
     gyro.zeroYaw();
     gyro.setAngleAdjustment(0);
 
-    // start up the camera manager
-    cameraManager = new CameraManager();
-
     // start up the led manager
     leds = new LEDHelper();
 
@@ -116,7 +113,10 @@ public class Robot extends TimedRobot {
     dankDash.setProfileLocation("TestChassis");
     dankDash.setProfileName("Test Chassis");
     dankDash.export();
-    }
+
+    //set up the hatch grabber to have an open solenoid
+    grabber.setHatchGrabberState(HatchGrabberState.OPEN);
+  }
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -128,10 +128,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    cameraManager.checkForCamUpdates();
-    leds.update();
-    heartbeat();
-    sendMatchTime();
+    this.updateLEDs();
+    this.updateDankDash();
+
     posWant = Robot.elevator.getPIDPos().getSetpoint();
     posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
     posError = Math.abs(posWant-posGot);
@@ -193,7 +192,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // System.out.println(estimator.getPos().position);
+    oi.updateDPadCommands();
     Scheduler.getInstance().run();
   }
 
@@ -245,18 +244,22 @@ public class Robot extends TimedRobot {
     return false; //TODO: implement
   }
 
-  public void heartbeat() {
-    if (Robot.getCurrentTime() - lastHeartbeatTime > 1) {
-        lastHeartbeatTime = Robot.getCurrentTime();
+  public void updateLEDs() {
+    if (Robot.getCurrentTime() - lastLEDUpdateTime > 0.25) { // update the LEDs 4 times per second
+        lastUpdateTime = Robot.getCurrentTime();
+        leds.update();
+    } 
+  }
+
+  /**
+   * Sends important values like the match time and the heartbeat value to the dashbaord
+   */
+  public void updateDankDash() {
+    if (Robot.getCurrentTime() - lastUpdateTime > 1) { // update the dashboard display once per second
+        lastUpdateTime = Robot.getCurrentTime();
         dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
         heartbeatValue++;
     }
   }
 
-  public void sendMatchTime() {
-      if (Robot.getCurrentTime() - lastMatchTime >= 1) {
-        lastMatchTime = Robot.getCurrentTime();
-        dankDash.sendDash("MatchTime", Double.toString(Math.round(DriverStation.getInstance().getMatchTime())));
-      }
-  }
 }

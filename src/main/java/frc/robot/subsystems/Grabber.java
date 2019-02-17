@@ -7,12 +7,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.Constants;
 
 public class Grabber extends Subsystem {
-    public enum GrabberState {
+    public enum GrabberPosition {
         EXTENDED,
         RETRACTED,
         START_POS,
@@ -25,7 +26,13 @@ public class Grabber extends Subsystem {
         INTAKE_BALL,
         EJECT_BALL
     }
-    public GrabberState grabberState;
+
+    public enum HatchGrabberState {
+        OPEN, //can hold hatches, but cannot receive them
+        CLOSED //cannot hold hatches, but can receive them
+    }
+
+    public GrabberPosition grabberState;
 
     CANSparkMax armMotor; // motor responcible moving the arm forward and backward
     WPI_TalonSRX ballMotor; // motor responcible for minipulating the ball in the grabber
@@ -39,7 +46,7 @@ public class Grabber extends Subsystem {
     DigitalInput hatchLimitSwitch = new DigitalInput(Constants.kGrabberHatchLimitSwitch);
 
     public Grabber() {
-        grabberState = GrabberState.UNKNOWN;
+        grabberState = GrabberPosition.UNKNOWN;
         armMotor = new CANSparkMax(RobotMap.armMotor, MotorType.kBrushless);
         grabberSol = new DoubleSolenoid(RobotMap.grabber1, RobotMap.grabber2);
         positionOffset = 0;
@@ -77,12 +84,12 @@ public class Grabber extends Subsystem {
      * Sets the current state of the grabber
      * @param state the desired state of the grabber
      */
-    public void setState(GrabberState state) {
-        if (state == GrabberState.EXTENDED) {
+    public void setState(GrabberPosition state) {
+        if (state == GrabberPosition.EXTENDED) {
             armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberExtendedPos, ControlType.kPosition);
-        } else if (state == GrabberState.RETRACTED) {
+        } else if (state == GrabberPosition.RETRACTED) {
             armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberRetractedPos, ControlType.kPosition);
-        } else if (state == GrabberState.START_POS) {
+        } else if (state == GrabberPosition.START_POS) {
             armMotor.getPIDController().setReference(positionOffset + Constants.kGrabberStartPos, ControlType.kPosition);
         } else {
             System.out.println("Attepted to set the grabber to an ineligible position");
@@ -93,22 +100,22 @@ public class Grabber extends Subsystem {
      * Get the current state of the grabber
      * @return the current state of the grabber
      */
-    public GrabberState getState() {
+    public GrabberPosition getState() {
         if (Math.abs(this.getPosition() - Constants.kGrabberExtendedPos) < Constants.kGrabberTolerance) {
-            return GrabberState.EXTENDED;
+            return GrabberPosition.EXTENDED;
         } else if (Math.abs(this.getPosition() - Constants.kGrabberRetractedPos) < Constants.kGrabberTolerance) {
-            return GrabberState.RETRACTED;
+            return GrabberPosition.RETRACTED;
         } else if (Math.abs(this.getPosition() - Constants.kGrabberStartPos) < Constants.kGrabberTolerance) {
-            return GrabberState.START_POS;
+            return GrabberPosition.START_POS;
         } else if (Math.abs(this.getPosition() - Constants.kGrabberHomePos) < Constants.kGrabberTolerance) {
-            return GrabberState.HOMED;
+            return GrabberPosition.HOMED;
         } else {
-            return GrabberState.UNKNOWN;
+            return GrabberPosition.UNKNOWN;
         }
     }
 
 
-        /**
+    /**
      * Sets the current state of the grabber
      * @param state the desired state of the grabber
      */
@@ -120,6 +127,28 @@ public class Grabber extends Subsystem {
         } else if (state == MotorState.EJECT_BALL) {
             this.ballMotor.set(Constants.kGrabberEjectionSpeed);
         } 
+    }
+
+    /**
+     * Sets the current state of the hatch grabber
+     */
+    public void setHatchGrabberState(HatchGrabberState state) {
+        if (state == HatchGrabberState.CLOSED) {
+            this.grabberSol.set(Value.kForward);
+        } else {
+            this.grabberSol.set(Value.kReverse);
+        }
+    }
+
+    /**
+     * Gets the current state of the hatch grabber
+     */
+    public HatchGrabberState getHatchGrabberState() {
+        if (this.grabberSol.get() == Value.kForward) {
+            return HatchGrabberState.CLOSED;
+        } else {
+            return HatchGrabberState.OPEN;
+        }
     }
 
     /**
@@ -143,5 +172,6 @@ public class Grabber extends Subsystem {
     public CANSparkMax getGrabberMotor(){
         return armMotor;
     }
+
 
 }

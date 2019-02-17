@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.Robot;
-import frc.robot.subsystems.Grabber.GrabberState;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 
 public class ExtendGrabber extends CommandGroup {
 
     public ExtendGrabber() {
         requires(Robot.grabber);
-        addSequential(new ChangeGrabberState(GrabberState.EXTENDED));
+        addSequential(new ChangeGrabberState(GrabberPosition.EXTENDED));
     }
 
     @Override

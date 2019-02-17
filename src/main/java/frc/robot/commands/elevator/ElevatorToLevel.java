@@ -3,7 +3,7 @@ package frc.robot.commands.elevator;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
-import frc.robot.subsystems.Grabber.GrabberState;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 
 public class ElevatorToLevel extends Command {
 
@@ -18,8 +18,8 @@ public class ElevatorToLevel extends Command {
         System.out.println("Running Elevator to Level");
         requires(Robot.elevator);
         requires(Robot.grabber);
-        if(!Robot.grabber.getState().equals(GrabberState.EXTENDED)){
-            Robot.grabber.setState(GrabberState.EXTENDED);
+        if(!Robot.grabber.getState().equals(GrabberPosition.EXTENDED)){
+            Robot.grabber.setState(GrabberPosition.EXTENDED);
         }
         
         Robot.elevator.moveElevator(this.desiredLevel);

@@ -1,8 +1,11 @@
 package frc.robot;
 
+import javax.management.timer.Timer;
+
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import frc.robot.subsystems.CargoIntake.PositionState;
+import frc.robot.subsystems.Grabber.HatchGrabberState;
 import frc.robot.subsystems.HatchScoop.HatchScoopState;
 
 public class LEDHelper {
@@ -30,6 +33,7 @@ public class LEDHelper {
      * Makes sure that the desired color is the same as the current color
      */
     public void update() {
+        
         LEDColor desiredColor = this.getDesiredColor();
         if (desiredColor != this.currentColor) {
             this.setLEDColor(desiredColor);
@@ -93,13 +97,13 @@ public class LEDHelper {
     public LEDColor getDesiredColor() {
         if (!Robot.reflectiveTapeCamera.isPiConnected()) { //add other errors
             return LEDColor.BLINKING_RED;
-        } else if (Robot.isClimbing()) {
+        } else if (Robot.grabber.getHatchGrabberState() == HatchGrabberState.CLOSED) {
             return LEDColor.PURPLE;
         } else if (Robot.hatchScoop.getState() == HatchScoopState.DOWN) {
             return LEDColor.BLUE;
         } else if (Robot.cargoIntake.getPosition() == PositionState.DOWN) {
             return LEDColor.ORANGE;
-        } else if (Robot.cameraManager.hasValidCameraUpdate()) {
+        } else if (Robot.reflectiveTapeCamera.getUpdate() != null) {
             return LEDColor.GREEN;
         } else {
             return LEDColor.NONE;

@@ -23,7 +23,7 @@ public class IntakeCargo extends CommandGroup {
         addSequential(new ChangeHatchScoopState(HatchScoopState.UP));
         addSequential(new ElevatorToLevel(ElevatorLevel.CARGO_INTAKE));
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
-        addSequential(new ChangeGrabberState(Grabber.GrabberState.RETRACTED, Grabber.MotorState.INTAKE_BALL));
+        addSequential(new ChangeGrabberState(Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }
    
     @Override

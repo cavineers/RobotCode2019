@@ -22,8 +22,6 @@ public class Rumble extends TimedCommand {
 			Robot.oi.getJoystick().setRumble(RumbleType.kLeftRumble, 1);
 			Robot.oi.getJoystick().setRumble(RumbleType.kRightRumble, 1);
 		}
-		
-		
 	}
 	
 	@Override

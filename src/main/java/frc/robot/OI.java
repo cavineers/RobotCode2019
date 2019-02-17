@@ -20,7 +20,7 @@ import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber.LegState;
-import frc.robot.subsystems.Grabber.GrabberState;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 import frc.robot.commands.ChangeClimberState;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
@@ -29,7 +29,10 @@ import frc.robot.commands.Rumble;
 import frc.robot.commands.Rumble.ControllerSide;
 import frc.robot.commands.elevator.HomeElev;
 import frc.robot.commands.elevator.ManualElev;
+import frc.robot.commands.elevator.RawMoveElevator;
 import frc.robot.commands.grabber.EjectBall;
+import frc.robot.commands.grabber.ToggleGrabber;
+import frc.robot.commands.grabber.ToggleHatchGrabber;
 import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.LEDHelper;
 import frc.robot.LEDHelper.LEDColor;
@@ -53,16 +56,14 @@ public class OI {
     public static JoystickButton left_stick = new JoystickButton(joy, 9);
     public static JoystickButton right_stick = new JoystickButton(joy, 10);
 
-    
-
     LEDHelper led;
     public int lastDpad = -1;
 
     public enum BUTTON_MODE {
-		ELEVATOR, CLIMBER
+		AUTO_ALLIGN, ELEVATOR, CLIMBER
     }
 
-    public BUTTON_MODE currentTriggerSetting = BUTTON_MODE.ELEVATOR;
+    public BUTTON_MODE currentTriggerSetting = BUTTON_MODE.AUTO_ALLIGN;
     
     public OI() {
         
@@ -73,58 +74,17 @@ public class OI {
         // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
         // y_button.whenPressed(new ToggleCargoIntake());
 
-        
-        //testing only
-        /*x_button.whenPressed(new HomeElev());
-        y_button.whenPressed(new ElevatorToLevel(ElevatorLevel.LVL1_CARGO)); //3 inches
-        a_button.whenPressed(new Command() {
-            protected void initialize() { 
-               Robot.elevator.getElevatorMotor().set(.3);
-             }
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-            
-        });
+        // a_button.whenPressed(new IntakeCargo());
+        b_button.whenPressed(new ToggleGrabber());
+        x_button.whenPressed(new ToggleHatchGrabber());
+        // y_button.whenPressed(new EjectBall());
 
-        b_button.whenPressed(new Command() {
-            protected void initialize() { 
-               Robot.elevator.getElevatorMotor().stopMotor();
-             }
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-            
-        });*/
-
-        a_button.whenPressed(getAButton());
-        y_button.whenPressed(new EjectBall());
+        a_button.whileHeld(new RawMoveElevator(0.7));
+        y_button.whileHeld(new RawMoveElevator(-0.7));
        
-        left_middle.whenPressed(new Command() { //Toggle between elevator and climber
-            protected void initialize() { 
-               if (Robot.oi.currentTriggerSetting == BUTTON_MODE.ELEVATOR && Robot.isEndGame()) {
-                   Robot.oi.currentTriggerSetting = BUTTON_MODE.CLIMBER;
-                   new Rumble(0.25, ControllerSide.BOTH).start();
-                   led.setLEDColor(LEDColor.PURPLE);
-                   Robot.climber.toggleArms();
-               } else {
-                   Robot.oi.currentTriggerSetting = BUTTON_MODE.ELEVATOR;
-               }
-            }
-           @Override
-           protected boolean isFinished() {
-               return true;
-           }
-           
-       });
-
     }
 
-    
-
-    public void getDPad(){
+    public void updateDPadCommands(){
         if (lastDpad != joy.getPOV()) {
 			switch (joy.getPOV()) {
 			case 0: {
@@ -176,7 +136,6 @@ public class OI {
 		lastDpad = joy.getPOV();
     }
        
-
     public Joystick getJoystick() {
         return joy;
     }
@@ -191,35 +150,4 @@ public class OI {
         return input;
     }
 
-    
-
-
-    public Command getAButton(){
-        if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
-            return new ChangeClimberState(LegState.DEPLOYED);
-        }
-        else{
-            return new IntakeCargo();
-        }
-    }
-
-    // public Command getYButton(){
-    //     if(currentTriggerSetting == BUTTON_MODE.CLIMBER){
-    //         return new ChangeClimberState(LegState.RETRACTED);
-    //     }
-    //     else{
-    //         return new Command() {
-    //             protected void initialize() { 
-    //                 isFinished();
-    //              }
-    //             @Override
-    //             protected boolean isFinished() {
-    //                 return true;
-    //             }
-                
-    //         };
-    //     }
-    // }
-
-    
 }

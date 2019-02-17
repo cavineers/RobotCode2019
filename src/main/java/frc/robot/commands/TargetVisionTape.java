@@ -27,7 +27,7 @@ public class TargetVisionTape extends Command {
         this.setTimeout(10); // set the command timeout to 10 seconds
         path = null;
         forceFinish = false;
-        if (!Robot.cameraManager.hasValidCameraUpdate()) {
+        if (Robot.reflectiveTapeCamera.getUpdate() == null) {
             forceFinish = true; //stop if there is no camera update
             return;
         }
@@ -35,7 +35,7 @@ public class TargetVisionTape extends Command {
 
         //attempt to obtain the image data from the camera
         TargetUpdate targetUpdate = null; // data received from the camera
-        targetUpdate = Robot.cameraManager.getLatestUpdate();
+        targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
 
         //otherwise, generate a path with that info
         this.path = this.createPath(targetUpdate);

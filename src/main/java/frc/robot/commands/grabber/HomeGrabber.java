@@ -3,7 +3,9 @@ package frc.robot.commands.grabber;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.subsystems.Grabber.GrabberState;
+import frc.robot.commands.Rumble;
+import frc.robot.commands.Rumble.ControllerSide;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 
 public class HomeGrabber extends Command {
     boolean isHomed;
@@ -15,13 +17,18 @@ public class HomeGrabber extends Command {
 
     @Override
     public void initialize() {
-        Robot.grabber.beginHoming();
+        if (Robot.elevator.canMoveGrabber()) {
+            Robot.grabber.beginHoming();
+        } else {
+            new Rumble(0.25, ControllerSide.BOTH).start();
+            this.cancel();
+        }
         isHomed = false;
     }
 
     @Override
     public void execute() {
-        if (Robot.grabber.exceedsCurrentLimit() && !isHomed) {
+        if (Robot.grabber.exceedsCurrentLimit() && !isHomed && Robot.elevator.canMoveGrabber()) {
             Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
             isHomed = true;
         }
@@ -29,10 +36,10 @@ public class HomeGrabber extends Command {
 
     @Override
     public void end() {
-        Robot.grabber.setState(GrabberState.EXTENDED);
+        Robot.grabber.setState(GrabberPosition.EXTENDED);
     }
 
     public boolean isFinished() {
-        return isHomed;
+        return isHomed || !Robot.elevator.canMoveGrabber();
     }
 }

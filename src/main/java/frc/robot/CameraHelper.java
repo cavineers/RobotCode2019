@@ -112,7 +112,6 @@ public class CameraHelper {
         String updateString = netTable.getEntry("TargetUpdates").getString(""); //format: headingX, headingY, headingZ, targetX,targetY,targetZ,cameraX,cameraY,cameraZ,imageNum,timestamp
         
         if (updateString.isEmpty()) {
-            // System.out.println("EMPTY!!");
             return null; // no update available
         }
         // split the update string into its respective individual values
@@ -139,10 +138,10 @@ public class CameraHelper {
         int imageNum = Integer.parseInt(updateArr[9]);
         double timestamp = Double.parseDouble(updateArr[10]);
 
-        if (this.lastUpdateNum >= imageNum) {
-            // System.out.println("LAST IMG NUM!!");
-            return null; // there is no new update available
-        }
+        // if (this.lastUpdateNum >= imageNum) {
+        //     // System.out.println("LAST IMG NUM!!");
+        //     return null; // there is no new update available
+        // }
 
         this.lastUpdateNum = imageNum;
 

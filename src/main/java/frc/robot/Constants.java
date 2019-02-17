@@ -112,9 +112,7 @@ public class Constants {
     // Loop times
     public static final double kClockSyncLoopTime = 1; // check for clock sync once per second
     public static final double kOdometryLoopTime = 0.05; // update odometry 20 times per second
-    public static final double kCameraUpdatePeriod = 0.05;
     public static final double kTargetingUpdatePeriod = 0.05;
-
 
     //Auto Targeting stuff
     public static final double kMaxTargetSpeed = 50; //in inches per second; max speed of the robot when it is targeting vision tape
@@ -172,7 +170,7 @@ public class Constants {
     // Grabber
     public static final double kGrabberHomingSpeed = -0.1;
     public static final double kGrabberMaxHomingCurrent = 10; // once the grabber motor exceeds this when homing, it will be considered homed
-    public static final double kGrabberHomePos = 0; //TODO set // the position of the hard stop that the elevator stalls against
+    public static final double kGrabberHomePos = -0.05; //TODO set // the position of the hard stop that the elevator stalls against
 
     // grabber movement speeds
     public static final double kGrabberIntakeSpeed = 0.1;
@@ -200,6 +198,5 @@ public class Constants {
     public static final int kDIO7 = 7;
     public static final int kGrabberHatchLimitSwitch = 8;
     public static final int kGrabberCargoLimitSwitch = 9;
-    
     
 }
