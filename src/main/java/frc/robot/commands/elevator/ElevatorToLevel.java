@@ -15,7 +15,6 @@ public class ElevatorToLevel extends Command {
 
     @Override
     protected void initialize() {
-        System.out.println("Running Elevator to Level");
         requires(Robot.elevator);
         requires(Robot.grabber);
         if(!Robot.grabber.getState().equals(GrabberPosition.EXTENDED)){
