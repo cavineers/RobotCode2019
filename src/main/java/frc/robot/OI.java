@@ -18,24 +18,10 @@ import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.FollowPath.PATH_TYPE;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Climber.LegState;
-import frc.robot.subsystems.Grabber.GrabberPosition;
-import frc.robot.commands.ChangeClimberState;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.Rumble;
-import frc.robot.commands.Rumble.ControllerSide;
 import frc.robot.commands.elevator.HomeElev;
-import frc.robot.commands.elevator.ManualElev;
 import frc.robot.commands.elevator.RawMoveElevator;
-import frc.robot.commands.grabber.EjectBall;
-import frc.robot.commands.grabber.ToggleGrabber;
-import frc.robot.commands.grabber.ToggleHatchGrabber;
-import frc.robot.commands.elevator.ElevatorToLevel;
+import frc.robot.commands.grabber.RawMoveGrabber;
 import frc.robot.LEDHelper;
-import frc.robot.LEDHelper.LEDColor;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -75,13 +61,13 @@ public class OI {
         // y_button.whenPressed(new ToggleCargoIntake());
 
         // a_button.whenPressed(new IntakeCargo());
-        b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new ToggleHatchGrabber());
+        // b_button.whenPressed(new ToggleGrabber());
+        // x_button.whenPressed(new ToggleHatchGrabber());
         // y_button.whenPressed(new EjectBall());
 
-        a_button.whileHeld(new RawMoveElevator(0.7));
-        y_button.whileHeld(new RawMoveElevator(-0.7));
-       
+        a_button.whileHeld(new RawMoveGrabber(0.4));
+        y_button.whileHeld(new RawMoveGrabber(-0.4));
+        x_button.whenPressed(new HomeElev());
     }
 
     public void updateDPadCommands(){

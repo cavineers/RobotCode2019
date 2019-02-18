@@ -21,7 +21,6 @@ import frc.robot.subsystems.Grabber.HatchGrabberState;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.DankDash;
 
@@ -36,7 +35,6 @@ public class Robot extends TimedRobot {
   // Subsystems
   public static DriveTrain drivetrain;
   public static Elevator elevator;
-  public static Climber climber;
   public static HatchScoop hatchScoop;
   public static CargoIntake cargoIntake;
   public static Grabber grabber;
@@ -80,7 +78,6 @@ public class Robot extends TimedRobot {
     // initialize subsystems
     drivetrain = new DriveTrain();
     elevator = new Elevator();
-    climber = new Climber();
     hatchScoop = new HatchScoop();
     cargoIntake = new CargoIntake();
     grabber = new Grabber();

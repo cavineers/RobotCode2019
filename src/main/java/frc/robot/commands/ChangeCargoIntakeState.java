@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.CargoIntake.MotorState;
 import frc.robot.subsystems.CargoIntake.PositionState;
-import frc.robot.subsystems.Climber.LegState;
 
 public class ChangeCargoIntakeState extends Command {
     MotorState desiredMotorState;

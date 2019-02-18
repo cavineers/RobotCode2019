@@ -54,7 +54,7 @@ public class HomeElev extends Command {
         System.out.println("Velocity" + Robot.elevator.getElevatorMotor().getEncoder().getVelocity());
         System.out.println("Current" + Robot.elevator.getElevatorMotor().getOutputCurrent());
         System.out.println("Average" + averageCurrent.get());
-        if ((Robot.elevator.getElevatorMotor().getEncoder().getVelocity() <= Constants.kHomeEncoderVelTolerance) && (Robot.elevator.getElevatorMotor().getOutputCurrent() >= (averageCurrent.get() + Constants.kHomeCurrentThreshold))) {
+        if ((Robot.elevator.getElevatorMotor().getEncoder().getVelocity() <= Constants.kHomeEncoderVelTolerance) && (averageCurrent.get() >= Constants.kHomeCurrentThreshold)) {
             Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
             Robot.elevator.getPIDPos().setSetpoint(0);
             Robot.elevator.getElevatorMotor().stopMotor();
