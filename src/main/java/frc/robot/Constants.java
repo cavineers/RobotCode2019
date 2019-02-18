@@ -174,6 +174,8 @@ public class Constants {
     public static final double kGrabberMaxHomingCurrent = 10; // once the grabber motor exceeds this when homing, it will be considered homed
     public static final double kGrabberHomePos = 0; //TODO set // the position of the hard stop that the elevator stalls against
 
+    public static final double kGrabberPIDPosPeriod = .025;
+
     // grabber movement speeds
     public static final double kGrabberIntakeSpeed = 0.1;
     public static final double kGrabberEjectionSpeed = 1;
@@ -185,6 +187,24 @@ public class Constants {
     public static final double kGrabberExtendedPos = 0; //TODO set
     
     public static final double kGrabberStartPos = 0; //TODO: set
+
+    public static final double kGrabberVelP = 0;
+    public static final double kGrabberVelI = 0;
+    public static final double kGrabberVelD = 0;
+    public static final double kGrabberVelF = 0;
+
+    public static final double kGrabberPosP = 0;
+    public static final double kGrabberPosI = 0;
+    public static final double kGrabberPosD = 0;
+    public static final double kGrabberPosF = 0;
+
+    public static final double kGrabberMaxSpeed = 20; //TODO
+    public static final double kGrabberPercentTolerance = 5;
+
+    public static final double kMinGrabberPos = 0; //TODO
+    public static final double kMaxGrabberPos = 0; //TODO
+
+
 
     //Digital In/Output mapping
 

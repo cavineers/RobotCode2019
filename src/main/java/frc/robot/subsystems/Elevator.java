@@ -52,7 +52,7 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
 
         
-        pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, new PIDSource() {
+        pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, Constants.kFPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
 
             @Override
@@ -187,7 +187,6 @@ public class Elevator extends Subsystem {
      */
     public void moveElevator(double p){
         getPIDPos().setSetpoint(p + this.positionOffset);
-        System.out.println("Setting Setpoint to: " + Double.toString(p + this.positionOffset));
     }
 
     /**
