@@ -2,6 +2,7 @@ package frc.robot;
 
 // import frc.robot.dashcomponents.*;
 import edu.wpi.first.networktables.*;
+import frc.robot.commands.CheckEncoders;
 
 // ===== Available Components =====
 //
@@ -19,6 +20,7 @@ public class DankDash {
     private NetworkTable netTable;
     private String profileName;
     private String profileLocation;
+    private CheckEncoders encoderCheck;
 
     DankDash() {
         // Nettables
@@ -27,6 +29,18 @@ public class DankDash {
 
     public void setProfileName(String profileName) {
         this.profileName = profileName;
+    }
+
+    public void encoderCheck() {
+        netTable.addEntryListener((table, key, entry, value, flags) -> {
+            System.out.println("Key: "+key);
+            if (key == "") {
+                if (value.getBoolean()) {
+                    encoderCheck = new CheckEncoders();
+                    netTable.getEntry("").setBoolean(false);
+                }
+            }
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
     }
 
     public String getProfileName() {
