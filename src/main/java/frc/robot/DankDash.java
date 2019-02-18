@@ -33,7 +33,7 @@ public class DankDash {
 
     public void encoderCheck() {
         netTable.addEntryListener((table, key, entry, value, flags) -> {
-            System.out.println("Key: "+key);
+            System.out.println("Key: " + key);
             if (key == "") {
                 if (value.getBoolean()) {
                     encoderCheck = new CheckEncoders();
@@ -60,7 +60,7 @@ public class DankDash {
         netTable.getEntry("ProfileName").setString(this.profileName);
     }
 
-    public void sendDash(String id, String data){
+    public void sendDash(String id, String data) {
         netTable.getEntry(id).setString(data);
     }
 }
