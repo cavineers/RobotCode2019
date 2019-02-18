@@ -46,10 +46,4 @@ public class CheckEncoders extends CommandGroup {
     		
     	});
     }
-
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-
 } 
