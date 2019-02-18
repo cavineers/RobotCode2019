@@ -111,6 +111,7 @@ public class Robot extends TimedRobot {
     dankDash.setProfileLocation("TestChassis");
     dankDash.setProfileName("Test Chassis");
     dankDash.export();
+    dankDash.encoderCheck();
 
     SmartDashboard.putNumber("f-val", Constants.kFVelocityElev);
     SmartDashboard.putNumber("p-val", Constants.kPVelocityElev);

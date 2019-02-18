@@ -34,10 +34,10 @@ public class DankDash {
     public void encoderCheck() {
         netTable.addEntryListener((table, key, entry, value, flags) -> {
             System.out.println("Key: " + key);
-            if (key == "") {
+            if (key == "encoderCheck") {
                 if (value.getBoolean()) {
                     encoderCheck = new CheckEncoders();
-                    netTable.getEntry("").setBoolean(false);
+                    netTable.getEntry("encoderCheck").setBoolean(false);
                 }
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
