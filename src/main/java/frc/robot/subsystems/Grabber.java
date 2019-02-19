@@ -43,7 +43,7 @@ public class Grabber extends Subsystem {
 
     public GrabberPosition grabberState;
 
-    CANSparkMax armMotor; // motor responcible moving the arm forward and backward
+    public CANSparkMax armMotor; // motor responcible moving the arm forward and backward
     WPI_TalonSRX ballMotor; // motor responcible for minipulating the ball in the grabber
     private PIDController pidPos;
 
