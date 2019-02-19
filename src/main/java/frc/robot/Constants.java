@@ -31,7 +31,7 @@ public class Constants {
     //elevator stuff
     public static final double kElevatorPosTolerance = 0.1;
     public static final double kElevatorMaxAcceleration = 40; //800
-    public static final double kElevatorMaxSpeed = 70; //3000
+    public static final double kElevatorMaxSpeed = 3000; //3000
     public static final double kElevatorMaxHeight  = 42000; //TODO: set actual max height (rotations)
 	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (rotations)
     public static final double kElevatorRotationsPerInch = .178;
@@ -51,10 +51,11 @@ public class Constants {
     public static final double kElevatorLvl3Cargo = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
 
     //On NEO
-    public static final double kPVelocityElev = 0.0005;
+    public static final double kPVelocityElev = 1E-4;
     public static final double kIVelocityElev = 0;
-    public static final double kDVelocityElev = 0.00001;
-    public static final double kFVelocityElev = 0.000285714;
+    public static final double kDVelocityElev = 6E-4;
+    public static final double kFVelocityElevUp = 2.3E-4;
+    public static final double kFVelocityElevDown = 1.75E-4;
     
     public static final double kElevPIDPosPeriod = .025; //seconds
     public static final double kElevPercentTolerance = 5;
@@ -62,7 +63,7 @@ public class Constants {
     //On RIO
     public static final double kPPosElev = 1000;
     public static final double kIPosElev = 0;
-    public static final double kDPosElev = 800;
+    public static final double kDPosElev = 200;
     public static final double kFPosElev = 0;
 
     public static final double kElevSensorLocation = 0;
@@ -145,29 +146,6 @@ public class Constants {
     // Intake
     public static final double kCargoIntakeSpeed = 1;
 
-    // Climber //TODO: TUNE
-    public static final double kClimberRPI = 1; // Rotations per inch
-    public static final double kClimberDeployPos = 10.0; // inches
-    public static final double kClimberTolerance = 1;
-
-    // Climber PID //TODO: TUNE ONCE WE HAVE A CLIMBER
-    public static final double kPClimber = 2; 
-    public static final double kIClimber = 0;
-    public static final double kDClimber = 0;
-    public static final double kFClimber = 0;
-    public static final double kIZoneClimber = 0;
-
-    public static final double kClimberMaxOutput = 1;
-    public static final double kClimberMinOutput = -1;
-
-    public static final double kClimbTime = 40.0; //earliest time to deploy climber (seconds)
-
-    public static final double kClimbLegDeployed = 0;
-    public static final double kClimbLegRetracted = 0;
-    public static final double kClimbArmDeployed = 0;
-    public static final double kClimbArmRetracted = 0;
-
-
     // Grabber
     public static final double kGrabberHomingSpeed = -0.1;
     public static final double kGrabberMaxHomingCurrent = 10; // once the grabber motor exceeds this when homing, it will be considered homed
@@ -216,7 +194,7 @@ public class Constants {
 
     public static final int kDIO5 = 5;
     public static final int kDIO6 = 6;
-    public static final int kDIO7 = 7;
+    public static final int kElevatorLimitSwitch = 7;
     public static final int kGrabberHatchLimitSwitch = 8;
     public static final int kGrabberCargoLimitSwitch = 9;
     
