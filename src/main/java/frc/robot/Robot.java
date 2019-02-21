@@ -145,7 +145,6 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("d-val", Constants.kGrabberPosD);
         // SmartDashboard.putNumber("current-vel",
         // elevator.getElevatorMotor().getEncoder().getVelocity());
-
     }
 
     /**
