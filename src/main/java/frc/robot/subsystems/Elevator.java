@@ -25,7 +25,6 @@ public class Elevator extends Subsystem {
     private double manualVelocity = 9999;
     private double prevOutput = 0;
     private int loop = 0;
-    private double positionOffset = 0;
     double output;
 
     public enum ElevatorLevel {
@@ -42,15 +41,15 @@ public class Elevator extends Subsystem {
     }
 
     public Elevator() {
-        limitSwitch = new DigitalInput(0); // change input later
+        limitSwitch = new DigitalInput(Constants.kElevatorLimitSwitch);
         // set PID coefficients
         this.getElevatorMotor().getPIDController().setP(Constants.kPVelocityElev);
         this.getElevatorMotor().getPIDController().setI(Constants.kIVelocityElev);
         this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
-        this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElev);
+        //this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElevUp);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
-
+        this.getElevatorMotor().setInverted(true);
         
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, Constants.kFPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
@@ -74,43 +73,45 @@ public class Elevator extends Subsystem {
             @Override
             public void pidWrite(double d) {
                 // compare what PID says to trigger
-                if(Math.abs(d-prevOutput) > Constants.kElevatorMaxAcceleration/4) {
-                    if(d>prevOutput) {
-                        d=prevOutput + Constants.kElevatorMaxAcceleration/4;
-                    }
-                    else {
-                        d=prevOutput - Constants.kElevatorMaxAcceleration/4;
-                    }
-                }
+        //         if(Math.abs(d-prevOutput) > Constants.kElevatorMaxAcceleration/4) {
+        //             if(d>prevOutput) {
+        //                 d=prevOutput + Constants.kElevatorMaxAcceleration/4;
+        //             }
+        //             else {
+        //                 d=prevOutput - Constants.kElevatorMaxAcceleration/4;
+        //             }
+        //         }
                 
-                prevOutput = d;
+        //         prevOutput = d;
      
-                if (manualVelocity == 9999) {
-                    elevatorMotor.getPIDController().setReference(d, ControlType.kVelocity);
-                    setPIDPosOutput(d);
-                }
-                else if (manualVelocity > 0) {
-                    elevatorMotor.getPIDController().setReference(Math.min(d, manualVelocity), ControlType.kVelocity);
-                    setPIDPosOutput(Math.min(d, manualVelocity));
-                    loop = 0;
+        //         if (manualVelocity == 9999) {
+        //             setVelocity(Math.min(d, manualVelocity));
+        //             setPIDPosOutput(d);
+        //         }
+        //         else if (manualVelocity > 0) {
+        //             setVelocity(Math.min(d, manualVelocity));
+        //             setPIDPosOutput(Math.min(d, manualVelocity));
+        //             loop = 0;
                     
-                }
-                else if (manualVelocity < 0) {
-                    elevatorMotor.getPIDController().setReference(Math.max(d, manualVelocity), ControlType.kVelocity);
-                    setPIDPosOutput(Math.max(d, manualVelocity));
-                    loop = 0;
-                }
-                else if (manualVelocity == 0) {
-                    elevatorMotor.getPIDController().setReference(0, ControlType.kVelocity);
-                    setPIDPosOutput(0);
-                    loop++;
-                }
-                if(loop == 10) {
-                    manualVelocity = 9999;
-                    loop = 0;
-                }
-
+        //         }
+        //         else if (manualVelocity < 0) {
+        //             setVelocity(manualVelocity);
+        //             setPIDPosOutput(Math.max(d, manualVelocity));
+        //             loop = 0;
+        //         }
+        //         else if (manualVelocity == 0) {
+        //             setVelocity(0);
+        //             setPIDPosOutput(0);
+        //             loop++;
+        //         }
+        //         if(loop == 10) {
+        //             manualVelocity = 9999;
+        //             loop = 0;
+        //         }
+                setVelocity(d);
+                setPIDPosOutput(d);
             }
+
         }, Constants.kElevPIDPosPeriod);
 
         pidPos.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
@@ -143,8 +144,8 @@ public class Elevator extends Subsystem {
     /**
      * returns the limit switch responcible for elevator homing
      */
-    public DigitalInput getLimitSwitch() {
-        return limitSwitch;
+    public boolean getLimitSwitch() {
+        return !limitSwitch.get();
     }
     
     /**
@@ -186,7 +187,7 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given setpoint (in rotations)
      */
     public void moveElevator(double p){
-        getPIDPos().setSetpoint(p + this.positionOffset);
+        getPIDPos().setSetpoint(p);
     }
 
     /**
@@ -216,7 +217,6 @@ public class Elevator extends Subsystem {
                 this.moveElevator(Constants.kElevatorLvl2Hatch);
                 break;
             case LVL2_CARGO:
-                System.out.println("GOING TO LEVEL 2 CARGO");
                 this.moveElevator(Constants.kElevatorLvl2Cargo);
                 break;
             case LVL3_HATCH:
@@ -235,14 +235,14 @@ public class Elevator extends Subsystem {
      * Sets the position offset of the elevator such that newPos is the current position
      */
     public void setEncoderPosition(double newPos) {
-        positionOffset = elevatorMotor.getEncoder().getPosition() - newPos;
+         elevatorMotor.getEncoder().setPosition(newPos);
     }
 
     /**
      * Gets the position of the elevator in rotations, with the offset from homing
      */
     public double getPosition() {
-        return elevatorMotor.getEncoder().getPosition() - positionOffset;
+        return elevatorMotor.getEncoder().getPosition();
     }
 
     public void freezeElevator(){
@@ -253,27 +253,36 @@ public class Elevator extends Subsystem {
      * Gets the current level of the elevator, or invalid if the elevator is in between levels
      */
     public ElevatorLevel getLevel() {
-        if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kGrabberTolerance) {
+        if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.GROUND;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorCargoPickupLvl) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorCargoPickupLvl) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.CARGO_INTAKE;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorHatchPickupLvl) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorHatchPickupLvl) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.HATCH_INTAKE;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Hatch) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Hatch) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL1_HATCH;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Cargo) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Cargo) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL1_CARGO;    
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Hatch) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Hatch) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL2_HATCH;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Cargo) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Cargo) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL2_CARGO;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Hatch) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Hatch) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL3_HATCH;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Cargo) < Constants.kGrabberTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Cargo) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL3_CARGO;
         } else {
             return ElevatorLevel.INVALID;
         }
+    }
+
+    public void setVelocity(double vel){
+        if(vel>0) {
+            this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElevUp);
+        } else {
+            this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElevDown);
+        }
+        this.getElevatorMotor().getPIDController().setReference(vel, ControlType.kVelocity);
     }
 
     

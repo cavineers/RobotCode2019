@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
@@ -14,113 +16,47 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
-
 
 public class Grabber extends Subsystem {
     public enum GrabberPosition {
-        EXTENDED,
-        RETRACTED,
-        START_POS,
-        HOMED,
-        UNKNOWN
+        EXTENDED, RETRACTED, START_POS, HOMED, UNKNOWN
     }
 
     public enum MotorState {
-        OFF,
-        INTAKE_BALL,
-        EJECT_BALL
+        OFF, INTAKE_BALL, EJECT_BALL
     }
 
     public enum HatchGrabberState {
-        OPEN, //can hold hatches, but cannot receive them
-        CLOSED //cannot hold hatches, but can receive them
+        OPEN, // can hold hatches, but cannot receive them
+        CLOSED // cannot hold hatches, but can receive them
     }
 
     public GrabberPosition grabberState;
 
     CANSparkMax armMotor; // motor responcible moving the arm forward and backward
-    WPI_TalonSRX ballMotor; // motor responcible for minipulating the ball in the grabber
-    private PIDController pidPos;
+    public WPI_TalonSRX ballMotor; // motor responcible for minipulating the ball in the grabber
 
-    DoubleSolenoid grabberSol; // double solenoid for control of both the 
-                               // ball's endstop and the hatch grabber
-
-    double positionOffset; // a correction value used to offset position from homing
+    public DoubleSolenoid grabberSol; // double solenoid for control of the hatch grabber
 
     DigitalInput cargoLimitSwitch = new DigitalInput(Constants.kGrabberCargoLimitSwitch);
     DigitalInput hatchLimitSwitch = new DigitalInput(Constants.kGrabberHatchLimitSwitch);
 
     LinearDigitalFilter averageCurrent;
 
-    PIDSource currentSource = new PIDSource() {
-        PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
-
-        @Override
-        public double pidGet() {
-            return Robot.grabber.getGrabberMotor().getOutputCurrent();
-        }
-
-        @Override
-        public void setPIDSourceType(PIDSourceType pidSource) {
-            vel_sourceType = pidSource;
-        }
-
-        @Override
-        public PIDSourceType getPIDSourceType() {
-            return vel_sourceType;
-        }
-
-    };
-
     public Grabber() {
         grabberState = GrabberPosition.UNKNOWN;
         armMotor = new CANSparkMax(RobotMap.armMotor, MotorType.kBrushless);
-        grabberSol = new DoubleSolenoid(RobotMap.grabber1, RobotMap.grabber2);
-        positionOffset = 0;
-       
-        this.getGrabberMotor().getPIDController().setP(Constants.kGrabberVelP);
-        this.getGrabberMotor().getPIDController().setI(Constants.kGrabberVelI);
-        this.getGrabberMotor().getPIDController().setD(Constants.kGrabberVelD);
-        this.getGrabberMotor().getPIDController().setFF(Constants.kGrabberVelF);
-        this.getGrabberMotor().getPIDController().setOutputRange(-1, 1);
-        this.getGrabberMotor().setIdleMode(IdleMode.kBrake);
+        grabberSol = new DoubleSolenoid(RobotMap.PCM1, RobotMap.grabber1, RobotMap.grabber2);
+        ballMotor = new WPI_TalonSRX(RobotMap.grabberIntake);
 
-        
+        this.getArmMotor().getPIDController().setP(Constants.kGrabberPosP);
+        this.getArmMotor().getPIDController().setI(Constants.kGrabberPosI);
+        this.getArmMotor().getPIDController().setD(Constants.kGrabberPosD);
+        this.getArmMotor().getPIDController().setFF(Constants.kGrabberPosF);
+        this.getArmMotor().getPIDController().setOutputRange(-1, 1);
+        this.getArmMotor().setIdleMode(IdleMode.kBrake);
 
-        pidPos = new PIDController(Constants.kGrabberPosP, Constants.kGrabberPosI, Constants.kGrabberPosD, Constants.kGrabberPosF, new PIDSource() {
-            PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
-
-            @Override
-            public double pidGet() {
-                return armMotor.getEncoder().getPosition();
-            }
-
-            @Override
-            public void setPIDSourceType(PIDSourceType pidSource) {
-                vel_sourceType = pidSource;
-            }
-
-            @Override
-            public PIDSourceType getPIDSourceType() {
-                return vel_sourceType;
-            }
-
-        }, new PIDOutput() {
-            @Override
-            public void pidWrite(double d) {
-                Robot.grabber.getGrabberMotor().getPIDController().setReference(d, ControlType.kVelocity);
-            }
-        }, Constants.kGrabberPIDPosPeriod);
-
-        pidPos.setInputRange(Constants.kMinGrabberPos, Constants.kMaxGrabberPos); 
-        pidPos.setOutputRange(-Constants.kGrabberMaxSpeed, Constants.kGrabberMaxSpeed);
-        pidPos.setContinuous(false);
-        pidPos.setPercentTolerance(Constants.kGrabberPercentTolerance);
     }
 
     /**
@@ -128,41 +64,49 @@ public class Grabber extends Subsystem {
      */
     public void beginHoming() {
         armMotor.set(Constants.kGrabberHomingSpeed);
-        averageCurrent = LinearDigitalFilter.movingAverage(Robot.grabber.getGrabberCurrent(), Constants.kHomeEncoderCurrentCycle);
+        averageCurrent = LinearDigitalFilter.movingAverage(Robot.grabber.getGrabberCurrent(),
+                Constants.kHomeEncoderCurrentCycle);
     }
 
     /**
      * returns true if the grabber exceeds the current limit from constants
      */
     public boolean exceedsCurrentLimit() {
-        return armMotor.getOutputCurrent() > (Constants.kGrabberMaxHomingCurrent + averageCurrent.get()); 
+        return Robot.grabber.getArmMotor().getOutputCurrent() >= Constants.kGrabberMaxHomingCurrent;
     }
 
     /**
-     * Sets the position offset of the grabber such that newPos is the current position
+     * Sets the position offset of the grabber such that newPos is the current
+     * position
      */
     public void setEncoderPosition(double newPos) {
-        positionOffset = armMotor.getEncoder().getPosition() - newPos;
+        armMotor.getEncoder().setPosition(newPos);
+        
     }
 
     /**
-     * Gets the current position of the grabber, with corrections from homing (in rotations)
+     * Gets the current position of the grabber, with corrections from homing (in
+     * rotations)
      */
     public double getPosition() {
-        return armMotor.getEncoder().getPosition() - positionOffset;
+        return armMotor.getEncoder().getPosition();
     }
 
     /**
      * Sets the current state of the grabber
+     * 
      * @param state the desired state of the grabber
      */
     public void setState(GrabberPosition state) {
         if (state == GrabberPosition.EXTENDED) {
-            Robot.grabber.getPIDPos().setSetpoint(positionOffset + Constants.kGrabberExtendedPos);
+            this.getArmMotor().getPIDController().setReference(Constants.kGrabberExtendedPos,
+                    ControlType.kPosition);
         } else if (state == GrabberPosition.RETRACTED) {
-            Robot.grabber.getPIDPos().setSetpoint(positionOffset + Constants.kGrabberRetractedPos);
+            this.getArmMotor().getPIDController().setReference(Constants.kGrabberRetractedPos,
+                    ControlType.kPosition);
         } else if (state == GrabberPosition.START_POS) {
-            Robot.grabber.getPIDPos().setSetpoint(positionOffset + Constants.kGrabberStartPos);
+            this.getArmMotor().getPIDController().setReference(Constants.kGrabberRetractedPos,
+                    ControlType.kPosition);
         } else {
             System.out.println("Attepted to set the grabber to an ineligible position");
         }
@@ -170,6 +114,7 @@ public class Grabber extends Subsystem {
 
     /**
      * Get the current state of the grabber
+     * 
      * @return the current state of the grabber
      */
     public GrabberPosition getState() {
@@ -186,19 +131,19 @@ public class Grabber extends Subsystem {
         }
     }
 
-
     /**
      * Sets the current state of the grabber
+     * 
      * @param state the desired state of the grabber
      */
-    public void setMotorState(MotorState state) {
+    public void setBallMotorState(MotorState state) {
         if (state == MotorState.OFF) {
             this.ballMotor.set(0);
         } else if (state == MotorState.INTAKE_BALL) {
             this.ballMotor.set(Constants.kGrabberIntakeSpeed);
         } else if (state == MotorState.EJECT_BALL) {
             this.ballMotor.set(Constants.kGrabberEjectionSpeed);
-        } 
+        }
     }
 
     /**
@@ -224,33 +169,47 @@ public class Grabber extends Subsystem {
     }
 
     /**
-     * Returns if the limit switch for cargo on the grabber is currently pressed 
+     * Returns if the limit switch for cargo on the grabber is currently pressed
      */
     public boolean hasCargo() {
-        return this.cargoLimitSwitch.get();
+        return !this.cargoLimitSwitch.get();
     }
 
     /**
-     * Returns if the limit switch for hatches on the grabber is currently pressed 
+     * Returns if the limit switch for hatches on the grabber is currently pressed
      */
     public boolean hasHatch() {
-        return this.hatchLimitSwitch.get();
+        return !this.hatchLimitSwitch.get();
     }
 
     @Override
     protected void initDefaultCommand() {
     }
 
-    public CANSparkMax getGrabberMotor(){
+    public CANSparkMax getArmMotor() {
         return armMotor;
     }
 
-    public PIDSource getGrabberCurrent(){
-        return this.currentSource;
+    public PIDSource getGrabberCurrent() {
+        return new PIDSource() {
+
+            @Override
+            public void setPIDSourceType(PIDSourceType pidSource) {
+
+            }
+
+            @Override
+            public PIDSourceType getPIDSourceType() {
+                return PIDSourceType.kDisplacement;
+            }
+
+            @Override
+            public double pidGet() {
+                return getArmMotor().getOutputCurrent();
+            }
+
+        };
     }
 
-    public PIDController getPIDPos(){
-        return pidPos;
-    }
 
 }

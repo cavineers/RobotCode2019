@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class HatchScoop extends Subsystem {
-    private DoubleSolenoid hatchSol;
+    public DoubleSolenoid hatchSol;
 
     @Override
     public void initDefaultCommand() {

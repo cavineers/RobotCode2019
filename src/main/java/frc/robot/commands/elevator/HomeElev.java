@@ -39,9 +39,9 @@ public class HomeElev extends Command {
 			break;
 
 		case 2:
-			if (!Robot.elevator.getLimitSwitch().get()) {
-				Robot.elevator.setEncoderPosition(0);
-				Robot.elevator.getElevatorMotor().getPIDController().setReference(0, ControlType.kVelocity);
+			if (Robot.elevator.getLimitSwitch()) {
+				Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
+				Robot.elevator.setVelocity(0);
 				Robot.elevator.getElevatorMotor().stopMotor();
 				step = 3;
 			}
@@ -59,7 +59,6 @@ public class HomeElev extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
-		
 		Robot.elevator.elevatorMotor.stopMotor();
 
 	}

@@ -13,6 +13,7 @@ public class HomeGrabber extends Command {
         requires(Robot.grabber);
         requires(Robot.elevator);
         isHomed = false;
+        this.setTimeout(5);
     }
 
     @Override
@@ -36,10 +37,10 @@ public class HomeGrabber extends Command {
 
     @Override
     public void end() {
-        Robot.grabber.setState(GrabberPosition.EXTENDED);
+        Robot.grabber.getArmMotor().set(0);
     }
 
     public boolean isFinished() {
-        return isHomed || !Robot.elevator.canMoveGrabber();
+        return isHomed || !Robot.elevator.canMoveGrabber() || this.isTimedOut();
     }
 }

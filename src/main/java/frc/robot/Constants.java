@@ -29,18 +29,18 @@ public class Constants {
     public static final double kAngleTolerance = 0.5; // in degrees; the tolerance of turn to angle
     
     //elevator stuff
-    public static final double kElevatorPosTolerance = 0.1;
+    public static final double kElevatorRotationsPerInch = 2.804;
+    public static final double kElevatorPosTolerance = 1;
     public static final double kElevatorMaxAcceleration = 40; //800
-    public static final double kElevatorMaxSpeed = 3000; //3000
-    public static final double kElevatorMaxHeight  = 42000; //TODO: set actual max height (rotations)
+    public static final double kElevatorMaxSpeed = 5000; //3000
+    public static final double kElevatorMaxHeight  = 75*kElevatorRotationsPerInch; //TODO: set actual max height (rotations)
 	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (rotations)
-    public static final double kElevatorRotationsPerInch = .178;
 
     //TODO: set these values
     public static final double kElevatorGroundLvl = 0; 
     public static final double kElevatorHatchPickupLvl = 0;
     public static final double kElevatorCargoPickupLvl = 0;
-    public static final double kElevatorHomeHeight = -.25;
+    public static final double kElevatorHomeHeight = -1;
     public static final double kElevatorHomeHeightRotations = kElevatorHomeHeight*kElevatorRotationsPerInch;
     
     public static final double kElevatorLvl1Hatch = (4.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
@@ -61,22 +61,22 @@ public class Constants {
     public static final double kElevPercentTolerance = 5;
     
     //On RIO
-    public static final double kPPosElev = 1000;
+    public static final double kPPosElev = 750;
     public static final double kIPosElev = 0;
-    public static final double kDPosElev = 200;
+    public static final double kDPosElev = 500;
     public static final double kFPosElev = 0;
 
     public static final double kElevSensorLocation = 0;
 
-    public static final double kMaxMoveGrabber = 0;
-    public static final double kMinMoveGrabber = 0;
+    public static final double kMaxMoveGrabber = 2;
+    public static final double kMinMoveGrabber = -2;
 
     //Constants for elevator homing
     public static final double kHomeTimeout = 180; //seconds
     public static final double kHomeMotorSpeed = -.1; //percent motor output
     public static final double kHomeCurrentThreshold = 5;
     public static final double kHomeEncoderVelTolerance = 1000;
-    public static final int kHomeEncoderCurrentCycle = 250;
+    public static final int kHomeEncoderCurrentCycle = 15; //avg of 15 cycles must exceed current limit
 
     
     //Talon stuff
@@ -154,25 +154,21 @@ public class Constants {
     public static final double kGrabberPIDPosPeriod = .025;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 0.1;
+    public static final double kGrabberIntakeSpeed = 0.45;
     public static final double kGrabberEjectionSpeed = 1;
     public static final double kGrabberEjectionTime = 1;
 
-    public static final double kGrabberTolerance = 0.1; //TODO set
+    public static final double kGrabberTolerance = 1; //TODO set
 
-    public static final double kGrabberRetractedPos = 0; //TODO set
+    //grabber positions with extended as 0
+    public static final double kGrabberRetractedPos = 57; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
     
     public static final double kGrabberStartPos = 0; //TODO: set
 
-    public static final double kGrabberVelP = 0;
-    public static final double kGrabberVelI = 0;
-    public static final double kGrabberVelD = 0;
-    public static final double kGrabberVelF = 0;
-
-    public static final double kGrabberPosP = 0;
-    public static final double kGrabberPosI = 0;
-    public static final double kGrabberPosD = 0;
+    public static final double kGrabberPosP = 0.04;
+    public static final double kGrabberPosI = 0.00001;//01;
+    public static final double kGrabberPosD = 0.01;
     public static final double kGrabberPosF = 0;
 
     public static final double kGrabberMaxSpeed = 20; //TODO

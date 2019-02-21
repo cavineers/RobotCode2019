@@ -36,38 +36,29 @@ public class RobotMap {
   public static int armMotor = 7; // sparkmax (neo) (40A)
 
   // grabber intake motor
-  public static int grabber = 8; //talon (bag) (30A)
+  public static int grabberIntake = 8; //talon (bag) (30A)
 
   //pneumatics:
 
   //PCM can IDs
   public static int PCM1 = 9;
-  public static int PCM2 = 10;
 
-  //PCM 1 devices:
+  //PCM devices:
 
   //Drive Shifters (switches between high and low drive gears)
-  public static int driveShifter1 = 0;
-  public static int driveShifter2 = 1;
+  public static int driveShifter1 = 4;
+  public static int driveShifter2 = 3;
 
   //Hatch Scoop (lowers and raises the hatch scooping arms)
-  public static int hatchScoop1 = 2;
-  public static int hatchScoop2 = 3;
+  public static int hatchScoop1 = 5;
+  public static int hatchScoop2 = 2;
 
   //Grabber (controls both hatch intake and ball hard stop)
-  public static int grabber1 = 4;
-  public static int grabber2 = 5;
+  public static int grabber1 = 6;
+  public static int grabber2 = 1;
 
   //Cargo Intake (controls if the cargo intake arms are down or not)
-  public static int cargoIntake1 = 6;
-  public static int cargoIntake2 = 7;
+  public static int cargoIntake1 = 7;
+  public static int cargoIntake2 = 0;
   
-  //PCM 2 Devices:
-
-  //Climber (raises and lowers the HDPE arms for the climber)
-  public static int climberArms1 = 0; // TODO: arm
-  public static int climberArms2 = 1;
-
-
-
 }

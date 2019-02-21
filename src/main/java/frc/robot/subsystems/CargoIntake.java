@@ -11,7 +11,7 @@ public class CargoIntake extends Subsystem {
     public WPI_TalonSRX intakeMoter = new WPI_TalonSRX(RobotMap.intakeMoter);
 
     // DoubleSolenoid
-    private DoubleSolenoid posSol;
+    public DoubleSolenoid posSol;
 
     // States
     public enum MotorState {
@@ -23,7 +23,7 @@ public class CargoIntake extends Subsystem {
     }
 
     // State variables
-    public MotorState mstate = MotorState.ON;
+    public MotorState mstate = MotorState.OFF;
 
     @Override
     public void initDefaultCommand() {
@@ -61,7 +61,7 @@ public class CargoIntake extends Subsystem {
      * 
      * @param state the desired state of the cargo intake's arm
      */
-    public void setPosition(PositionState state) {
+    public void setState(PositionState state) {
         if (state == PositionState.UP) {
             posSol.set(Value.kForward);
         } else {

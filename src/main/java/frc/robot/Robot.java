@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
@@ -16,13 +17,18 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.ControlType;
+
 import frc.robot.subsystems.HatchScoop;
+import frc.robot.subsystems.CargoIntake.MotorState;
+import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.Grabber.HatchGrabberState;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.DankDash;
+import frc.robot.commands.elevator.HomeElev;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -33,120 +39,192 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  // Subsystems
-  public static DriveTrain drivetrain;
-  public static Elevator elevator;
-  public static HatchScoop hatchScoop;
-  public static CargoIntake cargoIntake;
-  public static Grabber grabber;
+    // Subsystems
+    public static DriveTrain drivetrain;
+    public static Elevator elevator;
+    public static HatchScoop hatchScoop;
+    public static CargoIntake cargoIntake;
+    public static Grabber grabber;
 
-  public DankDash dankDash;
+    public DankDash dankDash;
 
-  public static double lastUpdateTime;
-  public static double lastLEDUpdateTime;
+    public static double lastUpdateTime;
+    public static double lastLEDUpdateTime;
 
-  public static NetworkTable netTable;
-  public static double heartbeatValue;
+    public static NetworkTable netTable;
+    public static double heartbeatValue;
 
+    public static AHRS gyro;
+    public static OI oi;
+    public static RobotPosEstimator estimator;
 
-  public static AHRS gyro;
-  public static OI oi;
-  public static RobotPosEstimator estimator;
+    public static CameraHelper reflectiveTapeCamera;
 
-  public static CameraHelper reflectiveTapeCamera;
+    public static LEDHelper leds;
 
-  public static LEDHelper leds;
+    double posError;
+    double posWant;
+    double posGot;
+    double velError;
+    double velWant;
+    double velGot;
 
-  double posError;
-  double posWant;
-  double posGot;
-  double velError;
-  double velWant;
-  double velGot;
+    String posData;
+    String velData;
 
-  String posData;
-  String velData;
+    // Camera clock sync checking thread
+    Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
 
-  // Camera clock sync checking thread
-  Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any initialization code.
+     */
+    @Override
+    public void robotInit() {
+        // initialize subsystems
+        drivetrain = new DriveTrain();
+        elevator = new Elevator();
+        hatchScoop = new HatchScoop();
+        cargoIntake = new CargoIntake();
+        grabber = new Grabber();
 
-  /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
-   */
-  @Override
-  public void robotInit() {
-    // initialize subsystems
-    drivetrain = new DriveTrain();
-    elevator = new Elevator();
-    hatchScoop = new HatchScoop();
-    cargoIntake = new CargoIntake();
-    grabber = new Grabber();
+        // initialize gyro
+        gyro = new AHRS(SPI.Port.kMXP);
 
-    //initialize gyro
-    gyro = new AHRS(SPI.Port.kMXP);
+        // initialize operator interface / controls
+        oi = new OI();
 
-    //initialize operator interface / controls
-    oi = new OI();
+        // start estimating position of the robot
+        estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
 
-    //start estimating position of the robot
-    estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
+        // initialize sensors
+        reflectiveTapeCamera = new CameraHelper("reflectiveTape");
+        gyro.zeroYaw();
+        gyro.setAngleAdjustment(0);
 
-    //initialize sensors
-    reflectiveTapeCamera = new CameraHelper("reflectiveTape");
-    gyro.zeroYaw();
-    gyro.setAngleAdjustment(0);
+        // start up the led manager
+        leds = new LEDHelper();
 
-    // start up the led manager
-    leds = new LEDHelper();
+        // begin positional estimation
+        estimator.start();
 
-    //begin positional estimation
-    estimator.start(); 
+        // start ensuring that vision coprocessor(s) have properly synchronized clocks
+        clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
 
-    //start ensuring that vision coprocessor(s) have properly synchronized clocks
-    clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
+        // Init and export profile to network tables
+        dankDash = new DankDash();
+        dankDash.setProfileLocation("TestChassis");
+        dankDash.setProfileName("Test Chassis");
+        dankDash.export();
 
-    // Init and export profile to network tables
-    dankDash = new DankDash();
-    dankDash.setProfileLocation("TestChassis");
-    dankDash.setProfileName("Test Chassis");
-    dankDash.export();
+        SmartDashboard.putData(new HomeElev());
 
-    SmartDashboard.putNumber("f-val", Constants.kFVelocityElev);
-    SmartDashboard.putNumber("p-val", Constants.kPVelocityElev);
-    SmartDashboard.putNumber("i-val", Constants.kIVelocityElev);
-    SmartDashboard.putNumber("d-val", Constants.kDVelocityElev);
-    SmartDashboard.putNumber("setpoint", 0);
+        // Elevator
+
+        // Velocity loop
+        // SmartDashboard.putNumber("f-val", Constants.kFVelocityElevUp);
+        // SmartDashboard.putNumber("p-val", Constants.kPVelocityElev);
+        // SmartDashboard.putNumber("i-val", Constants.kIVelocityElev);
+        // SmartDashboard.putNumber("d-val", Constants.kDVelocityElev);
+        // SmartDashboard.putNumber("current-vel",
+        // elevator.getElevatorMotor().getEncoder().getVelocity());
+
+        // Position loop
+        // SmartDashboard.putNumber("f-val", Constants.kFPosElev);
+        // SmartDashboard.putNumber("p-val", Constants.kPPosElev);
+        // SmartDashboard.putNumber("i-val", Constants.kIPosElev);
+        // SmartDashboard.putNumber("d-val", Constants.kDPosElev);
+        // SmartDashboard.putNumber("current-pos",
+        // elevator.getElevatorMotor().getEncoder().getPosition());
+        // SmartDashboard.putNumber("position output: ", elevator.getPIDPosOutput());
+
+        // //Grabber
+        // SmartDashboard.putNumber("f-val", Constants.kGrabberPosF);
+        // SmartDashboard.putNumber("p-val", Constants.kGrabberPosP);
+        // SmartDashboard.putNumber("i-val", Constants.kGrabberPosI);
+        // SmartDashboard.putNumber("d-val", Constants.kGrabberPosD);
+        // SmartDashboard.putNumber("current-vel",
+        // elevator.getElevatorMotor().getEncoder().getVelocity());
+
     }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use
-   * this for items like diagnostics that you want ran during disabled,
-   * autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    this.updateLEDs();
-    this.updateDankDash();
+    /**
+     * This function is called every robot packet, no matter the mode. Use this for
+     * items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
+     *
+     * <p>
+     * This runs after the mode specific periodic functions, but before LiveWindow
+     * and SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
 
-    posWant = Robot.elevator.getPIDPos().getSetpoint();
-    posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
-    posError = Math.abs(posWant-posGot);
+        // this.updateLEDs(); //TODO: uncomment if we use leds
+        this.updateDankDash();
 
-    velWant = Robot.elevator.getPIDPosOutput();
-    velGot = Robot.elevator.getElevatorMotor().getEncoder().getVelocity();
-    velError = Math.abs(velWant-velGot);
+        // Dank Dashboard stuff //TODO: uncomment if we use dank dashboard
 
-    posData = Double.toString(posError) + "," + Double.toString(posWant) + "," + Double.toString(posGot);
-    velData = Double.toString(velError) + "," + Double.toString(velWant) + "," + Double.toString(velGot);
-    dankDash.sendDash("/DankDash/Pos", posData);
-    dankDash.sendDash("vel", velData);
+        // posWant = Robot.elevator.getPIDPos().getSetpoint();
+        // posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
+        // posError = Math.abs(posWant-posGot);
 
-    SmartDashboard.putNumber("elevator vel", elevator.getElevatorMotor().getEncoder().getVelocity());
-  }
+        // velWant = Robot.elevator.getPIDPosOutput();
+        // velGot = Robot.elevator.getElevatorMotor().getEncoder().getVelocity();
+        // velError = Math.abs(velWant-velGot);
+
+        // posData = Double.toString(posError) + "," + Double.toString(posWant) + "," +
+        // Double.toString(posGot);
+        // velData = Double.toString(velError) + "," + Double.toString(velWant) + "," +
+        // Double.toString(velGot);
+        // dankDash.sendDash("/DankDash/Pos", posData);
+        // dankDash.sendDash("vel", velData);
+
+        // SmartDashboard.putNumber("elevator vel",
+        // elevator.getElevatorMotor().getEncoder().getVelocity());
+
+        // For tuning elevator:
+
+        // For figuring out homing:
+        SmartDashboard.putBoolean("elevatorSwitch", elevator.getLimitSwitch());
+
+        // Velocity:
+        // elevator.getElevatorMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val",
+        // 0));
+        // elevator.getElevatorMotor().getPIDController().setP(SmartDashboard.getNumber("p-val",
+        // 0));
+        // elevator.getElevatorMotor().getPIDController().setI(SmartDashboard.getNumber("i-val",
+        // 0));
+        // elevator.getElevatorMotor().getPIDController().setD(SmartDashboard.getNumber("d-val",
+        // 0));
+        SmartDashboard.putNumber("current-vel", elevator.getElevatorMotor().getEncoder().getVelocity());
+
+        // //Position:
+        // elevator.getPIDPos().setF(SmartDashboard.getNumber("f-val", 0));
+        // elevator.getPIDPos().setP(SmartDashboard.getNumber("p-val", 0));
+        // elevator.getPIDPos().setI(SmartDashboard.getNumber("i-val", 0));
+        // elevator.getPIDPos().setD(SmartDashboard.getNumber("d-val", 0));
+        SmartDashboard.putNumber("current-pos", elevator.getElevatorMotor().getEncoder().getPosition());
+
+    //Grabber:
+    
+    //limit switches:
+    SmartDashboard.putBoolean("hasHatch", grabber.hasHatch());
+    SmartDashboard.putBoolean("hasCargo", grabber.hasCargo());
+
+    // //position PID
+    // grabber.getArmMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val", 0));
+    // grabber.getArmMotor().getPIDController().setP(SmartDashboard.getNumber("p-val", 0));
+    // grabber.getArmMotor().getPIDController().setI(SmartDashboard.getNumber("i-val", 0));
+    // grabber.getArmMotor().getPIDController().setD(SmartDashboard.getNumber("d-val", 0));
+    SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
+    SmartDashboard.putNumber("grabber-current", grabber.getArmMotor().getOutputCurrent());
+    
+    SmartDashboard.putString("grabber-level", String.valueOf(grabber.getState()));
+    SmartDashboard.putString("elevator-level", String.valueOf(elevator.getLevel()));
+    SmartDashboard.putString("can-move-elev", String.valueOf(elevator.canMoveGrabber()));
+
+}
 
   /**
    * This function is called once each time the robot enters Disabled mode.
@@ -188,6 +266,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+      grabber.setEncoderPosition(Constants.kGrabberStartPos);
+      grabber.getArmMotor().getPIDController().setReference(Constants.kGrabberStartPos, ControlType.kPosition);
   }
 
   /**
@@ -235,7 +315,6 @@ public class Robot extends TimedRobot {
    */
   protected void checkForClockSync() {
     if (reflectiveTapeCamera.shouldSyncClocks()) {
-        System.out.println("should sync clocks");
         reflectiveTapeCamera.startClockSync();
     }
   }

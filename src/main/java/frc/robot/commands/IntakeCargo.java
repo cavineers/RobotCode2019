@@ -19,23 +19,20 @@ public class IntakeCargo extends CommandGroup {
         requires(Robot.grabber);
         requires(Robot.elevator);
         requires(Robot.cargoIntake);
-        requires(Robot.hatchScoop);
-        addSequential(new ChangeHatchScoopState(HatchScoopState.UP));
-        addSequential(new ElevatorToLevel(ElevatorLevel.CARGO_INTAKE));
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
+        addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
         addSequential(new ChangeGrabberState(Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }
    
     @Override
     protected void end() {
-        Command shutoffIntake = new ChangeCargoIntakeState(CargoIntake.PositionState.UP, CargoIntake.MotorState.OFF);
-        shutoffIntake.start();
-        shutoffIntake.close();
+        new ChangeCargoIntakeState(CargoIntake.PositionState.UP, CargoIntake.MotorState.OFF).start();
+        new ChangeGrabberState(Grabber.MotorState.OFF).start();
     }
 
     @Override
     protected boolean isFinished() {
-        return super.isFinished() || OI.a_button.get() || Robot.grabber.hasCargo(); //TODO: finish if there is a ball already in the grabber
+        return /* super.isFinished()  || || */  Robot.grabber.hasCargo(); //TODO: finish if there is a ball already in the grabber
     }
 
     @Override

@@ -7,21 +7,34 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.lib.pathPursuit.Path;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.FollowPath.PATH_TYPE;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
+import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.commands.elevator.HomeElev;
-import frc.robot.commands.elevator.RawMoveElevator;
-import frc.robot.commands.grabber.RawMoveGrabber;
+import frc.robot.commands.tests.RawMoveElevator;
+import frc.robot.commands.grabber.EjectBall;
+import frc.robot.commands.grabber.HomeGrabber;
+import frc.robot.commands.tests.RawMoveGrabber;
+import frc.robot.commands.tests.RawSetElevatorPosition;
+import frc.robot.commands.tests.RawSetElevatorVelocity;
+import frc.robot.commands.tests.RawSetGrabberPosition;
+import frc.robot.commands.grabber.ToggleGrabber;
+import frc.robot.commands.grabber.ToggleHatchGrabber;
 import frc.robot.LEDHelper;
+import frc.robot.subsystems.CargoIntake;    
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -57,17 +70,37 @@ public class OI {
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
         // a_button.whenPressed(new TargetVisionTape());
         // b_button.whenPressed(new ElevatorToPos(10));
-        // x_button.whenPressed(new ChangeClimberState(LegState.DEPLOYED));
         // y_button.whenPressed(new ToggleCargoIntake());
 
-        // a_button.whenPressed(new IntakeCargo());
-        // b_button.whenPressed(new ToggleGrabber());
-        // x_button.whenPressed(new ToggleHatchGrabber());
-        // y_button.whenPressed(new EjectBall());
+        //actual button commands
+        a_button.whenPressed(new IntakeCargo());
+        b_button.whenPressed(new ToggleGrabber());
+        x_button.whenPressed(new ToggleHatchGrabber());
+        y_button.whenPressed(new EjectBall());
 
-        a_button.whileHeld(new RawMoveGrabber(0.4));
-        y_button.whileHeld(new RawMoveGrabber(-0.4));
-        x_button.whenPressed(new HomeElev());
+        // Homing test
+        // a_button.whenPressed(new HomeElev());
+
+        // Raw % output elevator controls
+        // a_button.whileHeld(new RawMoveElevator(0.25));
+        // y_button.whileHeld(new RawMoveElevator(-0.25));
+
+        //Raw velocity control
+        // x_button.whileHeld(new RawSetElevatorVelocity(1500));
+        // b_button.whileHeld(new RawSetElevatorVelocity(-1500));
+
+        //Raw Cascading PID control
+        // x_button.whileHeld(new RawSetElevatorPosition(75));
+        // y_button.whileHeld(new RawSetElevatorPosition(150));
+
+
+        //Grabber Position Control
+        // x_button.whileHeld(new RawSetGrabberPosition(50));
+        // y_button.whileHeld(new RawSetGrabberPosition(10));
+        // b_button.whileHeld(new RawSetGrabberPosition(80));
+        // a_button.whenPressed(new HomeGrabber());
+
+
     }
 
     public void updateDPadCommands(){
@@ -76,44 +109,45 @@ public class OI {
 			case 0: {
                 // Top
                 if(Robot.grabber.hasCargo()){
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_CARGO);
+                    new ElevatorToLevel(ElevatorLevel.LVL3_CARGO).start();
                 }
                 else if(Robot.grabber.hasHatch()){
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_HATCH);
+                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
                 }
                 else{
                     Robot.elevator.moveElevator(ElevatorLevel.LVL3_CARGO); 
+                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
                 }
 				break;
 			}
 			case 90: {
 				// Right
                 if(Robot.grabber.hasCargo()){
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL2_CARGO);
+                    new ElevatorToLevel(ElevatorLevel.LVL2_CARGO).start();
                 }
                 else if(Robot.grabber.hasHatch()){
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL2_HATCH);
+                    new ElevatorToLevel(ElevatorLevel.LVL2_HATCH).start();
                 }
                 else{
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL2_CARGO); 
+                    new ElevatorToLevel(ElevatorLevel.LVL2_CARGO).start();
                 }
 				break;
 			}
 			case 180: {
 				// Bottom
-				Robot.elevator.moveElevator(ElevatorLevel.GROUND);
+                new ElevatorToLevel(ElevatorLevel.GROUND).start();
 				break;
 			}
 			case 270: {
 				// Left
 				if(Robot.grabber.hasCargo()){
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL1_CARGO);
+                    new ElevatorToLevel(ElevatorLevel.LVL1_CARGO).start();
                 }
                 else if(Robot.grabber.hasHatch()){
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL1_HATCH);
+                    new ElevatorToLevel(ElevatorLevel.LVL1_HATCH).start();
                 }
                 else{
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL1_CARGO); 
+                    new ElevatorToLevel(ElevatorLevel.LVL1_CARGO).start();
                 }
 				break;
 			}

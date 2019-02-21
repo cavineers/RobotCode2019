@@ -15,7 +15,7 @@ public class EjectBall extends Command{
     @Override
     protected void initialize() {
         if (Robot.grabber.getState() == GrabberPosition.EXTENDED) {
-            Robot.grabber.setMotorState(MotorState.EJECT_BALL);
+            Robot.grabber.setBallMotorState(MotorState.EJECT_BALL);
             this.setTimeout(Constants.kGrabberEjectionTime);
         } else {
             this.cancel();
@@ -24,7 +24,7 @@ public class EjectBall extends Command{
 
     @Override
     protected void end() {
-        Robot.grabber.setMotorState(MotorState.OFF);
+        Robot.grabber.setBallMotorState(MotorState.OFF);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class DriveTrain extends Subsystem {
     
     private DifferentialDrive drive = new DifferentialDrive(leftMotor1, rightMotor1);
 
-    private DoubleSolenoid shiftingSol;
+    public DoubleSolenoid shiftingSol;
     
     private boolean mIsBrakeMode;
 
