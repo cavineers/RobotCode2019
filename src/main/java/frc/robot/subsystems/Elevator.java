@@ -27,7 +27,7 @@ public class Elevator extends Subsystem {
     private int loop = 0;
     double output;
 
-    public enum ElevatorLevel {
+    public enum ElevatorLevel {        
         GROUND,
         CARGO_INTAKE,
         HATCH_INTAKE,
@@ -184,6 +184,27 @@ public class Elevator extends Subsystem {
     }
 
     /**
+     * Homes elevator then sets desired pos to ground
+     */
+    public void moveGround(){
+        int step = 0;
+        switch (step) {
+            case 1:
+                Robot.elevator.moveElevator(Constants.kElevatorGroundCheck);
+                step = 2;
+                break;
+            case 2:
+                if (Robot.elevator.getLimitSwitch()) {
+                    Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
+                    Robot.elevator.moveElevator(Constants.kElevatorGroundLvl);
+                    step = 2;
+                }
+                break;
+        }
+
+    }
+
+    /**
      * Moves the elevator to the given setpoint (in rotations)
      */
     public void moveElevator(double p){
@@ -199,7 +220,7 @@ public class Elevator extends Subsystem {
         }
         switch (level) {
             case GROUND:
-                this.moveElevator(Constants.kElevatorGroundLvl);
+                this.moveGround();
                 break;
             case HATCH_INTAKE:
                 this.moveElevator(Constants.kElevatorHatchPickupLvl);

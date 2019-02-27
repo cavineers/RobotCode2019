@@ -50,6 +50,7 @@ public class Constants {
     public static final double kElevatorLvl3Hatch = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
     public static final double kElevatorLvl3Cargo = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
 
+    public static final double kElevatorGroundCheck = 2*kElevatorRotationsPerInch;
     //On NEO
     public static final double kPVelocityElev = 1E-4;
     public static final double kIVelocityElev = 0;

@@ -1,5 +1,6 @@
 package frc.robot.commands.elevator;
 
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Grabber;
@@ -26,7 +27,12 @@ public class ElevatorToLevel extends Command {
     @Override
     protected void execute() {
         if (Robot.grabber.getState() == Grabber.GrabberPosition.EXTENDED) {
-            Robot.elevator.moveElevator(this.desiredLevel);
+            if(this.desiredLevel == ElevatorLevel.GROUND){
+                Robot.elevator.moveGround();
+            } 
+            else{
+                Robot.elevator.moveElevator(this.desiredLevel);
+            }
         }
     }
 
@@ -42,5 +48,7 @@ public class ElevatorToLevel extends Command {
 
     protected void interrupted() {
 		end();
-	}
+    }
+    
+    
 }
