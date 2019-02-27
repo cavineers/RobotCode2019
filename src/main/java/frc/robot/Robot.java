@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
 
-        this.updateLEDs(); // TODO: uncomment if we use leds
+        // this.updateLEDs(); // TODO: uncomment if we use leds
         this.updateDankDash();
 
         // Dank Dashboard stuff //TODO: uncomment if we use dank dashboard
@@ -339,7 +339,7 @@ public class Robot extends TimedRobot {
 
     public void updateLEDs() {
         if (Robot.getCurrentTime() - lastLEDUpdateTime > 0.25) { // update the LEDs 4 times per second
-            lastUpdateTime = Robot.getCurrentTime();
+            lastLEDUpdateTime = Robot.getCurrentTime();
             leds.update();
         }
     }
@@ -353,6 +353,7 @@ public class Robot extends TimedRobot {
             lastUpdateTime = Robot.getCurrentTime();
             dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
             heartbeatValue++;
+            dankDash.sendDash("MatchTime", Double.toString(DriverStation.getInstance().getMatchTime()));
         }
     }
 
