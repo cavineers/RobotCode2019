@@ -22,13 +22,18 @@ public class ElevatorToLevel extends Command {
         if(!Robot.grabber.getState().equals(GrabberPosition.EXTENDED)){
             Robot.grabber.setState(GrabberPosition.EXTENDED);
         }
+        if(!Robot.elevator.getPIDPos().isEnabled()){
+            Robot.elevator.getPIDPos().enable();
+        }
+        Robot.elevator.checkHomed();
+       
     }
 
     @Override
     protected void execute() {
         if (Robot.grabber.getState() == Grabber.GrabberPosition.EXTENDED) {
             if(this.desiredLevel == ElevatorLevel.GROUND){
-                Robot.elevator.moveGround();
+                new ElevatorToGround();
             } 
             else{
                 Robot.elevator.moveElevator(this.desiredLevel);
@@ -43,12 +48,12 @@ public class ElevatorToLevel extends Command {
     @Override
     protected boolean isFinished() {
         return Robot.elevator.getLevel() == desiredLevel;
-        //TODO: add interruptible if driver tries to rehome
     }
 
     protected void interrupted() {
 		end();
     }
+
     
     
 }

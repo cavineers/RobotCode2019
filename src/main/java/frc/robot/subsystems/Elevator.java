@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.commands.elevator.ElevatorToGround;
 
 /**
  * The Elevator subsystem 
@@ -26,6 +27,7 @@ public class Elevator extends Subsystem {
     private double prevOutput = 0;
     private int loop = 0;
     double output;
+    private boolean homed = false;
 
     public enum ElevatorLevel {        
         GROUND,
@@ -184,27 +186,6 @@ public class Elevator extends Subsystem {
     }
 
     /**
-     * Homes elevator then sets desired pos to ground
-     */
-    public void moveGround(){
-        int step = 0;
-        switch (step) {
-            case 1:
-                Robot.elevator.moveElevator(Constants.kElevatorGroundCheck);
-                step = 2;
-                break;
-            case 2:
-                if (Robot.elevator.getLimitSwitch()) {
-                    Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
-                    Robot.elevator.moveElevator(Constants.kElevatorGroundLvl);
-                    step = 2;
-                }
-                break;
-        }
-
-    }
-
-    /**
      * Moves the elevator to the given setpoint (in rotations)
      */
     public void moveElevator(double p){
@@ -215,12 +196,9 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given level
      */
     public void moveElevator(ElevatorLevel level) {
-        if(!getPIDPos().isEnabled()){
-            getPIDPos().enable();
-        }
         switch (level) {
             case GROUND:
-                this.moveGround();
+                this.moveElevator(Constants.kElevatorGroundLvl);
                 break;
             case HATCH_INTAKE:
                 this.moveElevator(Constants.kElevatorHatchPickupLvl);
@@ -304,6 +282,20 @@ public class Elevator extends Subsystem {
             this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElevDown);
         }
         this.getElevatorMotor().getPIDController().setReference(vel, ControlType.kVelocity);
+    }
+
+    public boolean getHomed(){
+        return homed;
+    }
+
+    public void setHomed(boolean newHomed){
+        this.homed = newHomed;
+    }
+
+    public void checkHomed(){
+        if(this.getHomed() && Robot.elevator.getLimitSwitch()){
+            new ElevatorToGround();
+        }
     }
 
     

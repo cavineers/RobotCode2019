@@ -23,7 +23,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.commands.elevator.ElevatorToLevel;
-import frc.robot.commands.elevator.HomeElev;
 import frc.robot.commands.tests.RawMoveElevator;
 import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.grabber.HomeGrabber;
@@ -115,8 +114,7 @@ public class OI {
                     new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
                 }
                 else{
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_CARGO); 
-                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
+                    new ElevatorToLevel(ElevatorLevel.LVL3_CARGO).start();
                 }
 				break;
 			}

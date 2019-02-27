@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.DankDash;
-import frc.robot.commands.elevator.HomeElev;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -116,8 +115,6 @@ public class Robot extends TimedRobot {
         dankDash.setProfileLocation("TestChassis");
         dankDash.setProfileName("Test Chassis");
         dankDash.export();
-
-        SmartDashboard.putData(new HomeElev());
 
         // Elevator
 
