@@ -159,29 +159,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
 
-        // this.updateLEDs(); //TODO: uncomment if we use leds
+        this.updateLEDs(); //TODO: uncomment if we use leds
         this.updateDankDash();
-
-        // Dank Dashboard stuff //TODO: uncomment if we use dank dashboard
-
-        // posWant = Robot.elevator.getPIDPos().getSetpoint();
-        // posGot = Robot.elevator.getElevatorMotor().getEncoder().getPosition();
-        // posError = Math.abs(posWant-posGot);
-
-        // velWant = Robot.elevator.getPIDPosOutput();
-        // velGot = Robot.elevator.getElevatorMotor().getEncoder().getVelocity();
-        // velError = Math.abs(velWant-velGot);
-
-        // posData = Double.toString(posError) + "," + Double.toString(posWant) + "," +
-        // Double.toString(posGot);
-        // velData = Double.toString(velError) + "," + Double.toString(velWant) + "," +
-        // Double.toString(velGot);
-        // dankDash.sendDash("/DankDash/Pos", posData);
-        // dankDash.sendDash("vel", velData);
-
-        // SmartDashboard.putNumber("elevator vel",
-        // elevator.getElevatorMotor().getEncoder().getVelocity());
-
         // For tuning elevator:
 
         // For figuring out homing:
@@ -223,7 +202,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("elevator-level", String.valueOf(elevator.getLevel()));
     SmartDashboard.putString("can-move-elev", String.valueOf(elevator.canMoveGrabber()));
 
-}
+    }
 
   /**
    * This function is called once each time the robot enters Disabled mode.
@@ -318,16 +297,9 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /**
-   * Returns true if the robot is in climber mode
-   */
-  public static boolean isClimbing() {
-    return false; //TODO: implement
-  }
-
   public void updateLEDs() {
     if (Robot.getCurrentTime() - lastLEDUpdateTime > 0.25) { // update the LEDs 4 times per second
-        lastUpdateTime = Robot.getCurrentTime();
+        lastLEDUpdateTime = Robot.getCurrentTime();
         leds.update();
     } 
   }
