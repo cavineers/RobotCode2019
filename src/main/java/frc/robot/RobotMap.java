@@ -43,6 +43,8 @@ public class RobotMap {
   //PCM can IDs
   public static int PCM1 = 9;
 
+  public static int PDP = 10;
+
   //PCM devices:
 
   //Drive Shifters (switches between high and low drive gears)

@@ -96,6 +96,32 @@ public class Path {
         return didFinish;
     }
 
+    /**
+     * Mirrors the given path around the horizontal (long way) center line of the field
+     * 
+     * @param path a path to be mirrored
+     * @return a mirrored path
+     */
+    public static Path mirror(Path path) {
+        Path mirroredPath = new Path(false, path.isReversed, Constants.kMaxAccelSpeedUp);
+        for (Segment seg : path.segmentList) {
+            //iterate over all segments in a path, mirroring it around the centerline of the field
+            if (seg instanceof ArcSegment) {
+                ArcSegment arc = (ArcSegment) seg;
+                Point mirroredStart = new Point(arc.getStartPoint().getX(), Constants.kFieldWidth - arc.getStartPoint().getY());
+                Point mirroredEnd = new Point(arc.getEndPoint().getX(), Constants.kFieldWidth - arc.getEndPoint().getY());
+                Point mirroredCenter = new Point(arc.getEndPoint().getX(), Constants.kFieldWidth - arc.getCenterPoint().getY());
+                mirroredPath.addSegment(new ArcSegment(mirroredStart, mirroredEnd, mirroredCenter, arc.maxVel, arc.endVel, arc.turnType));
+            } else if (seg instanceof LineSegment) {
+                LineSegment line = (LineSegment) seg;
+                Point mirroredStart = new Point(line.getStartPoint().getX(), Constants.kFieldWidth - line.getStartPoint().getY());
+                Point mirroredEnd = new Point(line.getEndPoint().getX(), Constants.kFieldWidth - line.getEndPoint().getY());
+                mirroredPath.addSegment(new LineSegment(mirroredStart, mirroredEnd, line.maxVel, line.endVel));
+            }
+        }
+        return mirroredPath;
+    }
+
     @Override
     public String toString() {
         String s = "";

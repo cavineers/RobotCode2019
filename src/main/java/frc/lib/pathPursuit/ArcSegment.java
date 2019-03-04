@@ -23,7 +23,8 @@ public class ArcSegment implements Segment {
     public enum TURN {
         RIGHT,
         LEFT,
-        SMALL_SIDE
+        SMALL_SIDE,
+        LARGE_SIDE
     }
 
     public TURN turnType;
@@ -59,6 +60,13 @@ public class ArcSegment implements Segment {
 
         if (turnType == TURN.SMALL_SIDE) {
             this.turnType = this.smallSide;
+        } else if (turnType == TURN.LARGE_SIDE) {
+            //go for the opposite turn of the small side if the large side is desired
+            if (this.smallSide == TURN.LEFT) {
+                this.turnType = TURN.RIGHT;
+            } else {
+                this.turnType = TURN.LEFT;
+            }
         }
 
     }

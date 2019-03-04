@@ -34,11 +34,9 @@ public class DubinPathTest {
 
     // static double minRad = 30;
 
-    static Point startPoint = new Point(-0.07724603391119139,0.0012551598892283694);
-    static double startHeading = -0.024783674629305422;
+    static Point startPoint = new Point(0, 0);
+    static double startHeading = 0;
 
-    // static Point endPoint = new Point(37.3861478587509, 8.268122838004851);
-    // static double endHeading = 0.2127759890603868;//2.3573910734479835;
     static double straightLineAmount = 3;
 
     static RobotPosMap map = new RobotPosMap(200, new RobotPosUpdate(startPoint.getX(), startPoint.getY(), startHeading, 0, UpdateType.BASE));
@@ -48,7 +46,7 @@ public class DubinPathTest {
 
         double startVel = 0;
         
-        Path path = createPath(new TargetUpdate(0.0155049936645,0.280920635208,0.959605748152,0.63722241386,-4.11429654723,23.8722069873,-0.425705147813,2.78770529811,24.0678879262,204,156.7497000694275));
+        Path path = createPath(new TargetUpdate(-0.978520861849,-0.0931658900992,0.183894099547,-8.5736493754,34.6961371727,-0.274534376962,6.87258957562,-0.00612823360446,35.0738113471,14745,40.89551067352295));
 
         RobotPos currentPos = map.getLastestFieldRelativePosition();
         currentPos.setVelocities(startVel, startVel);
@@ -99,6 +97,57 @@ public class DubinPathTest {
 
         System.out.println("Estimate time Required " + pathTime + " sec");
     }
+
+    // static Path createPath(TargetUpdate targetUpdate) {
+    //     RobotPos robotFieldPos = new RobotPos(-0.07724603391119139,0.0012551598892283694,  -0.024783674629305422,  0,0); // the position of the robot when the picture was taken (field coords)
+
+    //     System.out.println("Found Target");
+
+    //     System.out.println("Pos at time: " + robotFieldPos);
+
+    //     //convert the target heading vector to the robot's coordinate system
+    //     Vector3D targetHeadingVect = targetUpdate.getHeadingVector();
+    //     targetHeadingVect.rotate(Constants.kCameraToRobotMatrix);
+
+    //     System.out.println("Target Heading Vect: " + targetHeadingVect);
+
+    //     // compute the target heading
+    //     double targetHeading = robotFieldPos.getHeading() + Math.atan(targetHeadingVect.getDx() / targetHeadingVect.getDy());
+
+    //     System.out.println("Target Heading: " + targetHeading);
+
+    //     // the target in the robot's reference frame
+    //     Vector3D targetRobotFrameRobotOrigin = Vector3D.add(Constants.kCameraRelativeToRobotCenter, targetUpdate.getCameraVector().rotate(Constants.kCameraToRobotMatrix)); 
+
+    //     //the target in a coordinate system alligned with the field, but centered at the robot
+    //     Vector3D targetFieldFrameRobotOrigin = targetRobotFrameRobotOrigin.rotateZAxis(-robotFieldPos.getHeading());
+
+    //     System.out.println("Robot Oriented Robot Origin: " + targetRobotFrameRobotOrigin);
+
+    //     System.out.println("Field Oriented Robot Origin: " + targetFieldFrameRobotOrigin);
+
+    //     // rotate the vector such that its x component is pointing forward to match path pursuit's coordinate system
+    //     // targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
+    //     // targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateYAxis(Math.PI);
+
+    //     targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
+    //     targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateXAxis(Math.PI);
+
+    //     //the target's location relative to the field in 2 dimentions
+    //     Vector2D targetFieldLocation = new Vector2D(targetFieldFrameRobotOrigin.getDx() + robotFieldPos.getX(), targetFieldFrameRobotOrigin.getDy() + robotFieldPos.getY());
+
+    //     System.out.println("Target Field Location: " + targetFieldLocation.toString());
+
+    //     RobotPos latestFieldPos = new RobotPos(startPoint,  0,  0,0);
+
+    //     DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), targetFieldLocation.getPoint(), targetHeading);
+        
+    //     if (!dubinsPath.isValid()) {
+    //         System.out.println("INVALID PATH");
+    //     }
+    //     System.out.println("planned path");
+    //     return dubinsPath.getPath();
+    // }
 
     protected static Path createPath(TargetUpdate targetUpdate) {
         System.out.println("Found Target");

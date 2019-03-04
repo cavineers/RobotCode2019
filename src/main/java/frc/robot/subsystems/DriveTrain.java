@@ -145,7 +145,7 @@ public class DriveTrain extends Subsystem {
 		rightMotor2.setInverted(false);
         
         rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, Constants.kTimeoutMs);
-        rightMotor1.setSensorPhase(false); // keep encoder and motor in phase 
+        rightMotor1.setSensorPhase(true); // keep encoder and motor in phase 
         
         // set the peak, nominal outputs
         rightMotor1.configNominalOutputForward(0, Constants.kTimeoutMs);
@@ -168,7 +168,7 @@ public class DriveTrain extends Subsystem {
         rightMotor1.configClosedloopRamp(Constants.kDriveVoltageRampRate, Constants.kTimeoutMs);
         
         leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-        leftMotor1.setSensorPhase(false); // keep encoder and motor in phase
+        leftMotor1.setSensorPhase(true); // keep encoder and motor in phase
         
         // set the peak, nominal outputs
         leftMotor1.configNominalOutputForward(0, Constants.kTimeoutMs);
@@ -189,6 +189,9 @@ public class DriveTrain extends Subsystem {
         leftMotor1.configVelocityMeasurementWindow(1, Constants.kTimeoutMs);
         leftMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, 100);
         leftMotor1.configClosedloopRamp(Constants.kDriveVoltageRampRate, Constants.kTimeoutMs);
+
+        leftMotor1.configClosedloopRamp(0.25);
+        rightMotor1.configClosedloopRamp(0.25);
     }
     
     /**

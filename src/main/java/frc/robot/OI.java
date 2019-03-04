@@ -18,12 +18,10 @@ import frc.robot.commands.FollowPath;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
-import frc.robot.commands.FollowPath.PATH_TYPE;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.commands.elevator.ElevatorToLevel;
-import frc.robot.commands.elevator.HomeElev;
 import frc.robot.commands.tests.RawMoveElevator;
 import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.grabber.HomeGrabber;
@@ -68,7 +66,8 @@ public class OI {
         
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
-        // a_button.whenPressed(new TargetVisionTape());
+        left_middle.whenPressed(new TargetVisionTape());
+        // left_middle.whenPressed(new FollowPath(PATH_TYPE.TEST_PATH));
         // b_button.whenPressed(new ElevatorToPos(10));
         // y_button.whenPressed(new ToggleCargoIntake());
 
@@ -115,8 +114,7 @@ public class OI {
                     new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
                 }
                 else{
-                    Robot.elevator.moveElevator(ElevatorLevel.LVL3_CARGO); 
-                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
+                    new ElevatorToLevel(ElevatorLevel.LVL3_CARGO).start();
                 }
 				break;
 			}

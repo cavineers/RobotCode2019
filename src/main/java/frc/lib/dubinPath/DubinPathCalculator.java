@@ -18,7 +18,7 @@ public class DubinPathCalculator {
         DubinsTrajectory traj = getTraj(start, startHeading, end, endHeading, radius);
         ArrayList<Segment> segList = traj.getSegmentList();
         
-        Path path = new Path(false, false, Constants.kMaxTargetAccel,  new Lookahead(Constants.kMinLookAheadTargeting, Constants.kMinLookAheadTargeting, Constants.kMinLookAheadSpeedTargeting, Constants.kMaxLookAheadSpeedTargeting));
+        Path path = new Path(true, false, Constants.kMaxTargetAccel,  new Lookahead(Constants.kMinLookAheadTargeting, Constants.kMinLookAheadTargeting, Constants.kMinLookAheadSpeedTargeting, Constants.kMaxLookAheadSpeedTargeting));
         for (Segment seg : segList) {
             path.addSegment(seg);
         }

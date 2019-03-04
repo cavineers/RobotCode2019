@@ -50,6 +50,7 @@ public class Constants {
     public static final double kElevatorLvl3Hatch = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
     public static final double kElevatorLvl3Cargo = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
 
+    public static final double kElevatorGroundCheck = 2*kElevatorRotationsPerInch;
     //On NEO
     public static final double kPVelocityElev = 1E-4;
     public static final double kIVelocityElev = 0;
@@ -88,10 +89,10 @@ public class Constants {
     // public static final double kIVelocity = 0.0;//0.0; //0
     // public static final double kDVelocity = 0.15;//0.15; //10
     // public static final double kFVelocity = 1.5;//1.5//0.6; //2  //75 in/sec at 0.5 power // 53400 units/100ms
-    public static final double kPVelocity = 4.5;//1.8; //4
+    public static final double kPVelocity = 4.7;//1.8; //4
 	public static final double kIVelocity = 0.0;//0.0; //0
-	public static final double kDVelocity = 25;//0.15; //10
-	public static final double kFVelocity = 0.9;//1.5//0.6
+	public static final double kDVelocity = 28;//0.15; //10
+	public static final double kFVelocity = 1;//1.5//0.6
     public static final int kVelocityIZone = 0;
     public static final double kAVelocity = 0.0001; // TODO: Tune/Test
     public static final double kDriveVoltageRampRate = 0.0;
@@ -193,5 +194,8 @@ public class Constants {
     public static final int kElevatorLimitSwitch = 7;
     public static final int kGrabberHatchLimitSwitch = 8;
     public static final int kGrabberCargoLimitSwitch = 9;
+
+    // field Constants
+    public static final int kFieldWidth = 324; //width of the field in inches
     
 }

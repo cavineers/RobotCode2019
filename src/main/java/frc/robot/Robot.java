@@ -28,8 +28,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.DankDash;
-import frc.robot.commands.elevator.HomeElev;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -91,16 +92,16 @@ public class Robot extends TimedRobot {
         // initialize gyro
         gyro = new AHRS(SPI.Port.kMXP);
 
-        // initialize operator interface / controls
-        oi = new OI();
-
         // start estimating position of the robot
         estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
+
+        // initialize operator interface / controls
+        oi = new OI();
 
         // initialize sensors
         reflectiveTapeCamera = new CameraHelper("reflectiveTape");
         gyro.zeroYaw();
-        gyro.setAngleAdjustment(0);
+        gyro.reset();
 
         // start up the led manager
         leds = new LEDHelper();
@@ -117,7 +118,7 @@ public class Robot extends TimedRobot {
         dankDash.setProfileName("Test Chassis");
         dankDash.export();
 
-        SmartDashboard.putData(new HomeElev());
+        LiveWindow.disableAllTelemetry();
 
         // Elevator
 
@@ -158,13 +159,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-
         this.updateLEDs(); //TODO: uncomment if we use leds
         this.updateDankDash();
         // For tuning elevator:
 
         // For figuring out homing:
-        SmartDashboard.putBoolean("elevatorSwitch", elevator.getLimitSwitch());
+        // SmartDashboard.putBoolean("elevatorSwitch", elevator.getLimitSwitch());
 
         // Velocity:
         // elevator.getElevatorMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val",
@@ -175,144 +175,161 @@ public class Robot extends TimedRobot {
         // 0));
         // elevator.getElevatorMotor().getPIDController().setD(SmartDashboard.getNumber("d-val",
         // 0));
-        SmartDashboard.putNumber("current-vel", elevator.getElevatorMotor().getEncoder().getVelocity());
+        // SmartDashboard.putNumber("current-vel",
+        // elevator.getElevatorMotor().getEncoder().getVelocity());
 
         // //Position:
         // elevator.getPIDPos().setF(SmartDashboard.getNumber("f-val", 0));
         // elevator.getPIDPos().setP(SmartDashboard.getNumber("p-val", 0));
         // elevator.getPIDPos().setI(SmartDashboard.getNumber("i-val", 0));
         // elevator.getPIDPos().setD(SmartDashboard.getNumber("d-val", 0));
-        SmartDashboard.putNumber("current-pos", elevator.getElevatorMotor().getEncoder().getPosition());
 
-    //Grabber:
-    
-    //limit switches:
-    SmartDashboard.putBoolean("hasHatch", grabber.hasHatch());
-    SmartDashboard.putBoolean("hasCargo", grabber.hasCargo());
+        // SmartDashboard.putNumber("current-pos",
+        // elevator.getElevatorMotor().getEncoder().getPosition());
 
-    // //position PID
-    // grabber.getArmMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val", 0));
-    // grabber.getArmMotor().getPIDController().setP(SmartDashboard.getNumber("p-val", 0));
-    // grabber.getArmMotor().getPIDController().setI(SmartDashboard.getNumber("i-val", 0));
-    // grabber.getArmMotor().getPIDController().setD(SmartDashboard.getNumber("d-val", 0));
-    SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
-    SmartDashboard.putNumber("grabber-current", grabber.getArmMotor().getOutputCurrent());
-    
-    SmartDashboard.putString("grabber-level", String.valueOf(grabber.getState()));
-    SmartDashboard.putString("elevator-level", String.valueOf(elevator.getLevel()));
-    SmartDashboard.putString("can-move-elev", String.valueOf(elevator.canMoveGrabber()));
+        // Grabber:
+
+        // limit switches:
+        // SmartDashboard.putBoolean("hasHatch", grabber.hasHatch());
+        // SmartDashboard.putBoolean("hasCargo", grabber.hasCargo());
+
+        // //position PID
+        // grabber.getArmMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val",
+        // 0));
+        // grabber.getArmMotor().getPIDController().setP(SmartDashboard.getNumber("p-val",
+        // 0));
+        // grabber.getArmMotor().getPIDController().setI(SmartDashboard.getNumber("i-val",
+        // 0));
+        // grabber.getArmMotor().getPIDController().setD(SmartDashboard.getNumber("d-val",
+        // 0));
+        // SmartDashboard.putNumber("grabber-pos", grabber.getPosition()); // This is
+        // one
+        // SmartDashboard.putNumber("grabber-current",
+        // grabber.getArmMotor().getOutputCurrent());
+        // SmartDashboard.putString("grabber-level",
+        // String.valueOf(grabber.getState()));
+
+        // SmartDashboard.putString("elevator-level",
+        // String.valueOf(elevator.getLevel())); // This is one
+        // SmartDashboard.putString("can-move-elev",
+        // String.valueOf(elevator.canMoveGrabber())); // This is one
+    }
+
+    /**
+     * This function is called once each time the robot enters Disabled mode. You
+     * can use it to reset any subsystem information you want to clear when the
+     * robot is disabled.
+     */
+    @Override
+    public void disabledInit() {
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        Scheduler.getInstance().run();
+    }
+
+    /**
+     * This autonomous (along with the chooser code above) shows how to select
+     * between different autonomous modes using the dashboard. The sendable chooser
+     * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+     * remove all of the chooser code and uncomment the getString code to get the
+     * auto name from the text box below the Gyro
+     *
+     * <p>
+     * You can add additional auto modes by adding additional commands to the
+     * chooser code above (like the commented example) or additional comparisons to
+     * the switch structure below with additional strings & commands.
+     */
+    @Override
+    public void autonomousInit() {
 
     }
 
-  /**
-   * This function is called once each time the robot enters Disabled mode.
-   * You can use it to reset any subsystem information you want to clear when
-   * the robot is disabled.
-   */
-  @Override
-  public void disabledInit() {
-  }
-
-  @Override
-  public void disabledPeriodic() {
-    Scheduler.getInstance().run();
-  }
-
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString code to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional commands to the
-   * chooser code above (like the commented example) or additional comparisons
-   * to the switch structure below with additional strings & commands.
-   */
-  @Override
-  public void autonomousInit() {
-      
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-    Scheduler.getInstance().run();
-  }
-
-  @Override
-  public void teleopInit() {
-      grabber.setEncoderPosition(Constants.kGrabberStartPos);
-      grabber.getArmMotor().getPIDController().setReference(Constants.kGrabberStartPos, ControlType.kPosition);
-  }
-
-  /**
-   * This function is called periodically during operator control.
-   */
-  @Override
-  public void teleopPeriodic() {
-    oi.updateDPadCommands();
-    Scheduler.getInstance().run();
-  }
-
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
-  }
-
-  /**
-   * Get the current heading of the robot in radians
-   * @return the current robot heading in radians from -pi to pi
-   */
-  public static double getAngleRad() {
-    return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle()));
-  }
-  
-  /**
-   * Gets the current time in seconds
-   * 
-   * @return the current time in seconds
-   */
-  public static double getCurrentTime() {
-    return Timer.getFPGATimestamp();
-  }
-
-  /**
-   * Returns true if the robot is currently in the end game period
-   */
-  public static boolean isEndGame() {
-      return DriverStation.getInstance().isOperatorControl() && DriverStation.getInstance().getMatchTime() < 30;
-  }
-
-  /**
-   * Resyncs clocks if needed
-   */
-  protected void checkForClockSync() {
-    if (reflectiveTapeCamera.shouldSyncClocks()) {
-        reflectiveTapeCamera.startClockSync();
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+        Scheduler.getInstance().run();
     }
-  }
 
-  public void updateLEDs() {
-    if (Robot.getCurrentTime() - lastLEDUpdateTime > 0.25) { // update the LEDs 4 times per second
-        lastLEDUpdateTime = Robot.getCurrentTime();
-        leds.update();
-    } 
-  }
-
-  /**
-   * Sends important values like the match time and the heartbeat value to the dashbaord
-   */
-  public void updateDankDash() {
-    if (Robot.getCurrentTime() - lastUpdateTime > 1) { // update the dashboard display once per second
-        lastUpdateTime = Robot.getCurrentTime();
-        dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
-        heartbeatValue++;
+    @Override
+    public void teleopInit() {
+        gyro.setAngleAdjustment(-gyro.getAngle());
+        grabber.setEncoderPosition(Constants.kGrabberStartPos);
+        grabber.getArmMotor().getPIDController().setReference(Constants.kGrabberStartPos, ControlType.kPosition);
     }
-  }
+
+    /**
+     * This function is called periodically during operator control.
+     */
+    @Override
+    public void teleopPeriodic() {
+        oi.updateDPadCommands();
+        Scheduler.getInstance().run();
+    }
+
+    /**
+     * This function is called periodically during test mode.
+     */
+    @Override
+    public void testPeriodic() {
+    }
+
+    /**
+     * Get the current heading of the robot in radians
+     * 
+     * @return the current robot heading in radians from -pi to pi
+     */
+    public static double getAngleRad() {
+        return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle()));
+    }
+
+    /**
+     * Gets the current time in seconds
+     * 
+     * @return the current time in seconds
+     */
+    public static double getCurrentTime() {
+        return Timer.getFPGATimestamp();
+    }
+
+    /**
+     * Returns true if the robot is currently in the end game period
+     */
+    public static boolean isEndGame() {
+        return DriverStation.getInstance().isOperatorControl() && DriverStation.getInstance().getMatchTime() < 30;
+    }
+
+    /**
+     * Resyncs clocks if needed
+     */
+    protected void checkForClockSync() {
+        if (reflectiveTapeCamera.shouldSyncClocks()) {
+            reflectiveTapeCamera.startClockSync();
+        }
+    }
+
+    public void updateLEDs() {
+        if (Robot.getCurrentTime() - lastLEDUpdateTime > 0.25) { // update the LEDs 4 times per second
+            lastLEDUpdateTime = Robot.getCurrentTime();
+            leds.update();
+            System.out.println(estimator.getPos());
+        }
+    }
+
+    /**
+     * Sends important values like the match time and the heartbeat value to the
+     * dashbaord
+     */
+    public void updateDankDash() {
+        if (Robot.getCurrentTime() - lastUpdateTime > 1) { // update the dashboard display once per second
+            lastUpdateTime = Robot.getCurrentTime();
+            dankDash.sendDash("Heartbeat", Double.toString(heartbeatValue));
+            heartbeatValue++;
+            dankDash.sendDash("MatchTime", Double.toString(DriverStation.getInstance().getMatchTime()));
+        }
+    }
 
 }

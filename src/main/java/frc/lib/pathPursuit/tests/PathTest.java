@@ -81,17 +81,6 @@ public class PathTest {
         // Segment seg4 = new LineSegment(new Point(120, -60), new Point(170, -60), 30, 0);
         // path.addSegment(seg4);
 
-        Segment seg1 = new LineSegment(new Point(64.586, 201.48), new Point(110.135,201.48), 30, 30);
-        path.addSegment(seg1);
-        Segment seg2 = new ArcSegment(new Point(110.135,201.48), new Point(135.142,185.121), new Point(110.135,174.188), 30);
-        path.addSegment(seg2);
-        Segment seg3 = new ArcSegment(new Point(135.142,185.121), new Point(156.488, 171.758), new Point(156.488, 195.489), 30);
-        path.addSegment(seg3);
-        Segment seg4 = new LineSegment(new Point(156.488, 171.758), new Point(179.912, 171.758), 30, 0);
-        path.addSegment(seg4);
-
-
-        
         RobotPos currentPos = new RobotPos(64.586, 201.48, 0, 0,0);
         
         double pathTime = 0;
