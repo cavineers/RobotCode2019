@@ -27,6 +27,9 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected void initialize() {
+        if(!Robot.grabber.getBallVelPID().isEnabled()){
+            Robot.grabber.getBallVelPID().enable();
+        }
         if (!Robot.elevator.canMoveGrabber()) {
             return;
         }
@@ -45,7 +48,7 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected void end() {
-
+        Robot.grabber.getBallVelPID().disable();
     }
 
     @Override
