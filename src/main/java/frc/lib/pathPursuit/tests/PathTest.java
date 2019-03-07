@@ -2,6 +2,7 @@ package frc.lib.pathPursuit.tests;
 
 import frc.lib.RobotPos;
 import frc.lib.pathPursuit.*;
+import frc.robot.AutoPathHelper;
 import frc.robot.Constants;
 
 public class PathTest {
@@ -25,7 +26,7 @@ public class PathTest {
 //		double distNeeded = manager.getDistanceNeededToAccel(Constants.kMaxAccel, 30, 0);
 //		System.out.println(distNeeded);
         
-        Path path = new Path(true, false, Constants.kMaxAccelSpeedUp);
+        // Path path = new Path(true, false, Constants.kMaxAccelSpeedUp);
 //		Segment seg1 = new LineSegment(new Point(0, 0), new Point(60, 0), 48, 24);
 //		path.addSegment(seg1);
 //		Segment seg2 = new ArcSegment(new Point(60, 0), new Point(90, 30), new Point(60, 30), 24);
@@ -81,7 +82,9 @@ public class PathTest {
         // Segment seg4 = new LineSegment(new Point(120, -60), new Point(170, -60), 30, 0);
         // path.addSegment(seg4);
 
-        RobotPos currentPos = new RobotPos(64.586, 201.48, 0, 0,0);
+        Path path = AutoPathHelper.getPath(AutoPathHelper.PATH_TYPE.LEFT_CARGOBAY_1);
+
+        RobotPos currentPos = new RobotPos(path.getCurrentSegment().getStartPoint(), 0, 0,0);
         
         double pathTime = 0;
         while (!path.isFinished()) {

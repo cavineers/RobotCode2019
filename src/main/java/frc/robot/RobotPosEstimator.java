@@ -8,6 +8,7 @@ import frc.lib.RobotPos;
 import frc.lib.RobotPosMap;
 import frc.lib.RobotPosUpdate;
 import frc.lib.RobotPosUpdate.UpdateType;
+import frc.lib.pathPursuit.Point;
 import frc.robot.Robot;
 
 public class RobotPosEstimator {
@@ -160,6 +161,18 @@ public class RobotPosEstimator {
         mutex.lock();
         try {
             map.clearAndSetPos(new RobotPos(0,0, 0, 0,0));
+        } finally {
+            mutex.unlock();
+        }
+    }
+
+     /**
+     * clear all updates from the position map and set the base of the map to zero
+     */
+    public void setPos(Point newPos) {
+        mutex.lock();
+        try {
+            map.clearAndSetPos(new RobotPos(newPos.getX(), newPos.getY(), 0, 0,0));
         } finally {
             mutex.unlock();
         }

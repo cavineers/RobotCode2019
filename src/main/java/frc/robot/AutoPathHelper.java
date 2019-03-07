@@ -7,6 +7,19 @@ import frc.lib.pathPursuit.ArcSegment;
 import frc.lib.pathPursuit.Point;
 
 public class AutoPathHelper {
+
+    public static enum START_POS {
+        RIGHT,
+        LEFT,
+        MIDDLE,
+        INVALID
+    };
+
+    public static enum PATH_TARGET {
+        FRONT_CARGOBAY,
+        SIDE_CARGOBAY,
+        ROCKET
+    }
     public static enum PATH_TYPE {
         TEST_PATH, TEST_PATH_CURVE,TEST_PATH_REVERSE,
 
@@ -49,9 +62,9 @@ public class AutoPathHelper {
             return path;
         } case TEST_PATH_REVERSE: {
             path = new Path(false, true, Constants.kMaxAccelSpeedUp);
-            Segment seg1 = new LineSegment(new Point(0, 0), new Point(-60, 0), 30);
+            Segment seg1 = new LineSegment(new Point(0, 0), new Point(-60, 0), -30);
             path.addSegment(seg1);
-            Segment seg2 = new ArcSegment(new Point(-60, 0), new Point(-90, -30), new Point(-60, -30), 30,0);
+            Segment seg2 = new ArcSegment(new Point(-60, 0), new Point(-90, -30), new Point(-60, -30), -30,0);
             path.addSegment(seg2);
             return path;
         } case TEST_PATH_CURVE: {
@@ -68,54 +81,54 @@ public class AutoPathHelper {
         } 
 
         case RIGHT_CARGOBAY_1: {
-            path = new Path();
-            Segment seg1 = new LineSegment(new Point(66.867, 207.362), new Point(107.602, 207.362), 30, 30);
+            path = new Path(true, false, Constants.kMaxAccelSpeedUp);
+            Segment seg1 = new LineSegment(new Point(66.867, 207.362), new Point(107.602, 207.362), 80, 80);
             path.addSegment(seg1);
-            Segment seg2 = new ArcSegment(new Point(107.602, 207.362), new Point(135.371, 190.238), new Point(135.371,176.284), 30);
+            Segment seg2 = new ArcSegment(new Point(107.602, 207.362), new Point(135.371, 190.238), new Point(107.602,176.284), 80);
             path.addSegment(seg2);
-            Segment seg3 = new ArcSegment(new Point(135.371, 190.238), new Point(162.805, 173.114), new Point(162.805, 203.652), 30);
+            Segment seg3 = new ArcSegment(new Point(135.371, 190.238), new Point(162.805, 173.114), new Point(162.805, 203.652), 80);
             path.addSegment(seg3);
-            Segment seg4 = new LineSegment(new Point(162.805, 173.114), new Point(182.866, 173.114), 30, 0);
+            Segment seg4 = new LineSegment(new Point(162.805, 173.114), new Point(203.55,173.114)/*new Point(182.866, 173.114)*/, 80, 0);
             path.addSegment(seg4);
             return path;
         } case RIGHT_CARGOBAY_2: {
             path = new Path(false, true, Constants.kMaxAccelSpeedUp);
-            Segment seg1 = new LineSegment(new Point(203.55,173.114), new Point(179.442, 173.114), 30, 30);
+            Segment seg1 = new LineSegment(new Point(203.55,173.114), new Point(179, 173.114), -80);
             path.addSegment(seg1);
-            Segment seg2 = new ArcSegment(new Point(179.442, 173.114), new Point(172.393, 253.693), new Point(179.442, 213.712), 30);
+            Segment seg2 = new ArcSegment(new Point(179.442, 173.114), new Point(172.393, 253.693), new Point(179.442, 213.712), -80);
             path.addSegment(seg2);
-            Segment seg3 = new LineSegment(new Point(172.393, 253.693), new Point(184.21, 255.777), 30, 0);
+            Segment seg3 = new LineSegment(new Point(172.393, 253.693), new Point(184.21, 255.777), -80, 0);
             path.addSegment(seg3);
             return path;
         } case RIGHT_CARGOBAY_3: {
             path = new Path();
-            Segment seg1 = new LineSegment(new Point(184.21, 255.777), new Point(139.929,247.789), 30, 30);
+            Segment seg1 = new LineSegment(new Point(184.21, 255.777), new Point(139.929,247.789), 80);
             path.addSegment(seg1);
-            Segment seg2 = new ArcSegment(new Point(139.929,247.789), new Point(103.227, 272.151), new Point(134.243, 279.051), 30);
+            Segment seg2 = new ArcSegment(new Point(139.929,247.789), new Point(103.227, 272.151), new Point(134.243, 279.051), 80);
             path.addSegment(seg2);
-            Segment seg3 = new ArcSegment(new Point(103.227, 272.151), new Point(71.28, 297.772), new Point(71.28, 265.044), 30);
+            Segment seg3 = new ArcSegment(new Point(103.227, 272.151), new Point(71.28, 297.772), new Point(71.28, 265.044), 80);
             path.addSegment(seg3);
-            Segment seg4 = new LineSegment(new Point(71.28, 297.772), new Point(37.435, 297.772), 30, 0);
+            Segment seg4 = new LineSegment(new Point(71.28, 297.772), new Point(18.866,297.772),/*new Point(37.435, 297.772),*/ 80, 0);
             path.addSegment(seg4);
             return path;
         } case RIGHT_CARGOBAY_4: {
             path = new Path(false, true, Constants.kMaxAccelSpeedUp);
-            Segment seg1 = new LineSegment(new Point(18.866,297.772), new Point(71.28, 297.772), 30, 30);
+            Segment seg1 = new LineSegment(new Point(18.866,297.772), new Point(71.28, 297.772), -80);
             path.addSegment(seg1);
-            Segment seg2 = new ArcSegment(new Point(71.28, 297.772), new Point(103.227, 272.151), new Point(71.28, 265.044), 30);
+            Segment seg2 = new ArcSegment(new Point(71.28, 297.772), new Point(103.227, 272.151), new Point(71.28, 265.044), -80);
             path.addSegment(seg2);
-            Segment seg3 = new ArcSegment(new Point(103.227, 272.151), new Point(139.929,247.789), new Point(134.243, 279.051), 30);
+            Segment seg3 = new ArcSegment(new Point(103.227, 272.151), new Point(139.929,247.789), new Point(134.243, 279.051), -80);
             path.addSegment(seg3);
-            Segment seg4 = new LineSegment(new Point(139.929,247.789), new Point(184.21, 255.777), 30, 0);
+            Segment seg4 = new LineSegment(new Point(139.929,247.789), new Point(184.21, 255.777), -80, 0);
             path.addSegment(seg4);
             return path;
         } case RIGHT_CARGOBAY_5: {
             path = new Path();
-            Segment seg1 = new LineSegment(new Point(184.21, 255.777), new Point(162.943, 251.909), 30, 30);
+            Segment seg1 = new LineSegment(new Point(184.21, 255.777), new Point(162.943, 251.909), 80, 80);
             path.addSegment(seg1);
-            Segment seg2 = new ArcSegment(new Point(162.943, 251.909), new Point(172.032, 151.137), new Point(172.032, 201.933), 30);
+            Segment seg2 = new ArcSegment(new Point(162.943, 251.909), new Point(172.032, 151.137), new Point(172.032, 201.933), 80);
             path.addSegment(seg2);
-            Segment seg3 = new LineSegment(new Point(172.032, 151.137), new Point(183.955, 151.137), 30, 0);
+            Segment seg3 = new LineSegment(new Point(172.032, 151.137), new Point(183.955, 151.137), 80, 0);
             path.addSegment(seg3);
             return path;
         } 

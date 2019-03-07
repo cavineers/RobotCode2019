@@ -10,7 +10,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.lib.MathHelper;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
@@ -24,12 +26,22 @@ import frc.robot.subsystems.CargoIntake.MotorState;
 import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.Grabber.HatchGrabberState;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.DankDash;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.AutoPathHelper.PATH_TARGET;
+import frc.robot.AutoPathHelper.START_POS;
+import frc.robot.commands.auto.DisableAutoOverride;
+import frc.robot.commands.auto.OverrideAutoSelection;
+import frc.robot.commands.auto.TwoHatchCargoLeft;
+import frc.robot.commands.auto.TwoHatchCargoRight;
+import frc.robot.commands.auto.TwoHatchRocketLeft;
+import frc.robot.commands.auto.TwoHatchRocketRight;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
@@ -63,6 +75,15 @@ public class Robot extends TimedRobot {
 
     public static LEDHelper leds;
 
+    public static boolean isAutoOverridden = false;
+    
+    public static START_POS overriddenStartPos = START_POS.INVALID;
+    public static PATH_TARGET overriddenPathTarget = PATH_TARGET.FRONT_CARGOBAY;
+
+    //Digital Inputs for auto selection
+    DigitalInput rightStart, leftStart, middleStart;
+    AnalogInput favorCargoBayFront, favorCargoBaySide, favorRocket;
+
     double posError;
     double posWant;
     double posGot;
@@ -75,6 +96,9 @@ public class Robot extends TimedRobot {
 
     // Camera clock sync checking thread
     Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
+    
+    public static SendableChooser<START_POS> posChooser;
+    public static SendableChooser<PATH_TARGET> targetChooser;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -117,8 +141,36 @@ public class Robot extends TimedRobot {
         dankDash.setProfileLocation("TestChassis");
         dankDash.setProfileName("Test Chassis");
         dankDash.export();
+        dankDash.addListener();
 
         LiveWindow.disableAllTelemetry();
+
+
+        rightStart = new DigitalInput(0);
+        middleStart = new DigitalInput(2);
+        leftStart = new DigitalInput(1);
+        
+
+        favorCargoBayFront = new AnalogInput(0);
+        favorCargoBaySide = new AnalogInput(1);
+        favorRocket = new AnalogInput(2);
+
+        posChooser = new SendableChooser<START_POS>();
+		posChooser.setDefaultOption("Middle", START_POS.MIDDLE);
+		posChooser.addOption("Right", START_POS.RIGHT);
+		posChooser.addOption("Left", START_POS.LEFT);
+		posChooser.addOption("INVALID", START_POS.INVALID);
+        SmartDashboard.putData(posChooser);
+        
+        targetChooser = new SendableChooser<PATH_TARGET>();
+		targetChooser.setDefaultOption("Front CargoBay", PATH_TARGET.FRONT_CARGOBAY);
+		targetChooser.addOption("Side CargoBay", PATH_TARGET.SIDE_CARGOBAY);
+		targetChooser.addOption("Rocket", PATH_TARGET.ROCKET);
+        SmartDashboard.putData(targetChooser);
+        
+        SmartDashboard.putData(new DisableAutoOverride());
+		SmartDashboard.putData(new OverrideAutoSelection());
+
 
         // Elevator
 
@@ -227,8 +279,71 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         Scheduler.getInstance().run();
+        SmartDashboard.putString("Robot Position Start: ", String.valueOf(getAutoStartPos()));
+        SmartDashboard.putString("Robot Auto Target: ", String.valueOf(getAutoPathTarget()));
     }
 
+    public START_POS getAutoStartPos() {
+        if (isAutoOverridden) {
+            return overriddenStartPos;
+        } else {
+            if (!leftStart.get() && rightStart.get() && middleStart.get()) {
+                return START_POS.LEFT;
+            } else if (leftStart.get() && !rightStart.get() && middleStart.get()) {
+                return START_POS.RIGHT;
+            } else if (leftStart.get() && rightStart.get() && !middleStart.get()) {
+                return START_POS.MIDDLE;
+            }  else {
+                return START_POS.INVALID;
+            }
+        }
+    }
+
+    public PATH_TARGET getAutoPathTarget() {
+        if (isAutoOverridden) {
+            return overriddenPathTarget;
+        } else {
+            boolean cargoBayFront = favorCargoBayFront.getVoltage() > 4;
+            boolean cargoBaySide = favorCargoBaySide.getVoltage() > 4;
+            boolean rocket = favorRocket.getVoltage() > 4;
+            if (!cargoBayFront && cargoBaySide && !rocket) {
+                return PATH_TARGET.SIDE_CARGOBAY;
+            } else if (cargoBayFront && !cargoBaySide && !rocket) {
+                return PATH_TARGET.FRONT_CARGOBAY;
+            } else if (!cargoBayFront && !cargoBaySide && rocket) {
+                return PATH_TARGET.ROCKET;
+            } else {
+                //default ot front cargobay if there is an error
+                return PATH_TARGET.FRONT_CARGOBAY;
+            }
+        }
+    }
+
+    public Command getAutoCommand() {
+        START_POS startPos = this.getAutoStartPos();
+        PATH_TARGET target = this.getAutoPathTarget();
+        if (startPos == START_POS.RIGHT) {
+            if (target == PATH_TARGET.FRONT_CARGOBAY) {
+                return new TwoHatchCargoRight();
+            } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
+                return new TimedCommand(0); //implement!
+            } else if (target == PATH_TARGET.ROCKET) {
+                return new TwoHatchRocketRight();
+            }
+        } else if (startPos == START_POS.LEFT) {
+            if (target == PATH_TARGET.FRONT_CARGOBAY) {
+                return new TwoHatchCargoLeft();
+            } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
+                return new TimedCommand(0); //implement!
+            } else if (target == PATH_TARGET.ROCKET) {
+                return new TwoHatchRocketLeft();
+            }
+        } else if (startPos == START_POS.MIDDLE) {
+            return new TimedCommand(0); //implement!
+        }
+
+        return new TimedCommand(0); //the robot was in an invalid state! return a command with time 0
+    }
     /**
      * This autonomous (along with the chooser code above) shows how to select
      * between different autonomous modes using the dashboard. The sendable chooser
@@ -243,7 +358,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-
+        getAutoCommand().start();
     }
 
     /**
@@ -251,12 +366,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+        System.out.println(Robot.estimator.getPos());
+        System.out.println(Robot.drivetrain.getRightVel() + ", " + Robot.drivetrain.getLeftVel());
         Scheduler.getInstance().run();
     }
 
     @Override
     public void teleopInit() {
-        gyro.setAngleAdjustment(-gyro.getAngle());
         grabber.setEncoderPosition(Constants.kGrabberStartPos);
         grabber.getArmMotor().getPIDController().setReference(Constants.kGrabberStartPos, ControlType.kPosition);
     }
@@ -283,7 +399,7 @@ public class Robot extends TimedRobot {
      * @return the current robot heading in radians from -pi to pi
      */
     public static double getAngleRad() {
-        return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getAngle()));
+        return MathHelper.angleToNegPiToPi(Math.toRadians(Robot.gyro.getYaw()));
     }
 
     /**
@@ -315,7 +431,6 @@ public class Robot extends TimedRobot {
         if (Robot.getCurrentTime() - lastLEDUpdateTime > 0.25) { // update the LEDs 4 times per second
             lastLEDUpdateTime = Robot.getCurrentTime();
             leds.update();
-            System.out.println(estimator.getPos());
         }
     }
 

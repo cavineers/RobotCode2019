@@ -3,6 +3,7 @@ package frc.lib.pathPursuit;
 import java.util.ArrayList;
 
 import frc.lib.RobotPos;
+import frc.lib.pathPursuit.ArcSegment.TURN;
 import frc.robot.Constants;
 
 public class Path {
@@ -110,8 +111,16 @@ public class Path {
                 ArcSegment arc = (ArcSegment) seg;
                 Point mirroredStart = new Point(arc.getStartPoint().getX(), Constants.kFieldWidth - arc.getStartPoint().getY());
                 Point mirroredEnd = new Point(arc.getEndPoint().getX(), Constants.kFieldWidth - arc.getEndPoint().getY());
-                Point mirroredCenter = new Point(arc.getEndPoint().getX(), Constants.kFieldWidth - arc.getCenterPoint().getY());
-                mirroredPath.addSegment(new ArcSegment(mirroredStart, mirroredEnd, mirroredCenter, arc.maxVel, arc.endVel, arc.turnType));
+                Point mirroredCenter = new Point(arc.getCenterPoint().getX(), Constants.kFieldWidth - arc.getCenterPoint().getY());
+                
+                //mirroring flips the turn types
+                TURN newTurnType;
+                if (arc.turnType == TURN.RIGHT) {
+                    newTurnType = TURN.LEFT;
+                } else {
+                    newTurnType = TURN.RIGHT;
+                }
+                mirroredPath.addSegment(new ArcSegment(mirroredStart, mirroredEnd, mirroredCenter, arc.maxVel, arc.endVel, newTurnType));
             } else if (seg instanceof LineSegment) {
                 LineSegment line = (LineSegment) seg;
                 Point mirroredStart = new Point(line.getStartPoint().getX(), Constants.kFieldWidth - line.getStartPoint().getY());

@@ -34,11 +34,11 @@ public class FollowPath extends Command {
         latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
 
         RobotCmd cmd = this.path.update(latestPos);
-        
+        System.out.println("runnning path!");
         //debug print: lTarget, rTarget, lActualVel, rActualVel, RobotPosition
 //		System.out.println(Robot.drivetrain.leftMotor1.getClosedLoopTarget(0) +  "," + Robot.drivetrain.rightMotor1.getClosedLoopTarget(0) + "," + Robot.drivetrain.leftMotor1.getSelectedSensorVelocity(0) + "," + Robot.drivetrain.rightMotor1.getSelectedSensorVelocity(0) + "," + Robot.state.getPosition());
-        System.out.println(latestPos.getX() + ", " + latestPos.getY());
-        
+        // System.out.println(latestPos.getX() + ", " + latestPos.getY());
+        System.out.println(cmd.getLeftVel());
         Robot.drivetrain.setLeftVel(cmd.getLeftVel());
         Robot.drivetrain.setRightVel(cmd.getRightVel());
     }
