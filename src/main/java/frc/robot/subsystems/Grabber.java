@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
@@ -7,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -14,7 +16,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.Constants;
 import frc.robot.Robot;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import edu.wpi.first.wpilibj.PIDOutput;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 
@@ -35,7 +38,7 @@ public class Grabber extends Subsystem {
     public GrabberPosition grabberState;
 
     CANSparkMax armMotor; // motor responcible moving the arm forward and backward
-    public WPI_TalonSRX ballMotor; // motor responcible for minipulating the ball in the grabber
+    public WPI_TalonSRX ballMotor; // motor responcible for manipulating the ball in the grabber
 
     public DoubleSolenoid grabberSol; // double solenoid for control of the hatch grabber
 
@@ -43,6 +46,8 @@ public class Grabber extends Subsystem {
     DigitalInput hatchLimitSwitch = new DigitalInput(Constants.kGrabberHatchLimitSwitch);
 
     LinearDigitalFilter averageCurrent;
+
+    private PIDController ballVelPID;
 
     public Grabber() {
         grabberState = GrabberPosition.UNKNOWN;
@@ -56,6 +61,33 @@ public class Grabber extends Subsystem {
         this.getArmMotor().getPIDController().setFF(Constants.kGrabberPosF);
         this.getArmMotor().getPIDController().setOutputRange(-1, 1);
         this.getArmMotor().setIdleMode(IdleMode.kBrake);
+
+        ballVelPID = new PIDController(Constants.kGrabberBallVelP, Constants.kGrabberBallVelI, Constants.kGrabberBallVelD, Constants.kGrabberBallVelF, new PIDSource() {
+			PIDSourceType out_sourceType = PIDSourceType.kRate;
+
+			@Override
+			public double pidGet() {
+				return ballMotor.getSelectedSensorVelocity(0);
+			}
+
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+				out_sourceType = pidSource;
+			}
+
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return out_sourceType;
+			}
+		},
+
+				new PIDOutput() {
+					@Override
+					public void pidWrite(double d) {
+						ballMotor.set(ControlMode.PercentOutput, d);
+					}
+				}, Constants.kGrabberBallPeriod);
+
 
     }
 
@@ -130,6 +162,10 @@ public class Grabber extends Subsystem {
             return GrabberPosition.UNKNOWN;
         }
     }
+    
+    public PIDController getBallVelPID(){
+        return ballVelPID;
+    }
 
     /**
      * Sets the current state of the grabber
@@ -140,9 +176,9 @@ public class Grabber extends Subsystem {
         if (state == MotorState.OFF) {
             this.ballMotor.set(0);
         } else if (state == MotorState.INTAKE_BALL) {
-            this.ballMotor.set(Constants.kGrabberIntakeSpeed);
+            this.getBallVelPID().setSetpoint(Constants.kGrabberIntakeSpeed);
         } else if (state == MotorState.EJECT_BALL) {
-            this.ballMotor.set(Constants.kGrabberEjectionSpeed);
+            this.getBallVelPID().setSetpoint(Constants.kGrabberEjectionSpeed);
         }
     }
 
@@ -190,6 +226,10 @@ public class Grabber extends Subsystem {
         return armMotor;
     }
 
+    public TalonSRX getBallMotor(){
+        return ballMotor;
+    }
+
     public PIDSource getGrabberCurrent() {
         return new PIDSource() {
 
@@ -211,5 +251,6 @@ public class Grabber extends Subsystem {
         };
     }
 
+    
 
 }

@@ -178,6 +178,12 @@ public class Constants {
     public static final double kMinGrabberPos = 0; //TODO
     public static final double kMaxGrabberPos = 0; //TODO
 
+    public static final double kGrabberBallVelP = 0;
+    public static final double kGrabberBallVelI = 0;
+    public static final double kGrabberBallVelD = 0;
+    public static final double kGrabberBallVelF = 0;
+    public static final double kGrabberBallPeriod = .025;
+
 
 
     //Digital In/Output mapping
