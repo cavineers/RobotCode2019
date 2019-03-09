@@ -42,6 +42,7 @@ import frc.robot.commands.auto.TwoHatchCargoLeft;
 import frc.robot.commands.auto.TwoHatchCargoRight;
 import frc.robot.commands.auto.TwoHatchRocketLeft;
 import frc.robot.commands.auto.TwoHatchRocketRight;
+import frc.robot.commands.grabber.ToggleHatchGrabber;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
@@ -384,6 +385,9 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         oi.updateDPadCommands();
         Scheduler.getInstance().run();
+        if(Robot.grabber.getHatchLimitSwitchState() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.OPEN && (Robot.getCurrentTime()-Robot.grabber.getLastToggleTime() < Constants.kGrabberAutoToggleTolerance)){
+            new ToggleHatchGrabber();
+        }
     }
 
     /**

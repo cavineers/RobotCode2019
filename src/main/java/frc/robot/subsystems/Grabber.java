@@ -49,6 +49,8 @@ public class Grabber extends Subsystem {
 
     private PIDController ballVelPID;
 
+    double lastToggleTime = 0;
+
     public Grabber() {
         grabberState = GrabberPosition.UNKNOWN;
         armMotor = new CANSparkMax(RobotMap.armMotor, MotorType.kBrushless);
@@ -249,6 +251,18 @@ public class Grabber extends Subsystem {
             }
 
         };
+    }
+
+    public boolean getHatchLimitSwitchState(){
+        return this.hatchLimitSwitch.get();
+    }
+
+    public double getLastToggleTime(){
+        return this.lastToggleTime;
+    }
+
+    public void setLastToggleTime(double newToggleTime){
+        this.lastToggleTime = newToggleTime;
     }
 
     
