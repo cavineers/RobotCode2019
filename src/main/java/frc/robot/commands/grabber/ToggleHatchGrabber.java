@@ -17,6 +17,7 @@ public class ToggleHatchGrabber extends Command {
         if (Robot.grabber.getState() != GrabberPosition.EXTENDED) {
             this.cancel();
         } else {
+            Robot.grabber.setLastToggleTime(Robot.getCurrentTime());
             if (Robot.grabber.getHatchGrabberState() == HatchGrabberState.OPEN) {
                 Robot.grabber.setHatchGrabberState(HatchGrabberState.CLOSED);
             } else {

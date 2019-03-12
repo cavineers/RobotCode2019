@@ -154,6 +154,8 @@ public class Constants {
 
     public static final double kGrabberPIDPosPeriod = .025;
 
+    public static final double kGrabberAutoToggleTolerance = 5;
+
     // grabber movement speeds
     public static final double kGrabberIntakeSpeed = 0.45;
     public static final double kGrabberEjectionSpeed = 1;
