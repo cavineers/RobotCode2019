@@ -82,7 +82,7 @@ public class PathTest {
         // Segment seg4 = new LineSegment(new Point(120, -60), new Point(170, -60), 30, 0);
         // path.addSegment(seg4);
 
-        Path path = AutoPathHelper.getPath(AutoPathHelper.PATH_TYPE.LEFT_CARGOBAY_1);
+        Path path = AutoPathHelper.getPath(AutoPathHelper.PATH_TYPE.RIGHT_CARGOBAY_2);
 
         RobotPos currentPos = new RobotPos(path.getCurrentSegment().getStartPoint(), 0, 0,0);
         

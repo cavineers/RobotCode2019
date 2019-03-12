@@ -33,7 +33,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
      * @param segment: the current segment the robot is following
      * @param state: the current position + velocity of the robot
      */
-    public RobotCmd getVelCmd(Segment segment, RobotPos state) {
+    public RobotCmd getVelCmd(Segment segment, RobotPos state, Point lookaheadPoint) {
         if (dt == -1) { 
             //on the first update, setup the dt calculations
             lastUpdateTime = System.currentTimeMillis();
@@ -47,9 +47,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
         if (this.isHeadingFrozen) {
             return new RobotCmd(overallVel, overallVel);
         }
-        Point lookahead = segment.getLookaheadPoint(state.position, this.lookahead.getLookaheadForSpeed(state.getVelocity()));
-        
-        ConnectionArc arc = new ConnectionArc(state, lookahead, isReversed);
+        ConnectionArc arc = new ConnectionArc(state, lookaheadPoint, isReversed);
         
         double rVel = arc.getRightVelocityTarget(overallVel);
         double lVel = arc.getLeftVelocityTarget(overallVel);
@@ -155,7 +153,7 @@ public class VelocityManager { //creates a trapezoidal velocity curve for the ro
      * returns the acceleration required to achieve a certain velocity from the current velocity 
      * over a given distance
      * 
-     * @param v2: current velocity
+     * @param v1: current velocity
      * @param v2: desired velocity
      * @param dist: distance desired
      */

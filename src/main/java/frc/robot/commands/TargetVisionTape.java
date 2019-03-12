@@ -61,7 +61,7 @@ public class TargetVisionTape extends Command {
         SmartDashboard.putString("Target Heading Vect", targetHeadingVect.toString());
 
         // compute the target heading
-        double targetHeading = robotFieldPos.getHeading() + Math.atan(targetHeadingVect.getDx() / targetHeadingVect.getDy());
+        double targetHeading = robotFieldPos.getHeading() - Math.atan(targetHeadingVect.getDx() / targetHeadingVect.getDy());
 
         System.out.println("Target Heading: " + targetHeading);
         SmartDashboard.putString("Target Heading", targetHeadingVect.toString());

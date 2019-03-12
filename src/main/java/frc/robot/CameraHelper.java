@@ -149,6 +149,7 @@ public class CameraHelper {
             System.out.println("update too new!");
             System.out.println("timestamp " + timestamp + " current time: " + Robot.getCurrentTime());
             this.setWantClockSync(true);
+            netTable.getEntry("TargetUpdates").setString(""); //clear the invalid update
             return null; //update is too new
         }
 

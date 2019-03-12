@@ -58,15 +58,15 @@ public class Path {
                 if (Point.getDistance(robotPos.position, currentSegment.getEndPoint()) < Constants.kPathPursuitFinishTolerance && Math.abs(robotPos.getVelocity()) < 2) {
                     this.didFinish = true;
                 }
-            }
-            
-            //stop the target point from becoming behind the robot
-            if (Point.getDistance(currentSegment.getEndPoint(), robotPos.position) < Constants.kStopSteeringDistance && !this.canMoveOnToNextSegment()) {
-                manager.freezeHeading(robotPos.heading);
+
+                //stop the target point from becoming behind the robot
+                if (Point.getDistance(currentSegment.getEndPoint(), robotPos.position) < Constants.kStopSteeringDistance) {
+                    manager.freezeHeading(robotPos.heading);
+                }
             }
         }
-        
-        return manager.getVelCmd(currentSegment, robotPos);
+
+        return manager.getVelCmd(currentSegment, robotPos, lookaheadPt);
     }
     
     /*
