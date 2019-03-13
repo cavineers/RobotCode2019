@@ -62,5 +62,19 @@ public class RobotMap {
   //Cargo Intake (controls if the cargo intake arms are down or not)
   public static int cargoIntake1 = 7;
   public static int cargoIntake2 = 0;
+
+  //Digital In/Output mapping
+
+  //auto selection
+  public static final int kAutoPos0 = 0;
+  public static final int kAutoPos1 = 1;
+  public static final int kAutoPos2 = 2;
+  public static final int kAutoPos3 = 3;
+  public static final int kAutoPos4 = 4;
+  public static final int kDIO5 = 5;
+  public static final int kDIO6 = 6;
+  public static final int kElevatorLimitSwitch = 7;
+  public static final int kGrabberHatchLimitSwitch = 8;
+  public static final int kGrabberCargoLimitSwitch = 9;
   
 }

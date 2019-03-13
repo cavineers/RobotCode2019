@@ -153,7 +153,7 @@ public class Constants {
     public static final double kGrabberHomePos = -0.05; //TODO set // the position of the hard stop that the elevator stalls against
 
     public static final double kGrabberPIDPosPeriod = .025;
-
+    
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
@@ -185,23 +185,6 @@ public class Constants {
     public static final double kGrabberBallVelD = 0;
     public static final double kGrabberBallVelF = 0;
     public static final double kGrabberBallPeriod = .025;
-
-
-
-    //Digital In/Output mapping
-
-    //auto selection
-    public static final int kAutoPos0 = 0;
-    public static final int kAutoPos1 = 1;
-    public static final int kAutoPos2 = 2;
-    public static final int kAutoPos3 = 3;
-    public static final int kAutoPos4 = 4;
-
-    public static final int kDIO5 = 5;
-    public static final int kDIO6 = 6;
-    public static final int kElevatorLimitSwitch = 7;
-    public static final int kGrabberHatchLimitSwitch = 8;
-    public static final int kGrabberCargoLimitSwitch = 9;
 
     // field Constants
     public static final int kFieldWidth = 324; //width of the field in inches
