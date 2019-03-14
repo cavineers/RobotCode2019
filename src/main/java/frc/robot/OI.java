@@ -7,32 +7,25 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
-import frc.lib.pathPursuit.Path;
-import frc.robot.commands.FollowPath;
+import frc.robot.commands.EnterDefenseMode;
+import frc.robot.commands.HomeAll;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
-import frc.robot.subsystems.Elevator;
+import frc.robot.commands.ToggleCargoIntake;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
+import frc.robot.commands.elevator.ElevatorToGround;
 import frc.robot.commands.elevator.ElevatorToLevel;
-import frc.robot.commands.tests.RawMoveElevator;
 import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.grabber.HomeGrabber;
-import frc.robot.commands.tests.RawMoveGrabber;
-import frc.robot.commands.tests.RawSetElevatorPosition;
-import frc.robot.commands.tests.RawSetElevatorVelocity;
-import frc.robot.commands.tests.RawSetGrabberPosition;
 import frc.robot.commands.grabber.ToggleGrabber;
 import frc.robot.commands.grabber.ToggleHatchGrabber;
+import frc.robot.commands.tests.RawSetGrabberPosition;
+import frc.robot.commands.tests.RawSetGrabberVelocity;
 import frc.robot.LEDHelper;
-import frc.robot.subsystems.CargoIntake;    
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -55,6 +48,7 @@ public class OI {
 
     LEDHelper led;
     public int lastDpad = -1;
+    public boolean lastPressed = false;
 
     public enum BUTTON_MODE {
 		AUTO_ALLIGN, ELEVATOR, CLIMBER
@@ -66,16 +60,17 @@ public class OI {
         
         r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
-        left_middle.whenPressed(new TargetVisionTape());
-        // left_middle.whenPressed(new FollowPath(PATH_TYPE.TEST_PATH));
-        // b_button.whenPressed(new ElevatorToPos(10));
-        // y_button.whenPressed(new ToggleCargoIntake());
 
         //actual button commands
-        a_button.whenPressed(new IntakeCargo());
-        b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new ToggleHatchGrabber());
-        y_button.whenPressed(new EjectBall());
+        // a_button.whenPressed(new IntakeCargo());
+        // b_button.whenPressed(new ToggleGrabber());
+        // x_button.whenPressed(new ToggleHatchGrabber());
+        // y_button.whenPressed(new EjectBall());
+
+        // left_middle.whenPressed(new HomeAll());
+        // right_middle.whenPressed(new ToggleCargoIntake());
+
+
 
         // Homing test
         // a_button.whenPressed(new HomeElev());
@@ -93,16 +88,33 @@ public class OI {
         // y_button.whileHeld(new RawSetElevatorPosition(150));
 
 
-        //Grabber Position Control
-        // x_button.whileHeld(new RawSetGrabberPosition(50));
-        // y_button.whileHeld(new RawSetGrabberPosition(10));
-        // b_button.whileHeld(new RawSetGrabberPosition(80));
-        // a_button.whenPressed(new HomeGrabber());
+        //Grabber velocity Control
+        x_button.whileHeld(new RawSetGrabberVelocity(50));
+        y_button.whileHeld(new RawSetGrabberVelocity(-50));
+        a_button.whenPressed(new HomeGrabber());
+
+        // x_button.whileHeld(new RawSetGrabberPosition(0));
+        // y_button.whileHeld(new RawSetGrabberPosition(20));
 
 
     }
 
-    public void updateDPadCommands(){
+    public boolean areTriggersPressed() {
+        double upTrig = this.getJoystick().getRawAxis(3);
+        double downTrig = this.getJoystick().getRawAxis(2);
+        return upTrig > 0.9 && downTrig > 0.9;
+    }
+
+    public void updatePeriodicCommands(){
+        if (lastPressed != areTriggersPressed()) {
+            // the triggers changed state
+            lastPressed = areTriggersPressed();
+            if (lastPressed) {
+                // the triggers are pressed
+                new EnterDefenseMode().start();
+            }
+        }
+
         if (lastDpad != joy.getPOV()) {
 			switch (joy.getPOV()) {
 			case 0: {
@@ -114,7 +126,7 @@ public class OI {
                     new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
                 }
                 else{
-                    new ElevatorToLevel(ElevatorLevel.LVL3_CARGO).start();
+                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
                 }
 				break;
 			}
@@ -127,13 +139,13 @@ public class OI {
                     new ElevatorToLevel(ElevatorLevel.LVL2_HATCH).start();
                 }
                 else{
-                    new ElevatorToLevel(ElevatorLevel.LVL2_CARGO).start();
+                    new ElevatorToLevel(ElevatorLevel.LVL2_HATCH).start();
                 }
 				break;
 			}
 			case 180: {
 				// Bottom
-                new ElevatorToLevel(ElevatorLevel.GROUND).start();
+                new ElevatorToGround().start();
 				break;
 			}
 			case 270: {
@@ -145,7 +157,7 @@ public class OI {
                     new ElevatorToLevel(ElevatorLevel.LVL1_HATCH).start();
                 }
                 else{
-                    new ElevatorToLevel(ElevatorLevel.LVL1_CARGO).start();
+                    new ElevatorToLevel(ElevatorLevel.LVL1_HATCH).start();
                 }
 				break;
 			}

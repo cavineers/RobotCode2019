@@ -8,36 +8,56 @@ import frc.robot.commands.Rumble.ControllerSide;
 import frc.robot.subsystems.Grabber.GrabberPosition;
 
 public class HomeGrabber extends Command {
-    boolean isHomed;
+    boolean startedAtHome = false;
+    boolean isHomed = false;
+    
     public HomeGrabber() {
         requires(Robot.grabber);
         requires(Robot.elevator);
-        isHomed = false;
         this.setTimeout(5);
     }
 
     @Override
     public void initialize() {
         if (Robot.elevator.canMoveGrabber()) {
-            Robot.grabber.beginHoming();
+            isHomed = false;
         } else {
-            new Rumble(0.25, ControllerSide.BOTH).start();
+            isHomed = true;
             this.cancel();
+            return;
         }
-        isHomed = false;
+        startedAtHome = Robot.grabber.isAtHome();
+        Robot.grabber.pidPos.disable();
     }
 
     @Override
     public void execute() {
-        if (Robot.grabber.exceedsCurrentLimit() && !isHomed && Robot.elevator.canMoveGrabber()) {
+        if (startedAtHome && Robot.grabber.isAtHome()) {
+            //move the grabber forward enough that the limit switch is not pressed
+            Robot.grabber.getArmMotor().set(-0.1);
+            return;
+        }
+
+        if (startedAtHome && !Robot.grabber.isAtHome()) {
+            startedAtHome = false;
+        }
+        Robot.grabber.getArmMotor().set(0.1);
+
+        if (Robot.grabber.isAtHome()) {
             Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
+            Robot.grabber.setState(GrabberPosition.EXTENDED);
             isHomed = true;
         }
     }
 
     @Override
     public void end() {
-        Robot.grabber.getArmMotor().set(0);
+        Robot.grabber.pidPos.enable();
+    }
+
+    @Override
+    public void interrupted() {
+        Robot.grabber.pidPos.enable();
     }
 
     public boolean isFinished() {

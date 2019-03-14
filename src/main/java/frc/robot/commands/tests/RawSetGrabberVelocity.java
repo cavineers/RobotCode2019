@@ -5,23 +5,21 @@ import frc.robot.Robot;
 
 import com.revrobotics.ControlType;
 
-public class RawSetGrabberPosition extends Command {
+public class RawSetGrabberVelocity extends Command {
 
-    double pos;
-	public RawSetGrabberPosition(double pos) {
-        this.pos = pos;
+    double vel;
+	public RawSetGrabberVelocity(double vel) {
+        this.vel = vel;
 		requires(Robot.grabber);
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-        Robot.grabber.pidPos.enable();
-        Robot.grabber.pidPos.setSetpoint(this.pos);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-
+        Robot.grabber.getArmMotor().getPIDController().setReference(this.vel, ControlType.kVelocity);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -32,7 +30,6 @@ public class RawSetGrabberPosition extends Command {
 	// Called once after isFinished returns true
 	protected void end() {
         Robot.grabber.getArmMotor().set(0);
-        Robot.grabber.pidPos.disable();
 	}
 
 	// Called when another command which requires one or more of the same

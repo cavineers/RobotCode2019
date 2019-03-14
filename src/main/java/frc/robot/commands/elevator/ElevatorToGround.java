@@ -9,44 +9,61 @@ import frc.robot.subsystems.Grabber.GrabberPosition;
 public class ElevatorToGround extends Command {
 
     int step = 0;
+    boolean startWithLimitSwitch = false;
 
     public ElevatorToGround() {
         requires(Robot.elevator);
-        requires(Robot.grabber);
     }
 
     @Override
     protected void initialize() {
-        if(!Robot.grabber.getState().equals(GrabberPosition.EXTENDED)){
-            Robot.grabber.setState(GrabberPosition.EXTENDED);
+        startWithLimitSwitch = Robot.elevator.getLimitSwitch();
+        Robot.elevator.setHomed(false);
+
+        if (!startWithLimitSwitch) { //if the limit switch isn't pressed, try to move the elevator to ground
+            Robot.elevator.moveElevator(ElevatorLevel.GROUND);
         }
     }
 
     @Override
     protected void execute() {
-        switch (step) {
-            case 0:
-                Robot.elevator.moveElevator(Constants.kElevatorGroundCheck);
-                step = 1;
-                break;
-            case 1:
-                if (Robot.elevator.getLimitSwitch()) {
-                    Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
-                    Robot.elevator.moveElevator(Constants.kElevatorGroundLvl);
-                    step = 2;
-                }
-                break;
+        //if the limit switch was pressed when the command started, move up until it is no longer pressed 
+        //(gets rid of slack in the elevator line)
+        if (startWithLimitSwitch) {
+            Robot.elevator.getElevatorMotor().set(0.1);
+            startWithLimitSwitch = Robot.elevator.getLimitSwitch();
+
+            if (!startWithLimitSwitch) {
+                // the elevator has just lifted off of the limit switch, start going downward
+                Robot.elevator.getElevatorMotor().set(-0.1);
+            }
+
+            return;
         }
+
+        //if the grabber gets to ground level and the limit switch isn't pressed, go down until the it is pressed
+        if (Robot.elevator.getLevel() == ElevatorLevel.GROUND && !Robot.elevator.getLimitSwitch()) {
+            Robot.elevator.getElevatorMotor().set(-0.1);
+        }
+
+        //the limit switch is pressed, and it was not before
+        if (Robot.elevator.getLimitSwitch()) {
+            Robot.elevator.getElevatorMotor().set(0);
+            Robot.elevator.setHomed(true);
+            Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
+            Robot.elevator.moveElevator(ElevatorLevel.GROUND);
+        }
+        
     }
 
     @Override
     protected void end() {
-        Robot.elevator.setHomed(true);
+        
     }
 
     @Override
     protected boolean isFinished() {
-        return ((Robot.elevator.getLevel() == ElevatorLevel.GROUND || step == 2 || isTimedOut()) && (!Robot.elevator.getLimitSwitch()));
+        return isTimedOut() || Robot.elevator.getHomed();
     }
 
     protected void interrupted() {

@@ -31,8 +31,6 @@ public class Elevator extends Subsystem {
 
     public enum ElevatorLevel {        
         GROUND,
-        CARGO_INTAKE,
-        HATCH_INTAKE,
         LVL1_HATCH,
         LVL1_CARGO,
         LVL2_HATCH,
@@ -43,12 +41,11 @@ public class Elevator extends Subsystem {
     }
 
     public Elevator() {
-        limitSwitch = new DigitalInput(Constants.kElevatorLimitSwitch);
+        limitSwitch = new DigitalInput(RobotMap.kElevatorLimitSwitch);
         // set PID coefficients
         this.getElevatorMotor().getPIDController().setP(Constants.kPVelocityElev);
         this.getElevatorMotor().getPIDController().setI(Constants.kIVelocityElev);
         this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
-        //this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElevUp);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
         this.getElevatorMotor().setInverted(true);
@@ -145,6 +142,7 @@ public class Elevator extends Subsystem {
     
     /**
      * returns the limit switch responcible for elevator homing
+     * @return true if the limit switch is pressed
      */
     public boolean getLimitSwitch() {
         return !limitSwitch.get();
@@ -196,15 +194,10 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given level
      */
     public void moveElevator(ElevatorLevel level) {
+        this.setHomed(false);
         switch (level) {
             case GROUND:
                 this.moveElevator(Constants.kElevatorGroundLvl);
-                break;
-            case HATCH_INTAKE:
-                this.moveElevator(Constants.kElevatorHatchPickupLvl);
-                break;
-            case CARGO_INTAKE:
-                this.moveElevator(Constants.kElevatorCargoPickupLvl);
                 break;
             case LVL1_HATCH:
                 this.moveElevator(Constants.kElevatorLvl1Hatch);
@@ -254,10 +247,6 @@ public class Elevator extends Subsystem {
     public ElevatorLevel getLevel() {
         if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.GROUND;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorCargoPickupLvl) < Constants.kElevatorPosTolerance) {
-            return ElevatorLevel.CARGO_INTAKE;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorHatchPickupLvl) < Constants.kElevatorPosTolerance) {
-            return ElevatorLevel.HATCH_INTAKE;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Hatch) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL1_HATCH;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Cargo) < Constants.kElevatorPosTolerance) {
@@ -290,12 +279,6 @@ public class Elevator extends Subsystem {
 
     public void setHomed(boolean newHomed){
         this.homed = newHomed;
-    }
-
-    public void checkHomed(){
-        if(this.getHomed() && Robot.elevator.getLimitSwitch()){
-            new ElevatorToGround();
-        }
     }
 
     

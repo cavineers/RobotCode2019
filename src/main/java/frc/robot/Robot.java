@@ -135,7 +135,7 @@ public class Robot extends TimedRobot {
         estimator.start();
 
         // start ensuring that vision coprocessor(s) have properly synchronized clocks
-        clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime);
+        // clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime); //TODO: uncomment if we use vision
 
         // Init and export profile to network tables
         dankDash = new DankDash();
@@ -193,12 +193,17 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("position output: ", elevator.getPIDPosOutput());
 
         // //Grabber
+        SmartDashboard.putNumber("f-val", Constants.kGrabberVelF);
+        SmartDashboard.putNumber("p-val", Constants.kGrabberVelP);
+        SmartDashboard.putNumber("i-val", Constants.kGrabberVelI);
+        SmartDashboard.putNumber("d-val", Constants.kGrabberVelD);
+        SmartDashboard.putNumber("grabber-vel", grabber.getArmMotor().getEncoder().getVelocity());
+
         // SmartDashboard.putNumber("f-val", Constants.kGrabberPosF);
         // SmartDashboard.putNumber("p-val", Constants.kGrabberPosP);
         // SmartDashboard.putNumber("i-val", Constants.kGrabberPosI);
         // SmartDashboard.putNumber("d-val", Constants.kGrabberPosD);
-        // SmartDashboard.putNumber("current-vel",
-        // elevator.getElevatorMotor().getEncoder().getVelocity());
+        // SmartDashboard.putNumber("grabber-pos", grabber.getArmMotor().getEncoder().getPosition());
     }
 
     /**
@@ -212,7 +217,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        this.updateLEDs(); //TODO: uncomment if we use leds
+        // this.updateLEDs(); //TODO: uncomment if we use leds
         this.updateDankDash();
         // For tuning elevator:
 
@@ -242,30 +247,31 @@ public class Robot extends TimedRobot {
 
         // Grabber:
 
-        // limit switches:
-        // SmartDashboard.putBoolean("hasHatch", grabber.hasHatch());
-        // SmartDashboard.putBoolean("hasCargo", grabber.hasCargo());
-
         // //position PID
-        // grabber.getArmMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val",
-        // 0));
-        // grabber.getArmMotor().getPIDController().setP(SmartDashboard.getNumber("p-val",
-        // 0));
-        // grabber.getArmMotor().getPIDController().setI(SmartDashboard.getNumber("i-val",
-        // 0));
-        // grabber.getArmMotor().getPIDController().setD(SmartDashboard.getNumber("d-val",
-        // 0));
-        // SmartDashboard.putNumber("grabber-pos", grabber.getPosition()); // This is
-        // one
+        grabber.getArmMotor().getPIDController().setFF(SmartDashboard.getNumber("f-val", 0));
+        grabber.getArmMotor().getPIDController().setP(SmartDashboard.getNumber("p-val", 0));
+        grabber.getArmMotor().getPIDController().setI(SmartDashboard.getNumber("i-val", 0));
+        grabber.getArmMotor().getPIDController().setD(SmartDashboard.getNumber("d-val", 0));
+        SmartDashboard.putNumber("grabber-vel", grabber.getArmMotor().getEncoder().getVelocity());
+
+        // grabber.pidPos.setP(SmartDashboard.getNumber("f-val", 0));
+        // grabber.pidPos.setP(SmartDashboard.getNumber("p-val", 0));
+        // grabber.pidPos.setP(SmartDashboard.getNumber("i-val", 0));
+        // grabber.pidPos.setP(SmartDashboard.getNumber("d-val", 0));
+        // SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
+
         // SmartDashboard.putNumber("grabber-current",
         // grabber.getArmMotor().getOutputCurrent());
         // SmartDashboard.putString("grabber-level",
         // String.valueOf(grabber.getState()));
 
         // SmartDashboard.putString("elevator-level",
-        // String.valueOf(elevator.getLevel())); // This is one
         // SmartDashboard.putString("can-move-elev",
-        // String.valueOf(elevator.canMoveGrabber())); // This is one
+
+        SmartDashboard.putBoolean("Hatch Switch", Robot.grabber.hasHatch());
+        SmartDashboard.putBoolean("Cargo Switch", Robot.grabber.hasCargo());
+        SmartDashboard.putBoolean("Grabber Homing Switch", Robot.grabber.isAtHome());
+        SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getHomed());
     }
 
     /**
@@ -343,7 +349,7 @@ public class Robot extends TimedRobot {
             return new TimedCommand(0); //implement!
         }
 
-        return new TimedCommand(0); //the robot was in an invalid state! return a command with time 0
+        return new TimedCommand(0); //the robot was in an invalid state! do nothing
     }
     /**
      * This autonomous (along with the chooser code above) shows how to select
@@ -383,9 +389,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        oi.updateDPadCommands();
+        oi.updatePeriodicCommands();
         Scheduler.getInstance().run();
-        if(Robot.grabber.getHatchLimitSwitchState() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.OPEN && (Robot.getCurrentTime()-Robot.grabber.getLastToggleTime() < Constants.kGrabberAutoToggleTolerance)){
+        if(Robot.grabber.hasHatch() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.OPEN && (Robot.getCurrentTime()-Robot.grabber.getLastToggleTime() < Constants.kGrabberAutoToggleTolerance)){
             new ToggleHatchGrabber();
         }
     }

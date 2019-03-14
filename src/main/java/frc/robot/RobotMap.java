@@ -72,7 +72,7 @@ public class RobotMap {
   public static final int kAutoPos3 = 3;
   public static final int kAutoPos4 = 4;
   public static final int kDIO5 = 5;
-  public static final int kDIO6 = 6;
+  public static final int kGrabberHomeingLimitSwitch = 6;
   public static final int kElevatorLimitSwitch = 7;
   public static final int kGrabberHatchLimitSwitch = 8;
   public static final int kGrabberCargoLimitSwitch = 9;

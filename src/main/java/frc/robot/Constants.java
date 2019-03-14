@@ -38,8 +38,6 @@ public class Constants {
 
     //TODO: set these values
     public static final double kElevatorGroundLvl = 0; 
-    public static final double kElevatorHatchPickupLvl = 0;
-    public static final double kElevatorCargoPickupLvl = 0;
     public static final double kElevatorHomeHeight = -1;
     public static final double kElevatorHomeHeightRotations = kElevatorHomeHeight*kElevatorRotationsPerInch;
     
@@ -157,8 +155,8 @@ public class Constants {
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 0.45;
-    public static final double kGrabberEjectionSpeed = 1;
+    public static final double kGrabberIntakeSpeed = 5;
+    public static final double kGrabberEjectionSpeed = 100;
     public static final double kGrabberEjectionTime = 1;
 
     public static final double kGrabberTolerance = 1; //TODO set
@@ -169,9 +167,14 @@ public class Constants {
     
     public static final double kGrabberStartPos = 0; //TODO: set
 
-    public static final double kGrabberPosP = 0.04;
-    public static final double kGrabberPosI = 0.00001;//01;
-    public static final double kGrabberPosD = 0.01;
+    public static final double kGrabberVelP = 0.001;
+    public static final double kGrabberVelI = 0;
+    public static final double kGrabberVelD = 0;
+    public static final double kGrabberVelF = 0.00045;
+
+    public static final double kGrabberPosP = 300;
+    public static final double kGrabberPosI = 0;
+    public static final double kGrabberPosD = 40;
     public static final double kGrabberPosF = 0;
 
     public static final double kGrabberMaxSpeed = 20; //TODO
