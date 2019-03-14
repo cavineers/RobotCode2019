@@ -6,6 +6,10 @@ import frc.robot.commands.CheckEncoders;
 import frc.robot.Robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import frc.robot.commands.auto.OverrideAutoSelection;
+import frc.robot.AutoPathHelper.PATH_TARGET;
+import frc.robot.AutoPathHelper.START_POS;
+import frc.robot.commands.auto.DisableAutoOverride;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 // ===== Available Components =====
@@ -29,8 +33,7 @@ public class DankDash {
     private CoastBreakState cbState;
 
     private enum CoastBreakState {
-        COAST,
-        BREAK
+        COAST, BREAK
     }
 
     public DankDash() {
@@ -53,6 +56,13 @@ public class DankDash {
             }
             if (key == "toggleCoastBreak") {
                 this.toggleBreakCoast();
+            }
+            if (key == "OverrideAuto") {
+                if (value.getBoolean()) {
+                    new OverrideAutoSelection("DANKDASH");
+                } else {
+                    new DisableAutoOverride();
+                }
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
     }

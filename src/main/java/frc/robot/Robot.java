@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData(targetChooser);
         
         SmartDashboard.putData(new DisableAutoOverride());
-		SmartDashboard.putData(new OverrideAutoSelection());
+		SmartDashboard.putData(new OverrideAutoSelection("SMARTDASH"));
 
 
         // Elevator
@@ -288,6 +288,8 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().run();
         SmartDashboard.putString("Robot Position Start: ", String.valueOf(getAutoStartPos()));
         SmartDashboard.putString("Robot Auto Target: ", String.valueOf(getAutoPathTarget()));
+        dankDash.sendDash("RobotPositionStart", String.valueOf(getAutoStartPos()));
+        dankDash.sendDash("RobotAutoTarget", String.valueOf(getAutoPathTarget()));
     }
 
     public START_POS getAutoStartPos() {
