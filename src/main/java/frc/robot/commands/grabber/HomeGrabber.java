@@ -52,11 +52,13 @@ public class HomeGrabber extends Command {
 
     @Override
     public void end() {
+        Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
         Robot.grabber.pidPos.enable();
     }
 
     @Override
     public void interrupted() {
+        Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
         Robot.grabber.pidPos.enable();
     }
 

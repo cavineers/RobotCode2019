@@ -162,15 +162,15 @@ public class Constants {
     public static final double kGrabberTolerance = 1; //TODO set
 
     //grabber positions with extended as 0
-    public static final double kGrabberRetractedPos = 57; //TODO set
+    public static final double kGrabberRetractedPos = -54; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
     
     public static final double kGrabberStartPos = 0; //TODO: set
 
-    public static final double kGrabberVelP = 0.001;
+    public static final double kGrabberVelP = 2.0E-4;
     public static final double kGrabberVelI = 0;
-    public static final double kGrabberVelD = 0;
-    public static final double kGrabberVelF = 0.00045;
+    public static final double kGrabberVelD = 1.0E-4;
+    public static final double kGrabberVelF = 2.0E-4;
 
     public static final double kGrabberPosP = 300;
     public static final double kGrabberPosI = 0;

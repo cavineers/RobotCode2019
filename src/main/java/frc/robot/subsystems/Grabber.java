@@ -58,6 +58,7 @@ public class Grabber extends Subsystem {
     public Grabber() {
         grabberState = GrabberPosition.UNKNOWN;
         armMotor = new CANSparkMax(RobotMap.armMotor, MotorType.kBrushless);
+        armMotor.setInverted(true);
         grabberSol = new DoubleSolenoid(RobotMap.PCM1, RobotMap.grabber1, RobotMap.grabber2);
         ballMotor = new WPI_TalonSRX(RobotMap.grabberIntake);
 
@@ -96,7 +97,7 @@ public class Grabber extends Subsystem {
 
         pidPos.enable();
 
-        pidPos.setInputRange(0, Constants.kGrabberRetractedPos);
+        pidPos.setInputRange(Constants.kGrabberRetractedPos, 0);
         pidPos.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
         pidPos.setContinuous(false);
         pidPos.setPercentTolerance(Constants.kElevPercentTolerance);

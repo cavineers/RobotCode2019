@@ -30,7 +30,7 @@ public class ElevatorToGround extends Command {
         //if the limit switch was pressed when the command started, move up until it is no longer pressed 
         //(gets rid of slack in the elevator line)
         if (startWithLimitSwitch) {
-            Robot.elevator.getElevatorMotor().set(0.1);
+            Robot.elevator.getElevatorMotor().set(0.2);
             startWithLimitSwitch = Robot.elevator.getLimitSwitch();
 
             if (!startWithLimitSwitch) {

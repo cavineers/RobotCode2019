@@ -62,13 +62,13 @@ public class OI {
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
 
         //actual button commands
-        // a_button.whenPressed(new IntakeCargo());
-        // b_button.whenPressed(new ToggleGrabber());
-        // x_button.whenPressed(new ToggleHatchGrabber());
-        // y_button.whenPressed(new EjectBall());
+        a_button.whenPressed(new IntakeCargo());
+        b_button.whenPressed(new ToggleGrabber());
+        x_button.whenPressed(new ToggleHatchGrabber());
+        y_button.whenPressed(new EjectBall());
 
-        // left_middle.whenPressed(new HomeAll());
-        // right_middle.whenPressed(new ToggleCargoIntake());
+        left_middle.whenPressed(new HomeAll());
+        right_middle.whenPressed(new ToggleCargoIntake());
 
 
 
@@ -89,12 +89,12 @@ public class OI {
 
 
         //Grabber velocity Control
-        x_button.whileHeld(new RawSetGrabberVelocity(50));
-        y_button.whileHeld(new RawSetGrabberVelocity(-50));
-        a_button.whenPressed(new HomeGrabber());
+        // x_button.whileHeld(new RawSetGrabberVelocity(1000));
+        // y_button.whileHeld(new RawSetGrabberVelocity(-1000));
+        // a_button.whenPressed(new HomeGrabber());
 
         // x_button.whileHeld(new RawSetGrabberPosition(0));
-        // y_button.whileHeld(new RawSetGrabberPosition(20));
+        // y_button.whileHeld(new RawSetGrabberPosition(10));
 
 
     }
