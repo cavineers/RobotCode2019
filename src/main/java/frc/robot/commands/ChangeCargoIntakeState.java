@@ -21,11 +21,11 @@ public class ChangeCargoIntakeState extends Command {
     
     @Override
     public void initialize() {
-        if (Robot.grabber.getState() == GrabberPosition.EXTENDED || Robot.grabber.getState() == GrabberPosition.HOMED) {
+        if (Robot.grabber.getState() == GrabberPosition.EXTENDED || Robot.grabber.getState() == GrabberPosition.START_POS) {
             Robot.cargoIntake.setState(desiredPositionState);
             Robot.cargoIntake.setMotorState(desiredMotorState);
         } else {
-            new Rumble(0.25, ControllerSide.BOTH).start();;
+            new Rumble(0.25, ControllerSide.BOTH).start();
         }
     }
 

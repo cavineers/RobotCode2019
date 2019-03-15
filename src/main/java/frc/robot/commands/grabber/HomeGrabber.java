@@ -22,6 +22,7 @@ public class HomeGrabber extends Command {
         if (Robot.elevator.canMoveGrabber()) {
             isHomed = false;
         } else {
+            System.out.println("Cannot home grabber");
             isHomed = true;
             this.cancel();
             return;

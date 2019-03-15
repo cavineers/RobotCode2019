@@ -175,12 +175,7 @@ public class Elevator extends Subsystem {
      * Returns whether the grabber can safely move back at the current elevator position
      */
     public boolean canMoveGrabber() {
-        if(this.getPosition() <= Constants.kMaxMoveGrabber && this.getPosition() >= Constants.kMinMoveGrabber) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.getPosition() <= Constants.kMaxMoveGrabber && this.getPosition() >= Constants.kMinMoveGrabber && this.getHomed();
     }
 
     /**
