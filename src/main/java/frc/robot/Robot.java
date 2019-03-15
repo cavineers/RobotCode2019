@@ -197,13 +197,22 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("p-val", Constants.kGrabberVelP);
         // SmartDashboard.putNumber("i-val", Constants.kGrabberVelI);
         // SmartDashboard.putNumber("d-val", Constants.kGrabberVelD);
-        SmartDashboard.putNumber("grabber-vel", grabber.getArmMotor().getEncoder().getVelocity());
+        // SmartDashboard.putNumber("grabber-vel", grabber.getArmMotor().getEncoder().getVelocity());
 
-        SmartDashboard.putNumber("f-val", Constants.kGrabberPosF);
-        SmartDashboard.putNumber("p-val", Constants.kGrabberPosP);
-        SmartDashboard.putNumber("i-val", Constants.kGrabberPosI);
-        SmartDashboard.putNumber("d-val", Constants.kGrabberPosD);
-        SmartDashboard.putNumber("grabber-pos", grabber.getArmMotor().getEncoder().getPosition());
+        // SmartDashboard.putNumber("f-val", Constants.kGrabberPosF);
+        // SmartDashboard.putNumber("p-val", Constants.kGrabberPosP);
+        // SmartDashboard.putNumber("i-val", Constants.kGrabberPosI);
+        // SmartDashboard.putNumber("d-val", Constants.kGrabberPosD);
+        // SmartDashboard.putNumber("grabber-pos", grabber.getArmMotor().getEncoder().getPosition());
+
+        //Tuning ball intake PID
+        SmartDashboard.putNumber("f-val", Constants.kGrabberBallVelF);
+        SmartDashboard.putNumber("p-val", Constants.kGrabberBallVelP);
+        SmartDashboard.putNumber("i-val", Constants.kGrabberBallVelI);
+        SmartDashboard.putNumber("d-val", Constants.kGrabberBallVelD);
+        SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
+
+
     }
 
     /**
@@ -254,11 +263,11 @@ public class Robot extends TimedRobot {
         // grabber.getArmMotor().getPIDController().setD(SmartDashboard.getNumber("d-val", 0));
         // SmartDashboard.putNumber("grabber-vel", grabber.getArmMotor().getEncoder().getVelocity());
 
-        grabber.pidPos.setF(SmartDashboard.getNumber("f-val", 0));
-        grabber.pidPos.setP(SmartDashboard.getNumber("p-val", 0));
-        grabber.pidPos.setI(SmartDashboard.getNumber("i-val", 0));
-        grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
-        SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
+        // grabber.pidPos.setF(SmartDashboard.getNumber("f-val", 0));
+        // grabber.pidPos.setP(SmartDashboard.getNumber("p-val", 0));
+        // grabber.pidPos.setI(SmartDashboard.getNumber("i-val", 0));
+        // grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
+        // SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
 
         // SmartDashboard.putNumber("grabber-current",
         // grabber.getArmMotor().getOutputCurrent());
@@ -267,6 +276,12 @@ public class Robot extends TimedRobot {
 
         // SmartDashboard.putString("elevator-level",
         // SmartDashboard.putString("can-move-elev",
+
+        grabber.getBallVelPID().setF(SmartDashboard.getNumber("f-val", 0));
+        grabber.getBallVelPID().setP(SmartDashboard.getNumber("p-val", 0));
+        grabber.getBallVelPID().setI(SmartDashboard.getNumber("i-val", 0));
+        grabber.getBallVelPID().setD(SmartDashboard.getNumber("d-val", 0));
+        SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
         SmartDashboard.putBoolean("Hatch Switch", Robot.grabber.hasHatch());
         SmartDashboard.putBoolean("Cargo Switch", Robot.grabber.hasCargo());
