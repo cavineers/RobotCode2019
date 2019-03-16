@@ -29,7 +29,7 @@ public class ChangeGrabberState extends Command {
         if (!Robot.elevator.canMoveGrabber()) {
             return;
         }
-        if (this.desiredPos != null) {
+        if (this.desiredPos != null && Robot.elevator.canMoveGrabber() && !Robot.grabber.hasHatch()) {
             Robot.grabber.setState(desiredPos);
         }
         

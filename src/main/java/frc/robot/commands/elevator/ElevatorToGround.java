@@ -25,6 +25,7 @@ public class ElevatorToGround extends Command {
         if (!startWithLimitSwitch) { //if the limit switch isn't pressed, try to move the elevator to ground
             System.out.println("Moving elevator to ground level...");
             Robot.elevator.moveElevator(ElevatorLevel.GROUND);
+            Robot.elevator.getPIDPos().enable();
         }
     }
 
@@ -49,12 +50,14 @@ public class ElevatorToGround extends Command {
         //if the grabber gets to ground level and the limit switch isn't pressed, go down until the it is pressed
         if (Robot.elevator.getLevel() == ElevatorLevel.GROUND && !Robot.elevator.getLimitSwitch()) {
             System.out.println("Elevator reached ground w/o triggering limit switch; moving down more...");
+            Robot.elevator.getPIDPos().disable();
             Robot.elevator.getElevatorMotor().set(-0.1);
         }
 
         //the limit switch is pressed, and it was not before
         if (Robot.elevator.getLimitSwitch()) {
             System.out.println("Limit switch was pressed - grabber is homed");
+            Robot.elevator.getPIDPos().disable();
             Robot.elevator.getElevatorMotor().set(0);
             Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
             Robot.elevator.moveElevator(ElevatorLevel.GROUND);

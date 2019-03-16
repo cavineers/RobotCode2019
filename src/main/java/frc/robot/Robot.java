@@ -149,8 +149,8 @@ public class Robot extends TimedRobot {
 
 
         rightStart = new DigitalInput(0);
-        middleStart = new DigitalInput(2);
-        leftStart = new DigitalInput(1);
+        middleStart = new DigitalInput(1);
+        leftStart = new DigitalInput(2);
         
 
         favorCargoBayFront = new AnalogInput(0);
@@ -207,11 +207,11 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("grabber-pos", grabber.getArmMotor().getEncoder().getPosition());
 
         //Tuning ball intake PID
-        SmartDashboard.putNumber("f-val", Constants.kGrabberBallVelF);
-        SmartDashboard.putNumber("p-val", Constants.kGrabberBallVelP);
-        SmartDashboard.putNumber("i-val", Constants.kGrabberBallVelI);
-        SmartDashboard.putNumber("d-val", Constants.kGrabberBallVelD);
-        SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
+        // SmartDashboard.putNumber("f-val", Constants.kGrabberBallVelF);
+        // SmartDashboard.putNumber("p-val", Constants.kGrabberBallVelP);
+        // SmartDashboard.putNumber("i-val", Constants.kGrabberBallVelI);
+        // SmartDashboard.putNumber("d-val", Constants.kGrabberBallVelD);
+        // SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
 
     }
@@ -276,16 +276,20 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("elevator-level", String.valueOf(Robot.elevator.getLevel()));
         // SmartDashboard.putString("can-move-elev",
 
-        grabber.getBallVelPID().setF(SmartDashboard.getNumber("f-val", 0));
-        grabber.getBallVelPID().setP(SmartDashboard.getNumber("p-val", 0));
-        grabber.getBallVelPID().setI(SmartDashboard.getNumber("i-val", 0));
-        grabber.getBallVelPID().setD(SmartDashboard.getNumber("d-val", 0));
-        SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
+        // grabber.getBallVelPID().setF(SmartDashboard.getNumber("f-val", 0));
+        // grabber.getBallVelPID().setP(SmartDashboard.getNumber("p-val", 0));
+        // grabber.getBallVelPID().setI(SmartDashboard.getNumber("i-val", 0));
+        // grabber.getBallVelPID().setD(SmartDashboard.getNumber("d-val", 0));
+        // SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
         SmartDashboard.putBoolean("Hatch Switch", Robot.grabber.hasHatch());
         SmartDashboard.putBoolean("Cargo Switch", Robot.grabber.hasCargo());
         SmartDashboard.putBoolean("Grabber Homing Switch", Robot.grabber.isAtHome());
         SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
+
+        SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
+        SmartDashboard.putString("Cargo Intake Position", String.valueOf(Robot.cargoIntake.getPosition()));
+        SmartDashboard.putString("Can move grabber", String.valueOf(Robot.elevator.canMoveGrabber()));
     }
 
     /**
@@ -351,7 +355,8 @@ public class Robot extends TimedRobot {
             } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
                 return new TimedCommand(0); //implement!
             } else if (target == PATH_TARGET.ROCKET) {
-                return new TwoHatchRocketRight();
+                // return new TwoHatchRocketRight();
+                return new TimedCommand(0);
             }
         } else if (startPos == START_POS.LEFT) {
             if (target == PATH_TARGET.FRONT_CARGOBAY) {
@@ -359,7 +364,8 @@ public class Robot extends TimedRobot {
             } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
                 return new TimedCommand(0); //implement!
             } else if (target == PATH_TARGET.ROCKET) {
-                return new TwoHatchRocketLeft();
+                // return new TwoHatchRocketLeft();
+                return new TimedCommand(0);
             }
         } else if (startPos == START_POS.MIDDLE) {
             return new TimedCommand(0); //implement!
@@ -389,8 +395,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        System.out.println(Robot.estimator.getPos());
-        System.out.println(Robot.drivetrain.getRightVel() + ", " + Robot.drivetrain.getLeftVel());
         Scheduler.getInstance().run();
     }
 

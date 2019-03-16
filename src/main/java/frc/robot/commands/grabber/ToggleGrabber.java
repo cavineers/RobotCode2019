@@ -28,7 +28,7 @@ public class ToggleGrabber extends ConditionalCommand {
     protected boolean condition() {
         //true if grabber should retract, otherwise false
         //grabber is currently extended, it will not interfere with the elevator, and the grabber does not have a hatch, move back 
-        return Robot.grabber.getState() == GrabberPosition.EXTENDED && Robot.elevator.canMoveGrabber() && !Robot.grabber.hasHatch();
+        return Robot.grabber.getState() == GrabberPosition.EXTENDED;
     }
 
 }

@@ -21,8 +21,8 @@ public class IntakeCargo extends CommandGroup {
         requires(Robot.elevator);
         requires(Robot.cargoIntake);
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
-        addSequential(new TimedCommand(0.5));
         addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
+        addSequential(new TimedCommand(0.5));
         addSequential(new ChangeGrabberState(Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }
    
