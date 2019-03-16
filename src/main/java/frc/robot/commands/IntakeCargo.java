@@ -34,7 +34,7 @@ public class IntakeCargo extends CommandGroup {
 
     @Override
     protected boolean isFinished() {
-        return /* super.isFinished()  || || */  Robot.grabber.hasCargo(); //TODO: finish if there is a ball already in the grabber
+        return Robot.grabber.hasCargo(); //TODO: finish if there is a ball already in the grabber
     }
 
     @Override

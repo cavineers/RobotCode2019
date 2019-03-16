@@ -20,8 +20,6 @@ public class EjectBall extends Command{
         if (Robot.grabber.getState() == GrabberPosition.EXTENDED) {
             Robot.grabber.setBallMotorState(MotorState.EJECT_BALL);
             this.setTimeout(Constants.kGrabberEjectionTime);
-        } else {
-            this.cancel();
         }
     }
 
