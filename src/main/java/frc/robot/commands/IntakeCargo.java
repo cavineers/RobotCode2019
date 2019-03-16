@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.commands.elevator.ElevatorToLevel;
@@ -20,6 +21,7 @@ public class IntakeCargo extends CommandGroup {
         requires(Robot.elevator);
         requires(Robot.cargoIntake);
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
+        addSequential(new TimedCommand(0.5));
         addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
         addSequential(new ChangeGrabberState(Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }

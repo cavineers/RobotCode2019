@@ -14,7 +14,7 @@ public class HomeGrabber extends Command {
     public HomeGrabber() {
         requires(Robot.grabber);
         requires(Robot.elevator);
-        this.setTimeout(5);
+        this.setTimeout(10);
     }
 
     @Override
@@ -45,6 +45,7 @@ public class HomeGrabber extends Command {
         Robot.grabber.getArmMotor().set(0.1);
 
         if (Robot.grabber.isAtHome()) {
+            System.out.println("homed!");
             Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
             Robot.grabber.setState(GrabberPosition.EXTENDED);
             isHomed = true;
@@ -53,13 +54,16 @@ public class HomeGrabber extends Command {
 
     @Override
     public void end() {
+        System.out.println("FINSIHED HOMING GRABBER");
         Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
+        Robot.grabber.setState(GrabberPosition.EXTENDED);
         Robot.grabber.pidPos.enable();
     }
 
     @Override
     public void interrupted() {
         Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
+        Robot.grabber.setState(GrabberPosition.EXTENDED);
         Robot.grabber.pidPos.enable();
     }
 

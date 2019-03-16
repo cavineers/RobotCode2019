@@ -62,9 +62,9 @@ public class Grabber extends Subsystem {
         grabberSol = new DoubleSolenoid(RobotMap.PCM1, RobotMap.grabber1, RobotMap.grabber2);
         ballMotor = new WPI_TalonSRX(RobotMap.grabberIntake);
 
-        this.getArmMotor().getPIDController().setP(Constants.kGrabberBallVelP);
-        this.getArmMotor().getPIDController().setI(Constants.kGrabberBallVelI);
-        this.getArmMotor().getPIDController().setD(Constants.kGrabberBallVelD);
+        this.getArmMotor().getPIDController().setP(Constants.kGrabberVelP);
+        this.getArmMotor().getPIDController().setI(Constants.kGrabberVelI);
+        this.getArmMotor().getPIDController().setD(Constants.kGrabberVelD);
         this.getArmMotor().getPIDController().setFF(Constants.kGrabberVelF);
         this.getArmMotor().getPIDController().setOutputRange(-1, 1);
         this.getArmMotor().setIdleMode(IdleMode.kBrake);
@@ -90,6 +90,7 @@ public class Grabber extends Subsystem {
         }, new PIDOutput() {
             @Override
             public void pidWrite(double vel) {
+                System.out.println(vel);
                 getArmMotor().getPIDController().setReference(vel, ControlType.kVelocity);
             }
 

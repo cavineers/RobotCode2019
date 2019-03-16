@@ -155,17 +155,17 @@ public class Constants {
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 5;
-    public static final double kGrabberEjectionSpeed = 100;
+    public static final double kGrabberIntakeSpeed = 800;
+    public static final double kGrabberEjectionSpeed = 100000;
     public static final double kGrabberEjectionTime = 1;
 
     public static final double kGrabberTolerance = 1; //TODO set
 
     //grabber positions with extended as 0
-    public static final double kGrabberRetractedPos = -54; //TODO set
+    public static final double kGrabberRetractedPos = -52; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
     
-    public static final double kGrabberStartPos = -10; //TODO: set
+    public static final double kGrabberStartPos = 0; //TODO: set
 
     public static final double kGrabberVelP = 2.0E-4;
     public static final double kGrabberVelI = 0;
@@ -183,8 +183,8 @@ public class Constants {
     public static final double kMinGrabberPos = 0; //TODO
     public static final double kMaxGrabberPos = 0; //TODO
 
-    public static final double kGrabberBallVelP = 0;
-    public static final double kGrabberBallVelI = 0;
+    public static final double kGrabberBallVelP = 0.0001;
+    public static final double kGrabberBallVelI = 0.0;
     public static final double kGrabberBallVelD = 0;
     public static final double kGrabberBallVelF = 0;
     public static final double kGrabberBallPeriod = .025;

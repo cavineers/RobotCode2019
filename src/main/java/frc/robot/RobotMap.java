@@ -48,20 +48,20 @@ public class RobotMap {
   //PCM devices:
 
   //Drive Shifters (switches between high and low drive gears)
-  public static int driveShifter1 = 4;
+  public static int driveShifter1 = 4; //correct
   public static int driveShifter2 = 3;
 
   //Hatch Scoop (lowers and raises the hatch scooping arms)
-  public static int hatchScoop1 = 5;
-  public static int hatchScoop2 = 2;
+  public static int hatchScoop1 = 6;
+  public static int hatchScoop2 = 1;
 
   //Grabber (controls both hatch intake and ball hard stop)
-  public static int grabber1 = 7;
-  public static int grabber2 = 0;
+  public static int grabber1 = 2; //correct
+  public static int grabber2 = 5;
 
   //Cargo Intake (controls if the cargo intake arms are down or not)
-  public static int cargoIntake1 = 6;
-  public static int cargoIntake2 = 1;
+  public static int cargoIntake1 = 0;
+  public static int cargoIntake2 = 7;
 
   //Digital In/Output mapping
 

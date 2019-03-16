@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AutoPathHelper.PATH_TARGET;
 import frc.robot.AutoPathHelper.START_POS;
+import frc.robot.commands.HomeAll;
 import frc.robot.commands.auto.DisableAutoOverride;
 import frc.robot.commands.auto.OverrideAutoSelection;
 import frc.robot.commands.auto.TwoHatchCargoLeft;
@@ -267,14 +268,12 @@ public class Robot extends TimedRobot {
         // grabber.pidPos.setP(SmartDashboard.getNumber("p-val", 0));
         // grabber.pidPos.setI(SmartDashboard.getNumber("i-val", 0));
         // grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
-        // SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
+        SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
 
         // SmartDashboard.putNumber("grabber-current",
         // grabber.getArmMotor().getOutputCurrent());
-        // SmartDashboard.putString("grabber-level",
-        // String.valueOf(grabber.getState()));
-
-        // SmartDashboard.putString("elevator-level",
+        SmartDashboard.putString("grabber-level", String.valueOf(grabber.getState()));
+        SmartDashboard.putString("elevator-level", String.valueOf(Robot.elevator.getLevel()));
         // SmartDashboard.putString("can-move-elev",
 
         grabber.getBallVelPID().setF(SmartDashboard.getNumber("f-val", 0));
@@ -397,8 +396,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        grabber.setEncoderPosition(Constants.kGrabberStartPos);
-        grabber.getArmMotor().getPIDController().setReference(Constants.kGrabberStartPos, ControlType.kPosition);
+        new HomeAll().start();
     }
 
     /**

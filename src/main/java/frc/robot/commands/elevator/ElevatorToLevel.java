@@ -13,6 +13,8 @@ public class ElevatorToLevel extends Command {
 
     Command elevToGroundCmd = null;
 
+    boolean forceFinish = false;
+
     public ElevatorToLevel(ElevatorLevel desiredLevel) {
         this.desiredLevel = desiredLevel;
         requires(Robot.elevator);
@@ -31,7 +33,7 @@ public class ElevatorToLevel extends Command {
             }
 
             //the elevator is already in the desired state, finish the command
-            this.cancel();
+            this.forceFinish = true;
             return;
         }
 
@@ -47,6 +49,9 @@ public class ElevatorToLevel extends Command {
 
     @Override
     protected void execute() {
+        if (this.forceFinish) {
+            return;
+        }
         //if the elevator is trying to go down, don't do anything
         if (elevToGroundCmd != null) {
             return;
@@ -64,6 +69,9 @@ public class ElevatorToLevel extends Command {
 
     @Override
     protected boolean isFinished() {
+        if (this.forceFinish) {
+            return true;
+        }
         if (elevToGroundCmd == null) {
             return Robot.elevator.getLevel() == desiredLevel;
         } else {
