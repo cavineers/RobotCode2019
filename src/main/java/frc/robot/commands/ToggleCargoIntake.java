@@ -14,7 +14,7 @@ public class ToggleCargoIntake extends ConditionalCommand {
 
     public ToggleCargoIntake() {
         //first argument runs if condition() returns true, second one if it returns false
-        super(new ChangeCargoIntakeState(PositionState.UP, MotorState.OFF), new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
+        super(new ChangeCargoIntakeState(PositionState.UP, MotorState.OFF), new ChangeCargoIntakeState(PositionState.DOWN, MotorState.OFF));
     }
 
     @Override
