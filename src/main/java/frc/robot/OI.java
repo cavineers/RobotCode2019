@@ -23,6 +23,7 @@ import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.grabber.HomeGrabber;
 import frc.robot.commands.grabber.ToggleGrabber;
 import frc.robot.commands.grabber.ToggleHatchGrabber;
+import frc.robot.commands.tests.RawMoveElevator;
 import frc.robot.commands.tests.RawSetGrabberPosition;
 import frc.robot.commands.tests.RawSetGrabberVelocity;
 import frc.robot.LEDHelper;
@@ -69,8 +70,6 @@ public class OI {
 
         left_middle.whenPressed(new HomeAll());
         right_middle.whenPressed(new ToggleCargoIntake());
-
-
 
         // Homing test
         // a_button.whenPressed(new HomeElev());

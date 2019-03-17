@@ -56,8 +56,8 @@ public class RobotMap {
   public static int hatchScoop2 = 1;
 
   //Grabber (controls both hatch intake and ball hard stop)
-  public static int grabber1 = 2; //correct
-  public static int grabber2 = 5;
+  public static int grabber1 = 5; //correct
+  public static int grabber2 = 2;
 
   //Cargo Intake (controls if the cargo intake arms are down or not)
   public static int cargoIntake1 = 0;

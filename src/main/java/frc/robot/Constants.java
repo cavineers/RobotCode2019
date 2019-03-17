@@ -42,11 +42,11 @@ public class Constants {
     public static final double kElevatorHomeHeightRotations = kElevatorHomeHeight*kElevatorRotationsPerInch;
     
     public static final double kElevatorLvl1Hatch = (4.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl1Cargo = (3*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl1Cargo = 11.216;
     public static final double kElevatorLvl2Hatch = (32.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
     public static final double kElevatorLvl2Cargo = (31*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
     public static final double kElevatorLvl3Hatch = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl3Cargo = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl3Cargo = 157.024;
 
     public static final double kElevatorGroundCheck = 2*kElevatorRotationsPerInch;
     //On NEO
@@ -162,7 +162,7 @@ public class Constants {
     public static final double kGrabberTolerance = 1; //TODO set
 
     //grabber positions with extended as 0
-    public static final double kGrabberRetractedPos = -52; //TODO set
+    public static final double kGrabberRetractedPos = -60; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
     
     public static final double kGrabberStartPos = 0; //TODO: set

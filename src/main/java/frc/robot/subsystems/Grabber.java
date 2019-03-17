@@ -90,7 +90,6 @@ public class Grabber extends Subsystem {
         }, new PIDOutput() {
             @Override
             public void pidWrite(double vel) {
-                System.out.println(vel);
                 getArmMotor().getPIDController().setReference(vel, ControlType.kVelocity);
             }
 

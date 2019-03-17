@@ -24,7 +24,6 @@ public class HomeGrabber extends Command {
         } else {
             System.out.println("Cannot home grabber");
             isHomed = true;
-            this.cancel();
             return;
         }
         startedAtHome = Robot.grabber.isAtHome();

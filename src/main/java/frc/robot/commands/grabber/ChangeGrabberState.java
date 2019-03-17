@@ -27,6 +27,7 @@ public class ChangeGrabberState extends Command {
     @Override
     protected void initialize() {
         if (!Robot.elevator.canMoveGrabber()) {
+            System.out.println("cannot move grabber");
             return;
         }
         if (this.desiredPos != null && Robot.elevator.canMoveGrabber() && !Robot.grabber.hasHatch()) {

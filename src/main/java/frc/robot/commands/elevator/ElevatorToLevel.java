@@ -24,11 +24,13 @@ public class ElevatorToLevel extends Command {
     @Override
     protected void initialize() {
         if (this.desiredLevel == ElevatorLevel.GROUND) {
+            System.out.println("going to ground");
             //if the elevator isn't already homed, or it's in the wrong spot, go to the ground position
             if (!Robot.elevator.getHomed() || Robot.elevator.getLevel() != ElevatorLevel.GROUND) {
                 Robot.elevator.setHomed(false);
                 elevToGroundCmd = new ElevatorToGround();
                 elevToGroundCmd.start();
+                System.out.println("starting elevator to ground...");
                 return;
             }
 
@@ -70,6 +72,7 @@ public class ElevatorToLevel extends Command {
     @Override
     protected boolean isFinished() {
         if (this.forceFinish) {
+            System.out.println("finished elevator to home");
             return true;
         }
         if (elevToGroundCmd == null) {

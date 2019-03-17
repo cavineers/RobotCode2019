@@ -48,7 +48,7 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
-        this.getElevatorMotor().setInverted(true);
+        this.getElevatorMotor().setInverted(false);
         
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, Constants.kFPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;

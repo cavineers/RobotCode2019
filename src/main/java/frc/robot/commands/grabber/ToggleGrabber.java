@@ -19,6 +19,7 @@ public class ToggleGrabber extends ConditionalCommand {
     @Override
     protected void initialize() {
         super.initialize();
+        System.out.println("toggling grabber...");
         if (!Robot.elevator.canMoveGrabber() || Robot.grabber.hasHatch()) {
             new Rumble(0.25, ControllerSide.BOTH).start();
         }

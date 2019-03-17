@@ -21,6 +21,7 @@ public class RetractGrabber extends CommandGroup {
     
     @Override
     protected void initialize() {
+        System.out.println("retracted finished:" + this.isFinished());
         if (isFinished()) {
             this.cancel();
             this.end();

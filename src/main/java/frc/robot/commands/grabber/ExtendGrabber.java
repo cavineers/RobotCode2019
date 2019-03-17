@@ -22,7 +22,7 @@ public class ExtendGrabber extends CommandGroup {
 
     @Override
     public void end() {
-
+        System.out.println("extended finished:" + this.isFinished());
     }
 
     @Override

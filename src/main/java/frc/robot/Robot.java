@@ -25,6 +25,8 @@ import frc.robot.subsystems.HatchScoop;
 import frc.robot.subsystems.CargoIntake.MotorState;
 import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.Grabber.HatchGrabberState;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -78,11 +80,11 @@ public class Robot extends TimedRobot {
     public static LEDHelper leds;
 
     public static boolean isAutoOverridden = false;
-    
+
     public static START_POS overriddenStartPos = START_POS.INVALID;
     public static PATH_TARGET overriddenPathTarget = PATH_TARGET.FRONT_CARGOBAY;
 
-    //Digital Inputs for auto selection
+    // Digital Inputs for auto selection
     DigitalInput rightStart, leftStart, middleStart;
     AnalogInput favorCargoBayFront, favorCargoBaySide, favorRocket;
 
@@ -98,7 +100,7 @@ public class Robot extends TimedRobot {
 
     // Camera clock sync checking thread
     Notifier clockSyncUpdater = new Notifier(this::checkForClockSync);
-    
+
     public static SendableChooser<START_POS> posChooser;
     public static SendableChooser<PATH_TARGET> targetChooser;
 
@@ -290,6 +292,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
         SmartDashboard.putString("Cargo Intake Position", String.valueOf(Robot.cargoIntake.getPosition()));
         SmartDashboard.putString("Can move grabber", String.valueOf(Robot.elevator.canMoveGrabber()));
+        SmartDashboard.putString("is at home", String.valueOf(Robot.elevator.getHomed()));
+    
     }
 
     /**
@@ -387,6 +391,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        new HomeAll().start();
         getAutoCommand().start();
     }
 
@@ -395,12 +400,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+        oi.updatePeriodicCommands();
         Scheduler.getInstance().run();
     }
 
     @Override
     public void teleopInit() {
-        new HomeAll().start();
+        
     }
 
     /**
