@@ -14,10 +14,11 @@ public class EjectBall extends Command{
 
     @Override
     protected void initialize() {
-        if(!Robot.grabber.getBallVelPID().isEnabled()){
-            Robot.grabber.getBallVelPID().enable();
-        }
+        this.setTimeout(0);
         if (Robot.grabber.getState() == GrabberPosition.EXTENDED) {
+            if(!Robot.grabber.getBallVelPID().isEnabled()){
+                Robot.grabber.getBallVelPID().enable();
+            }
             Robot.grabber.setBallMotorState(MotorState.EJECT_BALL);
             this.setTimeout(Constants.kGrabberEjectionTime);
         }
