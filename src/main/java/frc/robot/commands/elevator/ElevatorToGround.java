@@ -59,7 +59,7 @@ public class ElevatorToGround extends Command {
             System.out.println("Limit switch was pressed - grabber is homed");
             Robot.elevator.getPIDPos().disable();
             Robot.elevator.getElevatorMotor().set(0);
-            Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeight);
+            Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeightRotations);
             Robot.elevator.moveElevator(ElevatorLevel.GROUND);
             Robot.elevator.setHomed(true);
         }

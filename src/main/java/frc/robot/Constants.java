@@ -38,17 +38,28 @@ public class Constants {
 
     //TODO: set these values
     public static final double kElevatorGroundLvl = 0; 
-    public static final double kElevatorHomeHeight = -1;
-    public static final double kElevatorHomeHeightRotations = kElevatorHomeHeight*kElevatorRotationsPerInch;
+    public static final double kElevatorHomeHeightInches = -.5;
+    public static final double kElevatorHomeHeightRotations = kElevatorHomeHeightInches*kElevatorRotationsPerInch;
     
-    public static final double kElevatorLvl1Hatch = (4.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl1Cargo = 11.216;
-    public static final double kElevatorLvl2Hatch = (32.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl2Cargo = (31*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl3Hatch = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl3Cargo = 157.024;
+    public static final double kElevatorLvl1HatchInches = 3.2 + Math.abs(kElevatorHomeHeightInches);
+    public static final double kElevatorLvl1HatchRotations = kElevatorLvl1HatchInches*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl1CargoInches = 19; //TODO Put in inches
+    public static final double kElevatorLvl1CargoRotations = kElevatorLvl1CargoInches*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl2HatchInches = 29.5 + Math.abs(kElevatorHomeHeightInches);
+    public static final double kElevatorLvl2HatchRotations = kElevatorLvl2HatchInches*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl2CargoInches = 31 + Math.abs(kElevatorHomeHeightInches);
+    public static final double kElevatorLvl2CargoRotations = kElevatorLvl2CargoInches*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl3HatchInches = 20 + Math.abs(kElevatorHomeHeightInches);
+    public static final double kElevatorLvl3HatchRotations = kElevatorLvl3HatchInches*kElevatorRotationsPerInch;
 
-    public static final double kElevatorGroundCheck = 2*kElevatorRotationsPerInch;
+    public static final double kElevatorLvl3CargoInches = 20; //TODO change to inches
+    public static final double kElevatorLvl3CargoRotations = kElevatorLvl3CargoInches*kElevatorRotationsPerInch;
+
+    public static final double kElevatorGroundCheckRotations = 2*kElevatorRotationsPerInch;
     //On NEO
     public static final double kPVelocityElev = 1E-4;
     public static final double kIVelocityElev = 0;

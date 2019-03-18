@@ -271,6 +271,7 @@ public class Robot extends TimedRobot {
         // grabber.pidPos.setI(SmartDashboard.getNumber("i-val", 0));
         // grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
         SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
+        SmartDashboard.putNumber("elevator-pos", elevator.getPosition());
 
         // SmartDashboard.putNumber("grabber-current",
         // grabber.getArmMotor().getOutputCurrent());
@@ -402,6 +403,7 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         oi.updatePeriodicCommands();
         Scheduler.getInstance().run();
+        
     }
 
     @Override
