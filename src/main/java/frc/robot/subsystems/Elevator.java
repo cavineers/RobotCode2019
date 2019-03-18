@@ -195,22 +195,22 @@ public class Elevator extends Subsystem {
                 this.moveElevator(Constants.kElevatorGroundLvl);
                 break;
             case LVL1_HATCH:
-                this.moveElevator(Constants.kElevatorLvl1Hatch);
+                this.moveElevator(Constants.kElevatorLvl1HatchRotations);
                 break;
             case LVL1_CARGO:
-                this.moveElevator(Constants.kElevatorLvl1Cargo);
+                this.moveElevator(Constants.kElevatorLvl1CargoRotations);
                 break;
             case LVL2_HATCH:
-                this.moveElevator(Constants.kElevatorLvl2Hatch);
+                this.moveElevator(Constants.kElevatorLvl2HatchRotations);
                 break;
             case LVL2_CARGO:
-                this.moveElevator(Constants.kElevatorLvl2Cargo);
+                this.moveElevator(Constants.kElevatorLvl2CargoRotations);
                 break;
             case LVL3_HATCH:
-                this.moveElevator(Constants.kElevatorLvl3Hatch);
+                this.moveElevator(Constants.kElevatorLvl3HatchRotations);
                 break;
             case LVL3_CARGO:
-                this.moveElevator(Constants.kElevatorLvl3Cargo);
+                this.moveElevator(Constants.kElevatorLvl3CargoRotations);
                 break;
             case INVALID:
                 System.out.println("cannot raise the elevator to an invalid level");
@@ -242,17 +242,17 @@ public class Elevator extends Subsystem {
     public ElevatorLevel getLevel() {
         if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.GROUND;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Hatch) < Constants.kElevatorPosTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1HatchRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL1_HATCH;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1Cargo) < Constants.kElevatorPosTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1CargoRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL1_CARGO;    
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Hatch) < Constants.kElevatorPosTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2HatchRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL2_HATCH;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2Cargo) < Constants.kElevatorPosTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl2CargoRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL2_CARGO;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Hatch) < Constants.kElevatorPosTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3HatchRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL3_HATCH;
-        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3Cargo) < Constants.kElevatorPosTolerance) {
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl3CargoRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL3_CARGO;
         } else {
             return ElevatorLevel.INVALID;
