@@ -123,25 +123,20 @@ public class CameraHelper {
         }
 
         // extract numerical information from the string
-        double headingX = Double.parseDouble(updateArr[0]);
-        double headingY = Double.parseDouble(updateArr[1]);
-        double headingZ = Double.parseDouble(updateArr[2]);
+        double vhtcs_x = Double.parseDouble(updateArr[0]);
+        double vhtcs_y = Double.parseDouble(updateArr[1]);
+        double vhtcs_z = Double.parseDouble(updateArr[2]);
 
-        double targetX = Double.parseDouble(updateArr[3]);
-        double targetY = Double.parseDouble(updateArr[4]);
-        double targetZ = Double.parseDouble(updateArr[5]);
-        
-        double cameraX = Double.parseDouble(updateArr[6]);
-        double cameraY = Double.parseDouble(updateArr[7]);
-        double cameraZ = Double.parseDouble(updateArr[8]);
+        double vctts_x = Double.parseDouble(updateArr[3]);
+        double vctts_y = Double.parseDouble(updateArr[4]);
+        double vctts_z = Double.parseDouble(updateArr[5]);
+
+        double vtccs_x = Double.parseDouble(updateArr[6]);
+        double vtccs_y = Double.parseDouble(updateArr[7]);
+        double vtccs_z = Double.parseDouble(updateArr[8]);
 
         int imageNum = Integer.parseInt(updateArr[9]);
         double timestamp = Double.parseDouble(updateArr[10]);
-
-        // if (this.lastUpdateNum >= imageNum) {
-        //     // System.out.println("LAST IMG NUM!!");
-        //     return null; // there is no new update available
-        // }
 
         this.lastUpdateNum = imageNum;
 
@@ -160,7 +155,7 @@ public class CameraHelper {
             return null; // update is too old
         }
 
-        return new TargetUpdate(headingX, headingY, headingZ, targetX, targetY, targetZ, cameraX, cameraY, cameraZ, imageNum, timestamp);
+        return new TargetUpdate(vhtcs_x, vhtcs_y, vhtcs_z, vctts_x, vctts_y, vctts_z, vtccs_x, vtccs_y, vtccs_z, imageNum, timestamp);
     }
 
 

@@ -151,7 +151,16 @@ public class Constants {
     public static final Vector3D kCameraRelativeToRobotCenter = new Vector3D(0, 0, 0); 
 
     //a 3x3 rotation matrix that converts from the camera coordinate frame to the robot coordinate frame
-    public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
+    //public static final double[][] kCameraToRobotMatrix = {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}}; //assumes no difference in rotation from the robot
+    
+    //rotation matrix from camera system to robot system
+    public static final double[][] kMrscs = {{0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}};
+    
+    //rotations matrix from target system to robot system
+    public static final double[][] kMtscs = {{0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}};
+
+    //translation vector from rio to camera
+    public static final Vector3D kVrscs = new Vector3D(0,0,0); //TODO
 
     // Intake
     public static final double kCargoIntakeSpeed = 1;
