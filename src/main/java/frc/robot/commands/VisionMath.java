@@ -63,23 +63,19 @@ public class VisionMath extends Command {
         Vector3D vhtrs = vhtcs.rotate(Constants.kMrscs);
 
         //transform Camera Vector into robot coordinate system
-        Vector3D vtccs_rotated = vtccs.rotate(Constants.kMrscs);
-        Vector3D vtcrs = Vector3D.add(vtccs_rotated, Constants.kVrscs);
+        Vector3D vtcrs_rotated = vtccs.rotate(Constants.kMrscs);
+        Vector3D vtrrs = Vector3D.add(vtcrs_rotated, Constants.kVrscs);
 
-        //transform Target Vector into robot coordinate system
-        Vector3D vctrs = vctts.rotate(Constants.kMtscs);
-        
         //the target in a coordinate system alligned with the field, but centered at the robot
-        Vector3D targetFieldFrameRobotOrigin = vctrs.rotateZAxis(-robotFieldPos.getHeading());
-        targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateZAxis(Math.PI/2);
-        targetFieldFrameRobotOrigin = targetFieldFrameRobotOrigin.rotateXAxis(Math.PI);
-        Vector2D targetFieldLocation = new Vector2D(targetFieldFrameRobotOrigin.getDx() + robotFieldPos.getX(), targetFieldFrameRobotOrigin.getDy() + robotFieldPos.getY());
+        Vector3D vtrfs = vtrrs.rotateZAxis(robotFieldPos.getHeading());
+
+        Vector2D v2trfs = new Vector2D(vtrfs.getDx() + robotFieldPos.getX() , vtrfs.getDy() + robotFieldPos.getY());
 
         double targetHeadingAngle = robotFieldPos.getHeading() + Math.atan((vhtrs.getDy()/vhtrs.getDx()));       
       
         RobotPos latestFieldPos = Robot.estimator.getPos();
 
-        DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), targetFieldLocation.getPoint(), targetHeadingAngle);
+        DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), v2trfs.getPoint(), targetHeadingAngle);
        
         if (!dubinsPath.isValid()) {
             System.out.println("INVALID PATH");
