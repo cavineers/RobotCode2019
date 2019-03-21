@@ -5,7 +5,7 @@ import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot;
-import frc.robot.commands.elevator.ElevatorToGround;
+import frc.robot.commands.elevator.HomeElevator;
 import frc.robot.commands.grabber.HomeGrabber;
 
 public class HomeAll extends CommandGroup {
@@ -22,7 +22,7 @@ public class HomeAll extends CommandGroup {
                 return true;
             }
         });
-        addSequential(new ElevatorToGround());
+        addSequential(new HomeElevator());
         addSequential(new HomeGrabber());
     }
 }

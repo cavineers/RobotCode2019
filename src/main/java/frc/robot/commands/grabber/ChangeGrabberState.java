@@ -26,12 +26,18 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected void initialize() {
+    }
+
+    @Override
+    protected void execute() {
         if (!Robot.elevator.canMoveGrabber()) {
             System.out.println("cannot move grabber");
             return;
         }
         if (this.desiredPos != null && Robot.elevator.canMoveGrabber() && !Robot.grabber.hasHatch()) {
             Robot.grabber.setState(desiredPos);
+        } else {  //did not reach
+            System.out.println("desired: "+ this.desiredPos + "can move: " + Robot.elevator.canMoveGrabber() + "has hatch: " + Robot.grabber.hasHatch());
         }
         
         if (this.desiredMotorState != null) {
@@ -40,16 +46,15 @@ public class ChangeGrabberState extends Command {
     }
 
     @Override
-    protected void execute() {
-    }
-
-    @Override
     protected void end() {
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.grabber.getState() == desiredPos || !Robot.elevator.canMoveGrabber();
+        if (Robot.elevator.canMoveGrabber()) {
+            System.out.println("CANNOT MOVE GRABBER");
+        }
+        return !Robot.elevator.canMoveGrabber() || Robot.grabber.getState() == desiredPos;
     }
 
 }

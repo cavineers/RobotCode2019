@@ -8,16 +8,19 @@ import frc.robot.Robot;
 import frc.robot.commands.ChangeCargoIntakeState;
 import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.subsystems.CargoIntake.MotorState;
+import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Grabber.GrabberPosition;
+import frc.robot.subsystems.Grabber;
 
 public class ExtendGrabber extends CommandGroup {
 
     public ExtendGrabber() {
         requires(Robot.grabber);
+        requires(Robot.elevator);
+        requires(Robot.cargoIntake);
         addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
-        addSequential(new ChangeGrabberState(GrabberPosition.EXTENDED));
-        addSequential(new ChangeCargoIntakeState(Robot.cargoIntake.getPosition(), MotorState.OFF));
+        addSequential(new ChangeGrabberState(GrabberPosition.EXTENDED, Grabber.MotorState.OFF));
     }
 
     @Override

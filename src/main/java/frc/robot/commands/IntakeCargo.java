@@ -22,7 +22,7 @@ public class IntakeCargo extends CommandGroup {
         requires(Robot.cargoIntake);
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
         addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
-        addSequential(new TimedCommand(0.5));
+        // addSequential(new TimedCommand(0.5));
         addSequential(new ChangeGrabberState(Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }
    
@@ -34,7 +34,7 @@ public class IntakeCargo extends CommandGroup {
 
     @Override
     protected boolean isFinished() {
-        return Robot.grabber.hasCargo(); //TODO: finish if there is a ball already in the grabber
+        return Robot.grabber.hasCargo() || Robot.grabber.hasHatch();
     }
 
     @Override

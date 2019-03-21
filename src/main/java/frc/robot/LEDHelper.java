@@ -97,7 +97,7 @@ public class LEDHelper {
     public LEDColor getDesiredColor() {
         if (!Robot.reflectiveTapeCamera.isPiConnected()) { //add other errors
             return LEDColor.BLINKING_RED;
-        } else if (Robot.grabber.getHatchGrabberState() == HatchGrabberState.CLOSED) {
+        } else if (Robot.grabber.getHatchGrabberState() == HatchGrabberState.INTAKING) {
             return LEDColor.PURPLE;
         } else if (Robot.hatchScoop.getState() == HatchScoopState.DOWN) {
             return LEDColor.BLUE;

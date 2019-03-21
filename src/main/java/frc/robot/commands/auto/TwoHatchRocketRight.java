@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.AutoPathHelper;
 import frc.robot.Robot;
 import frc.robot.commands.FollowPath;
-import frc.robot.commands.elevator.ElevatorToGround;
 import frc.robot.commands.grabber.HomeGrabber;
 
 public class TwoHatchRocketRight extends CommandGroup{

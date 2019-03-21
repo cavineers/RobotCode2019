@@ -48,8 +48,8 @@ public class RobotMap {
   //PCM devices:
 
   //Drive Shifters (switches between high and low drive gears)
-  public static int driveShifter1 = 4; //correct
-  public static int driveShifter2 = 3;
+  public static int driveShifter1 = 3; //correct
+  public static int driveShifter2 = 4;
 
   //Hatch Scoop (lowers and raises the hatch scooping arms)
   public static int hatchScoop1 = 6;

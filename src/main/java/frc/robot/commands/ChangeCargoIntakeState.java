@@ -22,6 +22,13 @@ public class ChangeCargoIntakeState extends Command {
     
     @Override
     public void initialize() {
+        if (Robot.cargoIntake.getPosition() == desiredPositionState) {
+            this.setTimeout(0);
+        } else {
+            this.setTimeout(0.5); //make the command run until the cargo intake changes state until it
+                                  //finishes going down
+        }
+        
         if (Robot.grabber.hasCargo() && desiredMotorState == MotorState.ON) {
             Robot.cargoIntake.setMotorState(MotorState.OFF);
         } else {
@@ -40,6 +47,6 @@ public class ChangeCargoIntakeState extends Command {
     }
 
     protected boolean isFinished() {
-        return Robot.cargoIntake.getPosition() == this.desiredPositionState;
+        return this.isTimedOut() && Robot.cargoIntake.getMoterState() == this.desiredMotorState && Robot.cargoIntake.getPosition() == this.desiredPositionState;
     }
 }

@@ -17,7 +17,6 @@ import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.ToggleCargoIntake;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
-import frc.robot.commands.elevator.ElevatorToGround;
 import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.grabber.HomeGrabber;
@@ -49,7 +48,8 @@ public class OI {
 
     LEDHelper led;
     public int lastDpad = -1;
-    public boolean lastPressed = false;
+    public boolean lastRightTrig = false;
+    public boolean lastLeftTrig = false;
 
     public enum BUTTON_MODE {
 		AUTO_ALLIGN, ELEVATOR, CLIMBER
@@ -59,8 +59,8 @@ public class OI {
     
     public OI() {
         
-        r_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR)); // right is high
-        l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
+        r_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR));
+        l_bump.whenPressed(new ShiftGear(DriveGear.HIGH_GEAR));
 
         //actual button commands
         a_button.whenPressed(new IntakeCargo());
@@ -98,19 +98,33 @@ public class OI {
 
     }
 
-    public boolean areTriggersPressed() {
-        double upTrig = this.getJoystick().getRawAxis(3);
-        double downTrig = this.getJoystick().getRawAxis(2);
-        return upTrig > 0.9 && downTrig > 0.9;
+    public boolean isRightTriggerPressed() {
+        double rightTrig = this.getJoystick().getRawAxis(3);
+        return rightTrig > 0.9;
+    }
+
+    public boolean isLeftTriggerPressed() {
+        double leftTrig = this.getJoystick().getRawAxis(2);
+        return leftTrig > 0.9;
     }
 
     public void updatePeriodicCommands(){
-        if (lastPressed != areTriggersPressed()) {
-            // the triggers changed state
-            lastPressed = areTriggersPressed();
-            if (lastPressed) {
-                // the triggers are pressed
+        if (lastRightTrig != isRightTriggerPressed()) {
+            // the right trigger changed state
+            lastRightTrig = isRightTriggerPressed();
+            if (lastRightTrig) {
+                // the right trigger is pressed
                 new EnterDefenseMode().start();
+            }
+        }
+
+        if (lastLeftTrig != isLeftTriggerPressed()) {
+            // the left trigger changed state
+            lastLeftTrig = isLeftTriggerPressed();
+            if (lastLeftTrig) {
+                // the left trigger is pressed
+                System.out.println("cargo ship!");
+                new ElevatorToLevel(ElevatorLevel.CARGOSHIP_TOP).start();;
             }
         }
 
@@ -144,7 +158,7 @@ public class OI {
 			}
 			case 180: {
 				// Bottom
-                new ElevatorToGround().start();
+                new ElevatorToLevel(ElevatorLevel.GROUND).start();
 				break;
 			}
 			case 270: {

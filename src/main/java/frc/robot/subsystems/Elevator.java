@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import frc.robot.commands.elevator.ElevatorToGround;
 
 /**
  * The Elevator subsystem 
@@ -25,13 +24,11 @@ public class Elevator extends Subsystem {
     private PIDController pidPos;
     private double manualVelocity = 9999;
     private double prevOutput = 0;
-    private int loop = 0;
     double output;
-    private boolean homed = false;
-
     public enum ElevatorLevel {        
         GROUND,
         LVL1_HATCH,
+        CARGOSHIP_TOP,
         LVL1_CARGO,
         LVL2_HATCH,
         LVL2_CARGO,
@@ -175,7 +172,7 @@ public class Elevator extends Subsystem {
      * Returns whether the grabber can safely move back at the current elevator position
      */
     public boolean canMoveGrabber() {
-        return this.getPosition() <= Constants.kMaxMoveGrabber && this.getPosition() >= Constants.kMinMoveGrabber && this.getHomed();
+        return this.getLevel() == ElevatorLevel.GROUND;
     }
 
     /**
@@ -189,10 +186,12 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given level
      */
     public void moveElevator(ElevatorLevel level) {
-        this.setHomed(false);
         switch (level) {
             case GROUND:
                 this.moveElevator(Constants.kElevatorGroundLvl);
+                break;
+            case CARGOSHIP_TOP:
+                this.moveElevator(Constants.kElevatorCargoShipTopRotations);
                 break;
             case LVL1_HATCH:
                 this.moveElevator(Constants.kElevatorLvl1HatchRotations);
@@ -268,14 +267,5 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().getPIDController().setReference(vel, ControlType.kVelocity);
     }
 
-    public boolean getHomed(){
-        return homed;
-    }
-
-    public void setHomed(boolean newHomed){
-        this.homed = newHomed;
-    }
-
-    
 
 }

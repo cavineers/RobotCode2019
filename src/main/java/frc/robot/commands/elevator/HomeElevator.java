@@ -6,21 +6,22 @@ import frc.robot.Robot;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Grabber.GrabberPosition;
 
-public class ElevatorToGround extends Command {
+public class HomeElevator extends Command {
 
     boolean startWithLimitSwitch = false;
+    boolean didFinish = false;
 
-    public ElevatorToGround() {
+    public HomeElevator() {
         requires(Robot.elevator);
     }
 
     @Override
     protected void initialize() {
+        this.setTimeout(4);
         //Disable Cascading PID Control while homing
         Robot.elevator.getPIDPos().disable();
 
         startWithLimitSwitch = Robot.elevator.getLimitSwitch();
-        Robot.elevator.setHomed(false);
 
         if (!startWithLimitSwitch) { //if the limit switch isn't pressed, try to move the elevator to ground
             System.out.println("Moving elevator to ground level...");
@@ -61,7 +62,7 @@ public class ElevatorToGround extends Command {
             Robot.elevator.getElevatorMotor().set(0);
             Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeightRotations);
             Robot.elevator.moveElevator(ElevatorLevel.GROUND);
-            Robot.elevator.setHomed(true);
+            didFinish = true;
         }
         
     }
@@ -76,7 +77,7 @@ public class ElevatorToGround extends Command {
     @Override
     protected boolean isFinished() {
         // end the command if it times out or the elevator is homed
-        return isTimedOut() || Robot.elevator.getHomed();
+        return isTimedOut() || didFinish;
     }
 
     protected void interrupted() {

@@ -7,21 +7,18 @@ import frc.robot.subsystems.Grabber.HatchGrabberState;
 import frc.robot.subsystems.Grabber.MotorState;
 
 public class ToggleHatchGrabber extends Command {
-
     public ToggleHatchGrabber() {
         requires(Robot.grabber);
     }
 
     @Override
     protected void initialize() {
-        if (Robot.grabber.getState() != GrabberPosition.EXTENDED) {
-            this.cancel();
-        } else {
+        if (Robot.grabber.getState() == GrabberPosition.EXTENDED) {
             Robot.grabber.setLastToggleTime(Robot.getCurrentTime());
-            if (Robot.grabber.getHatchGrabberState() == HatchGrabberState.OPEN) {
-                Robot.grabber.setHatchGrabberState(HatchGrabberState.CLOSED);
+            if (Robot.grabber.getHatchGrabberState() == HatchGrabberState.HOLDING) {
+                Robot.grabber.setHatchGrabberState(HatchGrabberState.INTAKING);
             } else {
-                Robot.grabber.setHatchGrabberState(HatchGrabberState.OPEN);
+                Robot.grabber.setHatchGrabberState(HatchGrabberState.HOLDING);
             }
         }
     }

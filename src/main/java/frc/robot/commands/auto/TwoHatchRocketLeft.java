@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.AutoPathHelper;
 import frc.robot.Robot;
 import frc.robot.commands.FollowPath;
-import frc.robot.commands.elevator.ElevatorToGround;
 import frc.robot.commands.grabber.HomeGrabber;
 
 public class TwoHatchRocketLeft extends CommandGroup{
@@ -26,7 +25,6 @@ public class TwoHatchRocketLeft extends CommandGroup{
         });
         //initial homing routine
         addSequential(new HomeGrabber());
-        addSequential(new ElevatorToGround());
         //drive from the hab to the far side of the left rocket
         addSequential(new FollowPath(AutoPathHelper.PATH_TYPE.LEFT_ROCKET_1));
         //place the hatch

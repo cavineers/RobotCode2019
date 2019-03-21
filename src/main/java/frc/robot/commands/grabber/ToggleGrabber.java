@@ -10,7 +10,6 @@ import frc.robot.commands.Rumble.ControllerSide;
 import frc.robot.subsystems.Grabber.GrabberPosition;
 
 public class ToggleGrabber extends ConditionalCommand {
-
     public ToggleGrabber() {
         //first argument runs if condition() returns true, second one if it returns false
         super(new RetractGrabber(), new ExtendGrabber());
@@ -19,8 +18,7 @@ public class ToggleGrabber extends ConditionalCommand {
     @Override
     protected void initialize() {
         super.initialize();
-        System.out.println("toggling grabber...");
-        if (!Robot.elevator.canMoveGrabber() || Robot.grabber.hasHatch()) {
+        if (Robot.grabber.hasHatch()) {
             new Rumble(0.25, ControllerSide.BOTH).start();
         }
     }
@@ -29,7 +27,7 @@ public class ToggleGrabber extends ConditionalCommand {
     protected boolean condition() {
         //true if grabber should retract, otherwise false
         //grabber is currently extended, it will not interfere with the elevator, and the grabber does not have a hatch, move back 
-        return Robot.grabber.getState() == GrabberPosition.EXTENDED;
+        return Robot.grabber.getState() == GrabberPosition.EXTENDED && !Robot.grabber.hasHatch();
     }
 
 }

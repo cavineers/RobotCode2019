@@ -293,7 +293,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
         SmartDashboard.putString("Cargo Intake Position", String.valueOf(Robot.cargoIntake.getPosition()));
         SmartDashboard.putString("Can move grabber", String.valueOf(Robot.elevator.canMoveGrabber()));
-        SmartDashboard.putString("is at home", String.valueOf(Robot.elevator.getHomed()));
+
+        if(this.isEnabled()  && Robot.grabber.hasHatch() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.INTAKING && (Math.abs(Robot.getCurrentTime()-Robot.grabber.getLastToggleTime()) < Constants.kGrabberAutoToggleTolerance)){
+            new ToggleHatchGrabber();
+        }
     
     }
 
@@ -418,9 +421,6 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         oi.updatePeriodicCommands();
         Scheduler.getInstance().run();
-        if(Robot.grabber.hasHatch() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.OPEN && (Robot.getCurrentTime()-Robot.grabber.getLastToggleTime() < Constants.kGrabberAutoToggleTolerance)){
-            new ToggleHatchGrabber();
-        }
     }
 
     /**

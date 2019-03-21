@@ -29,8 +29,8 @@ public class Grabber extends Subsystem {
     }
 
     public enum HatchGrabberState {
-        OPEN, // can hold hatches, but cannot receive them
-        CLOSED // cannot hold hatches, but can receive them
+        HOLDING, // can hold hatches, but cannot receive them
+        INTAKING // cannot hold hatches, but can receive them
     }
 
     public GrabberPosition grabberState;
@@ -127,6 +127,8 @@ public class Grabber extends Subsystem {
             }
         }, Constants.kGrabberBallPeriod);
 
+        this.setHatchGrabberState(HatchGrabberState.HOLDING);
+
     }
 
     /**
@@ -212,7 +214,7 @@ public class Grabber extends Subsystem {
      * Sets the current state of the hatch grabber
      */
     public void setHatchGrabberState(HatchGrabberState state) {
-        if (state == HatchGrabberState.CLOSED) {
+        if (state == HatchGrabberState.HOLDING) {
             this.grabberSol.set(Value.kForward);
         } else {
             this.grabberSol.set(Value.kReverse);
@@ -223,10 +225,10 @@ public class Grabber extends Subsystem {
      * Gets the current state of the hatch grabber
      */
     public HatchGrabberState getHatchGrabberState() {
-        if (this.grabberSol.get() == Value.kForward) {
-            return HatchGrabberState.CLOSED;
+        if (this.grabberSol.get() == Value.kReverse) {
+            return HatchGrabberState.INTAKING;
         } else {
-            return HatchGrabberState.OPEN;
+            return HatchGrabberState.HOLDING;
         }
     }
 
