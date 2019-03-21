@@ -160,7 +160,7 @@ public class Constants {
     public static final double[][] kMtscs = {{0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}};
 
     //translation vector from rio to camera
-    public static final Vector3D kVrscs = new Vector3D(0,0,0); //TODO
+    public static final Vector3D kVrscs = new Vector3D(12.0, 0.0, 20.0);
 
     // Intake
     public static final double kCargoIntakeSpeed = 1;
