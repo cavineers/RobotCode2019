@@ -17,9 +17,6 @@ import frc.robot.subsystems.HatchScoop.HatchScoopState;
 public class IntakeCargo extends CommandGroup {
     boolean forceFinish;
     public IntakeCargo() {
-        requires(Robot.grabber);
-        requires(Robot.elevator);
-        requires(Robot.cargoIntake);
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
         addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
         // addSequential(new TimedCommand(0.5));

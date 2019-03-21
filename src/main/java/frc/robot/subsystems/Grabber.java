@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
+import frc.lib.MathHelper;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -208,6 +209,18 @@ public class Grabber extends Subsystem {
             }
             this.getBallVelPID().setSetpoint(Constants.kGrabberEjectionSpeed);
         }
+    }
+
+    public MotorState getBallMotorState() {
+        if (this.ballMotor.get() == 0) {
+            return MotorState.OFF;
+        } else if (MathHelper.areApproxEqual(this.getBallVelPID().getSetpoint(), Constants.kGrabberIntakeSpeed)) {
+            return MotorState.INTAKE_BALL;
+        } else if (MathHelper.areApproxEqual(this.getBallVelPID().getSetpoint(), Constants.kGrabberEjectionSpeed)) {
+            return MotorState.EJECT_BALL;
+        }
+
+        return MotorState.OFF;
     }
 
     /**

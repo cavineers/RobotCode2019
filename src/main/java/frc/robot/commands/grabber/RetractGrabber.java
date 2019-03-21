@@ -20,7 +20,7 @@ public class RetractGrabber extends CommandGroup {
     public RetractGrabber() {
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.OFF));
         addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
-        addSequential(new ChangeGrabberState(GrabberPosition.RETRACTED, Grabber.MotorState.OFF));
+        addParallel(new ChangeGrabberState(GrabberPosition.RETRACTED, Grabber.MotorState.OFF));
     }
     
     @Override

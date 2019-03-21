@@ -11,38 +11,22 @@ public class ElevatorToLevel extends Command {
 
     public ElevatorLevel desiredLevel;
     
-    boolean forceFinish = false;
-
     public ElevatorToLevel(ElevatorLevel desiredLevel) {
-        this.desiredLevel = desiredLevel;
         requires(Robot.elevator);
-        requires(Robot.grabber);
+        this.desiredLevel = desiredLevel;
     }
 
     @Override
     protected void initialize() {
-        //the elevator is going to a non-ground position; move the grabber outwards, then move the elevator
-        this.forceFinish = false;
-        if (Robot.elevator.getLevel() == this.desiredLevel) {
-            // the elevator is already at the position we want; do nothing
-            forceFinish = true;
-            return;
+        if(!Robot.elevator.getPIDPos().isEnabled()){
+            Robot.elevator.getPIDPos().enable();
         }
-        if(!Robot.grabber.getState().equals(GrabberPosition.EXTENDED)){
-            Robot.grabber.setState(GrabberPosition.EXTENDED);
-        }
-
     }
 
     @Override
     protected void execute() {
         //set the elevator to the desired state if the grabber is extended
         if (Robot.grabber.getState() == Grabber.GrabberPosition.EXTENDED) {
-
-            if(!Robot.elevator.getPIDPos().isEnabled()){
-                Robot.elevator.getPIDPos().enable();
-            }
-
             Robot.elevator.moveElevator(this.desiredLevel);
         }
     }
@@ -53,11 +37,7 @@ public class ElevatorToLevel extends Command {
 
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.getLevel() == this.desiredLevel || forceFinish;
-    }
-
-    protected void interrupted() {
-		end();
+        return Robot.elevator.getLevel() == this.desiredLevel;
     }
 
 }
