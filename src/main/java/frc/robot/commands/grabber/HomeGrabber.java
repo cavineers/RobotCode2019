@@ -13,19 +13,12 @@ public class HomeGrabber extends Command {
     
     public HomeGrabber() {
         requires(Robot.grabber);
-        requires(Robot.elevator);
         this.setTimeout(10);
     }
 
     @Override
     public void initialize() {
-        if (Robot.elevator.canMoveGrabber()) {
-            isHomed = false;
-        } else {
-            System.out.println("Cannot home grabber");
-            isHomed = true;
-            return;
-        }
+        isHomed = false;
         startedAtHome = Robot.grabber.isAtHome();
         Robot.grabber.pidPos.disable();
     }
@@ -48,6 +41,7 @@ public class HomeGrabber extends Command {
             Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
             Robot.grabber.setState(GrabberPosition.EXTENDED);
             isHomed = true;
+            Robot.grabber.setHomed(true);
         }
     }
 
@@ -61,9 +55,6 @@ public class HomeGrabber extends Command {
 
     @Override
     public void interrupted() {
-        Robot.grabber.setEncoderPosition(Constants.kGrabberHomePos);
-        Robot.grabber.setState(GrabberPosition.EXTENDED);
-        Robot.grabber.pidPos.enable();
     }
 
     public boolean isFinished() {

@@ -26,7 +26,7 @@ public class ElevatorToLevel extends Command {
     @Override
     protected void execute() {
         //set the elevator to the desired state if the grabber is extended
-        if (Robot.grabber.getState() == Grabber.GrabberPosition.EXTENDED) {
+        if (Robot.grabber.getState() == Grabber.GrabberPosition.EXTENDED && Robot.elevator.isHomed() && Robot.grabber.isHomed()) {
             Robot.elevator.moveElevator(this.desiredLevel);
         }
     }

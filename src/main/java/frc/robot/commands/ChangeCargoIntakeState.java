@@ -22,12 +22,7 @@ public class ChangeCargoIntakeState extends Command {
     
     @Override
     public void initialize() {
-        if (Robot.cargoIntake.getPosition() == desiredPositionState) {
-            this.setTimeout(0);
-        } else {
-            this.setTimeout(0.5); //make the command run until the cargo intake changes state until it
-                                  //finishes going down
-        }
+        this.setTimeout(0);
         
         if (Robot.grabber.hasCargo() && desiredMotorState == MotorState.ON) {
             Robot.cargoIntake.setMotorState(MotorState.OFF);
@@ -35,7 +30,10 @@ public class ChangeCargoIntakeState extends Command {
             Robot.cargoIntake.setMotorState(desiredMotorState);
         }
         
-        if (Robot.grabber.getState() == GrabberPosition.EXTENDED || Robot.grabber.getState() == GrabberPosition.START_POS) {
+        if (Robot.grabber.getState() != GrabberPosition.RETRACTED) {
+            if (this.desiredPositionState != Robot.cargoIntake.getPosition()) {
+                this.setTimeout(0.5);
+            }
             Robot.cargoIntake.setState(desiredPositionState);
         } else {
             new Rumble(0.25, ControllerSide.BOTH).start();

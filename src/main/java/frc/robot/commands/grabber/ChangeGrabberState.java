@@ -29,11 +29,14 @@ public class ChangeGrabberState extends Command {
             this.desiredPos = GrabberPosition.EXTENDED;
             this.desiredMotorState = MotorState.OFF;
         }
+        if(!Robot.grabber.pidPos.isEnabled()){
+            Robot.grabber.pidPos.enable();
+        }
     }
 
     @Override
     protected void execute() {
-        if (this.desiredPos != null && Robot.elevator.canMoveGrabber() && !Robot.grabber.hasHatch()) {
+        if (this.desiredPos != null && Robot.elevator.canMoveGrabber()) {
             Robot.grabber.setState(desiredPos);
         } else {  //did not reach
             System.out.println("desired: "+ this.desiredPos + "can move: " + Robot.elevator.canMoveGrabber() + "has hatch: " + Robot.grabber.hasHatch());

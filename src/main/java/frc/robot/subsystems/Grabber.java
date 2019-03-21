@@ -56,6 +56,8 @@ public class Grabber extends Subsystem {
 
     double lastToggleTime = 0;
 
+    boolean isHomed = false;
+
     public Grabber() {
         grabberState = GrabberPosition.UNKNOWN;
         armMotor = new CANSparkMax(RobotMap.armMotor, MotorType.kBrushless);
@@ -284,6 +286,14 @@ public class Grabber extends Subsystem {
 
     public void setLastToggleTime(double newToggleTime){
         this.lastToggleTime = newToggleTime;
+    }
+
+    public boolean isHomed() {
+        return isHomed;
+    }
+
+    public void setHomed(boolean homed) {
+        this.isHomed = homed;
     }
 
     

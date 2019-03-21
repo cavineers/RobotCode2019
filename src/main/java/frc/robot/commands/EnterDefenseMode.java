@@ -15,30 +15,9 @@ import frc.robot.subsystems.CargoIntake.PositionState;
 public class EnterDefenseMode extends CommandGroup {
     
     public EnterDefenseMode() {
-        this.setTimeout(5);
-        addSequential(new Command() {
-            @Override
-            public void initialize() {
-                System.out.println("defense mode");
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-        });
-        addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
-        addSequential(new ChangeGrabberState(GrabberPosition.START_POS));
-        addSequential(new TimedCommand(0.5)); //stop the grabber from hitting the cargo intake
+        addSequential(new MoveGrabberAndElevator(ElevatorLevel.GROUND, GrabberPosition.START_POS, frc.robot.subsystems.Grabber.MotorState.OFF));
         addSequential(new ChangeCargoIntakeState(PositionState.UP, MotorState.OFF));
         addSequential(new ChangeHatchGrabberState(HatchGrabberState.HOLDING));
     }
-
-    @Override
-    protected boolean isFinished() {
-        return super.isFinished() || this.isTimedOut();
-    }
-
-
 
 }

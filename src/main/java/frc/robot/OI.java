@@ -12,11 +12,14 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.EnterDefenseMode;
 import frc.robot.commands.HomeAll;
 import frc.robot.commands.IntakeCargo;
+import frc.robot.commands.MoveGrabberAndElevator;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.ToggleCargoIntake;
+import frc.robot.subsystems.CargoIntake.MotorState;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.commands.grabber.EjectBall;
 import frc.robot.commands.grabber.HomeGrabber;
@@ -26,6 +29,7 @@ import frc.robot.commands.tests.RawMoveElevator;
 import frc.robot.commands.tests.RawSetGrabberPosition;
 import frc.robot.commands.tests.RawSetGrabberVelocity;
 import frc.robot.LEDHelper;
+import frc.robot.subsystems.Grabber;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -123,8 +127,8 @@ public class OI {
             lastLeftTrig = isLeftTriggerPressed();
             if (lastLeftTrig) {
                 // the left trigger is pressed
-                System.out.println("cargo ship!");
-                new ElevatorToLevel(ElevatorLevel.CARGOSHIP_TOP).start();;
+                new MoveGrabberAndElevator(ElevatorLevel.CARGOSHIP_TOP, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
+
             }
         }
 
@@ -133,44 +137,44 @@ public class OI {
 			case 0: {
                 // Top
                 if(Robot.grabber.hasCargo()){
-                    new ElevatorToLevel(ElevatorLevel.LVL3_CARGO).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL3_CARGO, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
                 else if(Robot.grabber.hasHatch()){
-                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL3_HATCH, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
                 else{
-                    new ElevatorToLevel(ElevatorLevel.LVL3_HATCH).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL3_HATCH, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
 				break;
 			}
 			case 90: {
 				// Right
                 if(Robot.grabber.hasCargo()){
-                    new ElevatorToLevel(ElevatorLevel.LVL2_CARGO).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL2_CARGO, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
+
                 }
                 else if(Robot.grabber.hasHatch()){
-                    new ElevatorToLevel(ElevatorLevel.LVL2_HATCH).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL2_HATCH, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
                 else{
-                    new ElevatorToLevel(ElevatorLevel.LVL2_HATCH).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL2_HATCH, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
 				break;
 			}
 			case 180: {
 				// Bottom
-                new ElevatorToLevel(ElevatorLevel.GROUND).start();
-				break;
+                new MoveGrabberAndElevator(ElevatorLevel.GROUND, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
 			}
 			case 270: {
 				// Left
 				if(Robot.grabber.hasCargo()){
-                    new ElevatorToLevel(ElevatorLevel.LVL1_CARGO).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL1_CARGO, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
                 else if(Robot.grabber.hasHatch()){
-                    new ElevatorToLevel(ElevatorLevel.LVL1_HATCH).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL1_HATCH, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
                 else{
-                    new ElevatorToLevel(ElevatorLevel.LVL1_HATCH).start();
+                    new MoveGrabberAndElevator(ElevatorLevel.LVL1_HATCH, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
                 }
 				break;
 			}

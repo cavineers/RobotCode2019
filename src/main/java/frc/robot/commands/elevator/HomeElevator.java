@@ -17,7 +17,7 @@ public class HomeElevator extends Command {
 
     @Override
     protected void initialize() {
-        this.setTimeout(4);
+        this.setTimeout(10);
         //Disable Cascading PID Control while homing
         Robot.elevator.getPIDPos().disable();
 
@@ -63,6 +63,7 @@ public class HomeElevator extends Command {
             Robot.elevator.setEncoderPosition(Constants.kElevatorHomeHeightRotations);
             Robot.elevator.moveElevator(ElevatorLevel.GROUND);
             didFinish = true;
+            Robot.elevator.setHomed(true);
         }
         
     }
@@ -80,10 +81,4 @@ public class HomeElevator extends Command {
         return isTimedOut() || didFinish;
     }
 
-    protected void interrupted() {
-        //Enable Cascading PID Control when homing is interrupted
-        Robot.elevator.getPIDPos().enable();
-    }
-    
-    
 }

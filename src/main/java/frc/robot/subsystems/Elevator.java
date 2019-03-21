@@ -22,9 +22,9 @@ public class Elevator extends Subsystem {
     public CANSparkMax elevatorMotor = new CANSparkMax(RobotMap.elevatorMotor, MotorType.kBrushless);
     DigitalInput limitSwitch;
     private PIDController pidPos;
-    private double manualVelocity = 9999;
-    private double prevOutput = 0;
     double output;
+    private boolean isHomed = false;
+    
     public enum ElevatorLevel {        
         GROUND,
         LVL1_HATCH,
@@ -68,42 +68,6 @@ public class Elevator extends Subsystem {
         }, new PIDOutput() {
             @Override
             public void pidWrite(double d) {
-                // compare what PID says to trigger
-        //         if(Math.abs(d-prevOutput) > Constants.kElevatorMaxAcceleration/4) {
-        //             if(d>prevOutput) {
-        //                 d=prevOutput + Constants.kElevatorMaxAcceleration/4;
-        //             }
-        //             else {
-        //                 d=prevOutput - Constants.kElevatorMaxAcceleration/4;
-        //             }
-        //         }
-                
-        //         prevOutput = d;
-     
-        //         if (manualVelocity == 9999) {
-        //             setVelocity(Math.min(d, manualVelocity));
-        //             setPIDPosOutput(d);
-        //         }
-        //         else if (manualVelocity > 0) {
-        //             setVelocity(Math.min(d, manualVelocity));
-        //             setPIDPosOutput(Math.min(d, manualVelocity));
-        //             loop = 0;
-                    
-        //         }
-        //         else if (manualVelocity < 0) {
-        //             setVelocity(manualVelocity);
-        //             setPIDPosOutput(Math.max(d, manualVelocity));
-        //             loop = 0;
-        //         }
-        //         else if (manualVelocity == 0) {
-        //             setVelocity(0);
-        //             setPIDPosOutput(0);
-        //             loop++;
-        //         }
-        //         if(loop == 10) {
-        //             manualVelocity = 9999;
-        //             loop = 0;
-        //         }
                 setVelocity(d);
                 setPIDPosOutput(d);
             }
@@ -160,19 +124,10 @@ public class Elevator extends Subsystem {
     }
 
     /**
-     * manually set the velocity of the inner control loop for manual elevator control
-     * 
-     * @param trigger the desired velocity for the elevator
-     */
-    public void setManualVelocity(double trigger) {
-        manualVelocity = trigger;
-    }
-
-    /**
      * Returns whether the grabber can safely move back at the current elevator position
      */
     public boolean canMoveGrabber() {
-        return this.getLevel() == ElevatorLevel.GROUND;
+        return this.getLevel() == ElevatorLevel.GROUND || !this.isHomed() || !Robot.grabber.isHomed();
     }
 
     /**
@@ -265,6 +220,14 @@ public class Elevator extends Subsystem {
             this.getElevatorMotor().getPIDController().setFF(Constants.kFVelocityElevDown);
         }
         this.getElevatorMotor().getPIDController().setReference(vel, ControlType.kVelocity);
+    }
+
+    public boolean isHomed() {
+        return isHomed;
+    }
+
+    public void setHomed(boolean homed) {
+        this.isHomed = homed;
     }
 
 

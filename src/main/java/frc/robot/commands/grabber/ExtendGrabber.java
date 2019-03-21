@@ -6,30 +6,21 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.Robot;
 import frc.robot.commands.ChangeCargoIntakeState;
+import frc.robot.commands.MoveGrabberAndElevator;
 import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.subsystems.CargoIntake.MotorState;
 import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Grabber.GrabberPosition;
+import frc.robot.subsystems.CargoIntake;
 import frc.robot.subsystems.Grabber;
+import frc.robot.commands.Rumble;
+import frc.robot.commands.Rumble.ControllerSide;
 
 public class ExtendGrabber extends CommandGroup {
 
     public ExtendGrabber() {
-        requires(Robot.grabber);
-        requires(Robot.elevator);
-        requires(Robot.cargoIntake);
-        addSequential(new ElevatorToLevel(ElevatorLevel.GROUND));
-        addSequential(new ChangeGrabberState(GrabberPosition.EXTENDED, Grabber.MotorState.OFF));
-    }
-
-    @Override
-    public void end() {
-        System.out.println("extended finished:" + this.isFinished());
-    }
-
-    @Override
-    protected void interrupted() {
-        this.end(); //make sure that the end method is called even if the command is interrupted / canceled 
+        addSequential(new MoveGrabberAndElevator(ElevatorLevel.GROUND, GrabberPosition.EXTENDED, Grabber.MotorState.OFF));
+        addSequential(new ChangeCargoIntakeState(Robot.cargoIntake.getPosition(), CargoIntake.MotorState.OFF));
     }
 }
