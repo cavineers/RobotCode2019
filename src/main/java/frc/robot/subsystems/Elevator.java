@@ -74,7 +74,7 @@ public class Elevator extends Subsystem {
 
         }, Constants.kElevPIDPosPeriod);
 
-        pidPos.setInputRange(Constants.kElevatorMinHeight, Constants.kElevatorMaxHeight);
+        pidPos.setInputRange(Constants.kElevatorMaxHeightRotations, Constants.kElevatorMinHeightRotations);
         pidPos.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
         pidPos.setContinuous(false);
         pidPos.setPercentTolerance(Constants.kElevPercentTolerance);
@@ -147,7 +147,7 @@ public class Elevator extends Subsystem {
                 this.moveElevator(Constants.kElevatorGroundLvl);
                 break;
             case CARGOSHIP_TOP:
-                this.moveElevator(Constants.kElevatorCargoShipTopRotations);
+                this.moveElevator(Constants.kElevatorCargoShipTopCargoRotations);
                 break;
             case LVL1_HATCH:
                 this.moveElevator(Constants.kElevatorLvl1HatchRotations);
@@ -197,6 +197,8 @@ public class Elevator extends Subsystem {
     public ElevatorLevel getLevel() {
         if (Math.abs(this.getPosition() - Constants.kElevatorGroundLvl) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.GROUND;
+        } else if (Math.abs(this.getPosition() - Constants.kElevatorCargoShipTopCargoRotations) < Constants.kElevatorPosTolerance) {
+            return ElevatorLevel.CARGOSHIP_TOP;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1HatchRotations) < Constants.kElevatorPosTolerance) {
             return ElevatorLevel.LVL1_HATCH;
         } else if (Math.abs(this.getPosition() - Constants.kElevatorLvl1CargoRotations) < Constants.kElevatorPosTolerance) {

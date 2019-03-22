@@ -28,40 +28,50 @@ public class Constants {
     public static final double kMaxTurnToAngleSpeed = 144; // in inches per second; the max speed of the robot used for turn to angle
     public static final double kAngleTolerance = 0.5; // in degrees; the tolerance of turn to angle
     
-    //elevator stuff
-    public static final double kElevatorRotationsPerInch = 2.804;
+    //Elevator Constants
+    public static final double kElevatorRotationsPerInch = 2.660;
+    public static final double kElevatorHatchOffset = 15.3;
+    public static final double kElevatorCargoOffset = 25.2;
     public static final double kElevatorPosTolerance = 1;
     public static final double kElevatorMaxAcceleration = 40; //800
-    public static final double kElevatorMaxSpeed = 5000; //3000
-    public static final double kElevatorMaxHeight  = 75*kElevatorRotationsPerInch; //TODO: set actual max height (rotations)
-	public static final double kElevatorMinHeight = 0; //TODO: set actual min height (rotations)
-
-    //TODO: set these values
-    public static final double kElevatorGroundLvl = 0; 
+    public static final double kElevatorMaxSpeed = 5000; //3000  //in rpm
+    
+	// Elevator Heights
+	
+    public static final double kElevatorMaxHeight  = 60; //Maximium Elevator Travel in Inches
+    public static final double kElevatorMaxHeightRotations  = kElevatorMaxHeight*kElevatorRotationsPerInch;
+    public static final double kElevatorMinHeight = -.5; //Minimium Elevator Travel in inches
+    public static final double kElevatorMinHeightRotations  = kElevatorMinHeight*kElevatorRotationsPerInch;
+	
+    public static final double kElevatorGroundLvl = 0;
+    public static final double kElevatorGroundLvlRotations = kElevatorMinHeight*kElevatorRotationsPerInch;
     public static final double kElevatorHomeHeightInches = -.5;
     public static final double kElevatorHomeHeightRotations = kElevatorHomeHeightInches*kElevatorRotationsPerInch;
     
-    public static final double kElevatorCargoShipTopInches = 20; //TODO change to inches
-    public static final double kElevatorCargoShipTopRotations = kElevatorCargoShipTopInches*kElevatorRotationsPerInch;
+    // Heights to the Game Feature from Carpet in inches
+    public static final double kElevatorLvl1HatchInches = 19.0;
+    public static final double kElevatorLvl1HatchRotations = (kElevatorLvl1HatchInches-kElevatorHatchOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl1CargoInches = 27.5;
+    public static final double kElevatorLvl1CargoRotations = (kElevatorLvl1CargoInches-kElevatorCargoOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl2HatchInches = 47.0; 
+    public static final double kElevatorLvl2HatchRotations = (kElevatorLvl2HatchInches-kElevatorHatchOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl2CargoInches = 55.5;
+    public static final double kElevatorLvl2CargoRotations = (kElevatorLvl2CargoInches-kElevatorCargoOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl3HatchInches = 75; 
+    public static final double kElevatorLvl3HatchRotations = (kElevatorLvl3HatchInches-kElevatorHatchOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorLvl3CargoInches = 83.5;
+    public static final double kElevatorLvl3CargoRotations = (kElevatorLvl3CargoInches-kElevatorCargoOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+   
+    public static final double kElevatorCargoShipTopInches = 46.8;
+    public static final double kElevatorCargoShipTopCargoRotations = (kElevatorCargoShipTopInches-kElevatorCargoOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
+    
+    public static final double kElevatorGroundCheckRotations = 2*kElevatorRotationsPerInch;    //On NEO
 
-
-    public static final double kElevatorLvl1HatchInches = 3.2 + Math.abs(kElevatorHomeHeightInches);
-    public static final double kElevatorLvl1HatchRotations = kElevatorLvl1HatchInches*kElevatorRotationsPerInch;
-    
-    public static final double kElevatorLvl1CargoInches = 19; //TODO Put in inches
-    public static final double kElevatorLvl1CargoRotations = kElevatorLvl1CargoInches*kElevatorRotationsPerInch;
-    
-    public static final double kElevatorLvl2HatchInches = 29.5 + Math.abs(kElevatorHomeHeightInches);
-    public static final double kElevatorLvl2HatchRotations = kElevatorLvl2HatchInches*kElevatorRotationsPerInch;
-    
-    public static final double kElevatorLvl2CargoInches = 30 + Math.abs(kElevatorHomeHeightInches);
-    public static final double kElevatorLvl2CargoRotations = kElevatorLvl2CargoInches*kElevatorRotationsPerInch;
-    
-    public static final double kElevatorLvl3HatchRotations = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-    public static final double kElevatorLvl3CargoRotations = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
-
-    public static final double kElevatorGroundCheckRotations = 2*kElevatorRotationsPerInch;
-    //On NEO
     public static final double kPVelocityElev = 1E-4;
     public static final double kIVelocityElev = 0;
     public static final double kDVelocityElev = 6E-4;
@@ -161,14 +171,14 @@ public class Constants {
     public static final double kGrabberHomingSpeed = -0.1;
     public static final double kGrabberMaxHomingCurrent = 10; // once the grabber motor exceeds this when homing, it will be considered homed
     public static final double kGrabberHomePos = -0.05; //TODO set // the position of the hard stop that the elevator stalls against
-
+    
     public static final double kGrabberPIDPosPeriod = .025;
     
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 500;
-    public static final double kGrabberEjectionSpeed = 100000;
+    public static final double kGrabberIntakeSpeed = 7; //amps
+    public static final double kGrabberEjectionSpeed = 40;
     public static final double kGrabberEjectionTime = 1;
 
     public static final double kGrabberTolerance = 1; //TODO set
@@ -176,6 +186,7 @@ public class Constants {
     //grabber positions with extended as 0
     public static final double kGrabberRetractedPos = -60; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
+    public static final double kGrabberHyperExtendedPos = 10;
     
     public static final double kGrabberStartPos = -23; //TODO: set
 

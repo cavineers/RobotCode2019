@@ -18,8 +18,8 @@ import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.HatchScoop.HatchScoopState;
 
 public class IntakeCargo extends CommandGroup {
-    boolean forceFinish;
     public IntakeCargo() {
+        addSequential(new ChangeHatchGrabberState(HatchGrabberState.HOLDING));
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
         addSequential(new MoveGrabberAndElevator(ElevatorLevel.GROUND, Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }

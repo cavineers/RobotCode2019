@@ -13,7 +13,6 @@ public class ChangeGrabberState extends Command {
         requires(Robot.grabber);
         this.desiredPos = desiredPos;
         this.desiredMotorState = desiredMotorState;
-        System.out.println("Desired Motor State: " + String.valueOf(desiredMotorState));
     }
 
     public ChangeGrabberState(GrabberPosition desiredPos) {

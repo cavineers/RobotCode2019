@@ -296,6 +296,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
         SmartDashboard.putString("Cargo Intake Position", String.valueOf(Robot.cargoIntake.getPosition()));
         SmartDashboard.putString("Can move grabber", String.valueOf(Robot.elevator.canMoveGrabber()));
+        SmartDashboard.putString("ball motor current", String.valueOf(Robot.grabber.getBallMotor().getOutputCurrent()));
 
         if(this.isEnabled()  && Robot.grabber.hasHatch() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.INTAKING && (Math.abs(Robot.getCurrentTime()-Robot.grabber.getLastToggleTime()) < Constants.kGrabberAutoToggleTolerance)){
             new ToggleHatchGrabber();

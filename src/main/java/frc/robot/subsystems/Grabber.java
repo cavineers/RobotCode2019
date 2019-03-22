@@ -22,7 +22,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Grabber extends Subsystem {
     public enum GrabberPosition {
-        EXTENDED, RETRACTED, START_POS, HOMED, UNKNOWN
+        EXTENDED, RETRACTED, START_POS, HYPER_EXTENDED, UNKNOWN
     }
 
     public enum MotorState {
@@ -110,7 +110,7 @@ public class Grabber extends Subsystem {
 
 			@Override
 			public double pidGet() {
-				return ballMotor.getSelectedSensorVelocity(0);
+				return ballMotor.getOutputCurrent();
 			}
 
 			@Override
@@ -163,6 +163,8 @@ public class Grabber extends Subsystem {
             this.pidPos.setSetpoint(Constants.kGrabberRetractedPos);
         } else if (state == GrabberPosition.START_POS) {
             this.pidPos.setSetpoint(Constants.kGrabberStartPos);
+        } else if (state == GrabberPosition.HYPER_EXTENDED) {
+            this.pidPos.setSetpoint(Constants.kGrabberHyperExtendedPos);
         } else {
             System.out.println("Attepted to set the grabber to an ineligible position");
         }
@@ -180,8 +182,8 @@ public class Grabber extends Subsystem {
             return GrabberPosition.RETRACTED;
         } else if (Math.abs(this.getPosition() - Constants.kGrabberStartPos) < Constants.kGrabberTolerance) {
             return GrabberPosition.START_POS;
-        } else if (Math.abs(this.getPosition() - Constants.kGrabberHomePos) < Constants.kGrabberTolerance) {
-            return GrabberPosition.HOMED;
+        } else if (Math.abs(this.getPosition() - Constants.kGrabberHyperExtendedPos) < Constants.kGrabberTolerance) {
+            return GrabberPosition.HYPER_EXTENDED;
         } else {
             return GrabberPosition.UNKNOWN;
         }
@@ -221,7 +223,6 @@ public class Grabber extends Subsystem {
         } else if (MathHelper.areApproxEqual(this.getBallVelPID().getSetpoint(), Constants.kGrabberEjectionSpeed)) {
             return MotorState.EJECT_BALL;
         }
-
         return MotorState.OFF;
     }
 

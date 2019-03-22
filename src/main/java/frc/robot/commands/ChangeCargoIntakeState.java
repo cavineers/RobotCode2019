@@ -25,6 +25,7 @@ public class ChangeCargoIntakeState extends Command {
         this.setTimeout(0);
         
         if (Robot.grabber.hasCargo() && desiredMotorState == MotorState.ON) {
+            desiredMotorState = MotorState.OFF;
             Robot.cargoIntake.setMotorState(MotorState.OFF);
         } else {
             Robot.cargoIntake.setMotorState(desiredMotorState);
