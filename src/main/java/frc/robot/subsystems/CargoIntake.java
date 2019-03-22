@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.lib.MathHelper;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -21,9 +22,6 @@ public class CargoIntake extends Subsystem {
     public enum PositionState {
         UP, DOWN
     }
-
-    // State variables
-    public MotorState mstate = MotorState.OFF;
 
     @Override
     public void initDefaultCommand() {
@@ -53,7 +51,12 @@ public class CargoIntake extends Subsystem {
      * Gets whether the intake motor is activated
      */
     public MotorState getMoterState() {
-        return mstate;
+        if (MathHelper.areApproxEqual(0, this.intakeMoter.get())) {
+            return MotorState.OFF;
+        } else {
+            return MotorState.ON;
+        }
+        
     }
 
     /**

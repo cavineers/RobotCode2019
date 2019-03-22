@@ -134,6 +134,7 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given setpoint (in rotations)
      */
     public void moveElevator(double p){
+        System.out.println("new setpoint: " + p);
         getPIDPos().setSetpoint(p);
     }
 

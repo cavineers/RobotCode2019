@@ -13,6 +13,7 @@ public class ChangeGrabberState extends Command {
         requires(Robot.grabber);
         this.desiredPos = desiredPos;
         this.desiredMotorState = desiredMotorState;
+        System.out.println("Desired Motor State: " + String.valueOf(desiredMotorState));
     }
 
     public ChangeGrabberState(GrabberPosition desiredPos) {
@@ -28,6 +29,9 @@ public class ChangeGrabberState extends Command {
         if (this.desiredPos == GrabberPosition.RETRACTED && Robot.grabber.hasHatch()) {
             this.desiredPos = GrabberPosition.EXTENDED;
             this.desiredMotorState = MotorState.OFF;
+        }
+        if (this.desiredMotorState != null) {
+            Robot.grabber.setBallMotorState(desiredMotorState);
         }
         if(!Robot.grabber.pidPos.isEnabled()){
             Robot.grabber.pidPos.enable();

@@ -34,8 +34,8 @@ public class IntakeCargo extends CommandGroup {
    
     @Override
     protected void end() {
-        new ChangeCargoIntakeState(CargoIntake.PositionState.DOWN, CargoIntake.MotorState.OFF).start();
         new ChangeGrabberState(Grabber.MotorState.OFF).start();
+        new ChangeCargoIntakeState(CargoIntake.PositionState.DOWN, CargoIntake.MotorState.OFF).start();
     }
 
     @Override

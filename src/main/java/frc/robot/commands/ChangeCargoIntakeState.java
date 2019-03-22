@@ -43,6 +43,10 @@ public class ChangeCargoIntakeState extends Command {
     @Override
     public void execute() {
     }
+    @Override
+    public void end() {
+        System.out.println("ended changing cargo intake");
+    }
 
     protected boolean isFinished() {
         return this.isTimedOut() && Robot.cargoIntake.getMoterState() == this.desiredMotorState && Robot.cargoIntake.getPosition() == this.desiredPositionState;

@@ -276,7 +276,7 @@ public class Grabber extends Subsystem {
         return armMotor;
     }
 
-    public TalonSRX getBallMotor(){
+    public WPI_TalonSRX getBallMotor(){
         return ballMotor;
     }
 

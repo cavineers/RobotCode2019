@@ -162,9 +162,10 @@ public class OI {
 				break;
 			}
 			case 180: {
-				// Bottom
+                // Bottom
                 new MoveGrabberAndElevator(ElevatorLevel.GROUND, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
-			}
+                break;
+            }
 			case 270: {
 				// Left
 				if(Robot.grabber.hasCargo()){

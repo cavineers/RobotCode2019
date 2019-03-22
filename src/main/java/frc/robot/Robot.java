@@ -272,6 +272,7 @@ public class Robot extends TimedRobot {
         // grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
         SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
         SmartDashboard.putNumber("elevator-pos", elevator.getPosition());
+        SmartDashboard.putNumber("ball vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
         // SmartDashboard.putNumber("grabber-current",
         // grabber.getArmMotor().getOutputCurrent());
@@ -288,6 +289,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Hatch Switch", Robot.grabber.hasHatch());
         SmartDashboard.putBoolean("Cargo Switch", Robot.grabber.hasCargo());
         SmartDashboard.putBoolean("Grabber Homing Switch", Robot.grabber.isAtHome());
+        SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
+
         SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
 
         SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
@@ -307,6 +310,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        Scheduler.getInstance().removeAll();
     }
 
     @Override

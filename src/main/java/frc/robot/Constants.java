@@ -57,11 +57,8 @@ public class Constants {
     public static final double kElevatorLvl2CargoInches = 30 + Math.abs(kElevatorHomeHeightInches);
     public static final double kElevatorLvl2CargoRotations = kElevatorLvl2CargoInches*kElevatorRotationsPerInch;
     
-    public static final double kElevatorLvl3HatchInches = 20 + Math.abs(kElevatorHomeHeightInches);
-    public static final double kElevatorLvl3HatchRotations = kElevatorLvl3HatchInches*kElevatorRotationsPerInch;
-
-    public static final double kElevatorLvl3CargoInches = 20; //TODO change to inches
-    public static final double kElevatorLvl3CargoRotations = kElevatorLvl3CargoInches*kElevatorRotationsPerInch;
+    public static final double kElevatorLvl3HatchRotations = (60.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
+    public static final double kElevatorLvl3CargoRotations = (58.5*kElevatorRotationsPerInch) + Math.abs(kElevatorHomeHeightRotations);
 
     public static final double kElevatorGroundCheckRotations = 2*kElevatorRotationsPerInch;
     //On NEO
@@ -75,11 +72,11 @@ public class Constants {
     public static final double kElevPercentTolerance = 5;
     
     //On RIO
-    public static final double kPPosElev = 750;
+    public static final double kPPosElev = 300;
     public static final double kIPosElev = 0;
-    public static final double kDPosElev = 500;
+    public static final double kDPosElev = 70;
     public static final double kFPosElev = 0;
-
+    
     public static final double kElevSensorLocation = 0;
 
     public static final double kMaxMoveGrabber = 2;
@@ -170,7 +167,7 @@ public class Constants {
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 800;
+    public static final double kGrabberIntakeSpeed = 500;
     public static final double kGrabberEjectionSpeed = 100000;
     public static final double kGrabberEjectionTime = 1;
 
@@ -180,14 +177,14 @@ public class Constants {
     public static final double kGrabberRetractedPos = -60; //TODO set
     public static final double kGrabberExtendedPos = 0; //TODO set
     
-    public static final double kGrabberStartPos = -20; //TODO: set
+    public static final double kGrabberStartPos = -23; //TODO: set
 
     public static final double kGrabberVelP = 2.0E-4;
     public static final double kGrabberVelI = 0;
     public static final double kGrabberVelD = 1.0E-4;
     public static final double kGrabberVelF = 2.0E-4;
 
-    public static final double kGrabberPosP = 300;
+    public static final double kGrabberPosP = 200;
     public static final double kGrabberPosI = 0;
     public static final double kGrabberPosD = 40;
     public static final double kGrabberPosF = 0;
@@ -198,8 +195,8 @@ public class Constants {
     public static final double kMinGrabberPos = 0; //TODO
     public static final double kMaxGrabberPos = 0; //TODO
 
-    public static final double kGrabberBallVelP = 0.0001;
-    public static final double kGrabberBallVelI = 0.0;
+    public static final double kGrabberBallVelP = 0.00001;
+    public static final double kGrabberBallVelI = 0;
     public static final double kGrabberBallVelD = 0;
     public static final double kGrabberBallVelF = 0;
     public static final double kGrabberBallPeriod = .025;
