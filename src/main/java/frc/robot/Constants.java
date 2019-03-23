@@ -177,7 +177,7 @@ public class Constants {
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 0.8; //amps
+    public static final double kGrabberIntakeSpeed = 0.85; //amps
     public static final double kGrabberEjectionSpeed = 10;
     public static final double kGrabberEjectionTime = 1;
 

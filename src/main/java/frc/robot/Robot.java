@@ -271,14 +271,14 @@ public class Robot extends TimedRobot {
         // grabber.pidPos.setP(SmartDashboard.getNumber("p-val", 0));
         // grabber.pidPos.setI(SmartDashboard.getNumber("i-val", 0));
         // grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
-        SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
-        SmartDashboard.putNumber("elevator-pos", elevator.getPosition());
-        SmartDashboard.putNumber("ball vel", grabber.getBallMotor().getSelectedSensorVelocity());
+        // SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
+        // SmartDashboard.putNumber("elevator-pos", elevator.getPosition());
+        // SmartDashboard.putNumber("ball vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
         // SmartDashboard.putNumber("grabber-current",
         // grabber.getArmMotor().getOutputCurrent());
-        SmartDashboard.putString("grabber-level", String.valueOf(grabber.getState()));
-        SmartDashboard.putString("elevator-level", String.valueOf(Robot.elevator.getLevel()));
+        // SmartDashboard.putString("grabber-level", String.valueOf(grabber.getState()));
+        // SmartDashboard.putString("elevator-level", String.valueOf(Robot.elevator.getLevel()));
         // SmartDashboard.putString("can-move-elev",
 
         // grabber.getBallVelPID().setF(SmartDashboard.getNumber("f-val", 0));
@@ -287,21 +287,21 @@ public class Robot extends TimedRobot {
         // grabber.getBallVelPID().setD(SmartDashboard.getNumber("d-val", 0));
         // SmartDashboard.putNumber("wheel vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
-        SmartDashboard.putBoolean("Hatch Switch", Robot.grabber.hasHatch());
-        SmartDashboard.putBoolean("Cargo Switch", Robot.grabber.hasCargo());
-        SmartDashboard.putBoolean("Grabber Homing Switch", Robot.grabber.isAtHome());
-        SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
+        // SmartDashboard.putBoolean("Hatch Switch", Robot.grabber.hasHatch());
+        // SmartDashboard.putBoolean("Cargo Switch", Robot.grabber.hasCargo());
+        // SmartDashboard.putBoolean("Grabber Homing Switch", Robot.grabber.isAtHome());
+        // SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
 
-        SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
+        // SmartDashboard.putBoolean("Elevator Homing", Robot.elevator.getLimitSwitch());
 
-        SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
-        SmartDashboard.putString("Cargo Intake Position", String.valueOf(Robot.cargoIntake.getPosition()));
-        SmartDashboard.putString("Can move grabber", String.valueOf(Robot.elevator.canMoveGrabber()));
-        SmartDashboard.putString("ball motor current", String.valueOf(Robot.grabber.getBallMotor().getOutputCurrent()));
+        // SmartDashboard.putString("Hatch Grabber State", String.valueOf(Robot.grabber.getHatchGrabberState()));
+        // SmartDashboard.putString("Cargo Intake Position", String.valueOf(Robot.cargoIntake.getPosition()));
+        // SmartDashboard.putString("Can move grabber", String.valueOf(Robot.elevator.canMoveGrabber()));
+        // SmartDashboard.putString("ball motor current", String.valueOf(Robot.grabber.getBallMotor().getOutputCurrent()));
 
-        if(this.isEnabled()  && Robot.grabber.hasHatch() && Robot.grabber.getHatchGrabberState()==HatchGrabberState.INTAKING && (Math.abs(Robot.getCurrentTime()-Robot.grabber.getLastToggleTime()) < Constants.kGrabberAutoToggleTolerance)){
-            new ToggleHatchGrabber();
-        }
+        // if(this.isEnabled()  && Robot.grabber.hasHatch() && Robot.grabber.getHatchGrabberState() == HatchGrabberState.HOLDING && (Math.abs(Robot.getCurrentTime()-Robot.grabber.getLastToggleTime()) > Constants.kGrabberAutoToggleTolerance)){
+        //     new ToggleHatchGrabber();
+        // }
     
     }
 
@@ -364,23 +364,23 @@ public class Robot extends TimedRobot {
         START_POS startPos = this.getAutoStartPos();
         PATH_TARGET target = this.getAutoPathTarget();
         if (startPos == START_POS.RIGHT) {
-            if (target == PATH_TARGET.FRONT_CARGOBAY) {
+            // if (target == PATH_TARGET.FRONT_CARGOBAY) {
                 return new TwoHatchCargoRight();
-            } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
-                return new TimedCommand(0); //implement!
-            } else if (target == PATH_TARGET.ROCKET) {
-                // return new TwoHatchRocketRight();
-                return new TimedCommand(0);
-            }
+            // } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
+            //     return new TimedCommand(0); //implement!
+            // } else if (target == PATH_TARGET.ROCKET) {
+            //     // return new TwoHatchRocketRight();
+            //     return new TimedCommand(0);
+            // }
         } else if (startPos == START_POS.LEFT) {
-            if (target == PATH_TARGET.FRONT_CARGOBAY) {
+            // if (target == PATH_TARGET.FRONT_CARGOBAY) {
                 return new TwoHatchCargoLeft();
-            } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
-                return new TimedCommand(0); //implement!
-            } else if (target == PATH_TARGET.ROCKET) {
-                // return new TwoHatchRocketLeft();
-                return new TimedCommand(0);
-            }
+            // } else if (target == PATH_TARGET.SIDE_CARGOBAY) {
+            //     return new TimedCommand(0); //implement!
+            // } else if (target == PATH_TARGET.ROCKET) {
+            //     // return new TwoHatchRocketLeft();
+            //     return new TimedCommand(0);
+            // }
         } else if (startPos == START_POS.MIDDLE) {
             return new TimedCommand(0); //implement!
         }
@@ -402,8 +402,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         new HomeAll().start();
-        getAutoCommand().start();
         new ChangeCargoIntakeState(cargoIntake.getPosition(), CargoIntake.MotorState.OFF).start();
+        getAutoCommand().start();
     }
 
     /**
