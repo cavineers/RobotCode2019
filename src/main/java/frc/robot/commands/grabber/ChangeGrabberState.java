@@ -6,13 +6,19 @@ import frc.robot.subsystems.Grabber.GrabberPosition;
 import frc.robot.subsystems.Grabber.MotorState;
 
 public class ChangeGrabberState extends Command {
+    GrabberPosition desiredPosRaw;
+    MotorState desiredMotorStateRaw;
+
     GrabberPosition desiredPos;
     MotorState desiredMotorState;
+
     
     public ChangeGrabberState(GrabberPosition desiredPos, MotorState desiredMotorState) {
         requires(Robot.grabber);
-        this.desiredPos = desiredPos;
-        this.desiredMotorState = desiredMotorState;
+        this.desiredPosRaw = desiredPos;
+        this.desiredMotorStateRaw = desiredMotorState;
+        System.out.println("constructor desired: "+ desiredPos + "can move: " + Robot.elevator.canMoveGrabber() + "has hatch: " + Robot.grabber.hasHatch());
+
     }
 
     public ChangeGrabberState(GrabberPosition desiredPos) {
@@ -25,7 +31,13 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected void initialize() {
-        if (this.desiredPos == GrabberPosition.RETRACTED && Robot.grabber.hasHatch()) {
+        System.out.println("initial desired: "+ this.desiredPos + "can move: " + Robot.elevator.canMoveGrabber() + "has hatch: " + Robot.grabber.hasHatch());
+
+        this.desiredPos = this.desiredPosRaw;
+        this.desiredMotorState = this.desiredMotorStateRaw;
+
+        if (this.desiredPosRaw == GrabberPosition.RETRACTED && Robot.grabber.hasHatch()) {
+            System.out.println("has hatch!! canceled!!");
             this.desiredPos = GrabberPosition.EXTENDED;
             this.desiredMotorState = MotorState.OFF;
         }
@@ -39,10 +51,12 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected void execute() {
+        System.out.println("running...");
         if (this.desiredPos != null && Robot.elevator.canMoveGrabber()) {
+            System.out.println("desired pos " + desiredPos);
             Robot.grabber.setState(desiredPos);
         } else {  //did not reach
-            System.out.println("desired: "+ this.desiredPos + "can move: " + Robot.elevator.canMoveGrabber() + "has hatch: " + Robot.grabber.hasHatch());
+            System.out.println("could not move desired: "+ this.desiredPos + "can move: " + Robot.elevator.canMoveGrabber() + "has hatch: " + Robot.grabber.hasHatch());
         }
         
         if (this.desiredMotorState != null) {
@@ -56,7 +70,7 @@ public class ChangeGrabberState extends Command {
 
     @Override
     protected boolean isFinished() {
-        return Robot.grabber.getState() == desiredPos && Robot.grabber.getBallMotorState() == desiredMotorState;
+        return (Robot.grabber.getState() == desiredPos || desiredPos == null) && (Robot.grabber.getBallMotorState() == desiredMotorState || desiredMotorState == null);
     }
 
 }

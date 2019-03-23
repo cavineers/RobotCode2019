@@ -127,6 +127,7 @@ public class Elevator extends Subsystem {
      * Returns whether the grabber can safely move back at the current elevator position
      */
     public boolean canMoveGrabber() {
+        System.out.println("LEVEL: " + this.getLevel() + " is Homed: " + this.isHomed + " grabber homed: " + Robot.grabber.isHomed());
         return this.getLevel() == ElevatorLevel.GROUND || !this.isHomed() || !Robot.grabber.isHomed();
     }
 

@@ -10,19 +10,25 @@ import frc.robot.subsystems.CargoIntake.PositionState;
 import frc.robot.subsystems.Grabber.GrabberPosition;
 
 public class ChangeCargoIntakeState extends Command {
+    MotorState desiredMotorStateRaw;
+    PositionState desiredPositionStateRaw;
+
     MotorState desiredMotorState;
     PositionState desiredPositionState;
+
     boolean forceFinish = false;
 
     public ChangeCargoIntakeState(PositionState desiredPositionState, MotorState desiredMotorState) {
         requires(Robot.cargoIntake);
-        this.desiredPositionState = desiredPositionState;
-        this.desiredMotorState = desiredMotorState;
+        this.desiredPositionStateRaw = desiredPositionState;
+        this.desiredMotorStateRaw = desiredMotorState;
     }
     
     @Override
     public void initialize() {
         this.setTimeout(0);
+        this.desiredMotorState = this.desiredMotorStateRaw;
+        this.desiredPositionState = this.desiredPositionStateRaw;
         
         if (Robot.grabber.hasCargo() && desiredMotorState == MotorState.ON) {
             desiredMotorState = MotorState.OFF;

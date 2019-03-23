@@ -24,20 +24,27 @@ public class IntakeCargo extends CommandGroup {
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
         addSequential(new MoveGrabberAndElevator(ElevatorLevel.GROUND, Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }
+    
 
     @Override
     protected void initialize() {
         wasInterrupted = false;
-        super.initialize();
+        
         if (Robot.grabber.hasHatch()) {
             new Rumble(0.25, ControllerSide.BOTH).start();
-        }
+            new ChangeHatchGrabberState(HatchGrabberState.INTAKING).start();
+            addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.OFF));
+        } 
+        super.initialize();
+
+
     }
+
    
     @Override
     protected void end() {
         new ChangeGrabberState(Grabber.MotorState.OFF).start();
-        new ChangeCargoIntakeState(CargoIntake.PositionState.DOWN, CargoIntake.MotorState.OFF).start();
+        new ChangeCargoIntakeState(PositionState.DOWN, MotorState.OFF).start();
         if (!wasInterrupted && Robot.grabber.hasCargo()) {
             //only change the hatch grabber state if the robot just picked up a ball
             new ChangeHatchGrabberState(HatchGrabberState.HOLDING).start();
@@ -47,6 +54,7 @@ public class IntakeCargo extends CommandGroup {
     @Override
     protected void interrupted() {
         super.interrupted();
+        
         wasInterrupted = true;
     }
 
