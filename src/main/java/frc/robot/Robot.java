@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.AutoPathHelper.PATH_TARGET;
 import frc.robot.AutoPathHelper.START_POS;
+import frc.robot.commands.ChangeCargoIntakeState;
 import frc.robot.commands.HomeAll;
 import frc.robot.commands.auto.DisableAutoOverride;
 import frc.robot.commands.auto.OverrideAutoSelection;
@@ -402,6 +403,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         new HomeAll().start();
         getAutoCommand().start();
+        new ChangeCargoIntakeState(cargoIntake.getPosition(), CargoIntake.MotorState.OFF).start();
     }
 
     /**
