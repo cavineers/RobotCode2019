@@ -181,14 +181,14 @@ public class Constants {
     public static final double kGrabberEjectionSpeed = 10;
     public static final double kGrabberEjectionTime = 1;
 
-    public static final double kGrabberTolerance = 1; //TODO set
+    public static final double kGrabberTolerance = 1;
 
     //grabber positions with extended as 0
-    public static final double kGrabberRetractedPos = -60; //TODO set
-    public static final double kGrabberExtendedPos = 0; //TODO set
+    public static final double kGrabberRetractedPos = -60;
+    public static final double kGrabberExtendedPos = 0;
     public static final double kGrabberHyperExtendedPos = 10;
     
-    public static final double kGrabberStartPos = -23; //TODO: set
+    public static final double kGrabberStartPos = -23;
 
     public static final double kGrabberVelP = 2.0E-4;
     public static final double kGrabberVelI = 0;
