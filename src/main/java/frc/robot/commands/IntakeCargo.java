@@ -19,7 +19,6 @@ import frc.robot.subsystems.HatchScoop.HatchScoopState;
 
 public class IntakeCargo extends CommandGroup {
     public IntakeCargo() {
-        addSequential(new ChangeHatchGrabberState(HatchGrabberState.HOLDING));
         addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.ON));
         addSequential(new MoveGrabberAndElevator(ElevatorLevel.GROUND, Grabber.GrabberPosition.RETRACTED, Grabber.MotorState.INTAKE_BALL));
     }
@@ -36,6 +35,7 @@ public class IntakeCargo extends CommandGroup {
     protected void end() {
         new ChangeGrabberState(Grabber.MotorState.OFF).start();
         new ChangeCargoIntakeState(CargoIntake.PositionState.DOWN, CargoIntake.MotorState.OFF).start();
+        new ChangeHatchGrabberState(HatchGrabberState.HOLDING).start();
     }
 
     @Override

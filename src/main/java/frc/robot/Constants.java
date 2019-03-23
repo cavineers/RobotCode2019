@@ -82,9 +82,9 @@ public class Constants {
     public static final double kElevPercentTolerance = 5;
     
     //On RIO
-    public static final double kPPosElev = 300;
+    public static final double kPPosElev = 200;
     public static final double kIPosElev = 0;
-    public static final double kDPosElev = 70;
+    public static final double kDPosElev = 50;
     public static final double kFPosElev = 0;
     
     public static final double kElevSensorLocation = 0;
@@ -177,8 +177,8 @@ public class Constants {
     public static final double kGrabberAutoToggleTolerance = 5;
 
     // grabber movement speeds
-    public static final double kGrabberIntakeSpeed = 7; //amps
-    public static final double kGrabberEjectionSpeed = 40;
+    public static final double kGrabberIntakeSpeed = 0.8; //amps
+    public static final double kGrabberEjectionSpeed = 10;
     public static final double kGrabberEjectionTime = 1;
 
     public static final double kGrabberTolerance = 1; //TODO set
@@ -206,7 +206,7 @@ public class Constants {
     public static final double kMinGrabberPos = 0; //TODO
     public static final double kMaxGrabberPos = 0; //TODO
 
-    public static final double kGrabberBallVelP = 0.00001;
+    public static final double kGrabberBallVelP = 0.07;
     public static final double kGrabberBallVelI = 0;
     public static final double kGrabberBallVelD = 0;
     public static final double kGrabberBallVelF = 0;

@@ -45,7 +45,7 @@ public class Elevator extends Subsystem {
         this.getElevatorMotor().getPIDController().setD(Constants.kDVelocityElev);
         this.getElevatorMotor().getPIDController().setOutputRange(-1, 1);
         this.getElevatorMotor().setIdleMode(IdleMode.kBrake);
-        this.getElevatorMotor().setInverted(false);
+        this.getElevatorMotor().setInverted(true);
         
         pidPos = new PIDController(Constants.kPPosElev, Constants.kIPosElev, Constants.kDPosElev, Constants.kFPosElev, new PIDSource() {
             PIDSourceType vel_sourceType = PIDSourceType.kDisplacement;
@@ -74,7 +74,7 @@ public class Elevator extends Subsystem {
 
         }, Constants.kElevPIDPosPeriod);
 
-        pidPos.setInputRange(Constants.kElevatorMaxHeightRotations, Constants.kElevatorMinHeightRotations);
+        pidPos.setInputRange(Constants.kElevatorMinHeightRotations, Constants.kElevatorMaxHeightRotations);
         pidPos.setOutputRange(-Constants.kElevatorMaxSpeed, Constants.kElevatorMaxSpeed);
         pidPos.setContinuous(false);
         pidPos.setPercentTolerance(Constants.kElevPercentTolerance);
@@ -134,7 +134,6 @@ public class Elevator extends Subsystem {
      * Moves the elevator to the given setpoint (in rotations)
      */
     public void moveElevator(double p){
-        System.out.println("new setpoint: " + p);
         getPIDPos().setSetpoint(p);
     }
 
