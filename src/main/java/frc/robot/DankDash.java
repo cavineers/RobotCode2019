@@ -1,28 +1,13 @@
 package frc.robot;
 
-// import frc.robot.dashcomponents.*;
-import edu.wpi.first.networktables.*;
-import frc.robot.commands.CheckEncoders;
-import frc.robot.Robot;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import frc.robot.commands.auto.OverrideAutoSelection;
-import frc.robot.AutoPathHelper.PATH_TARGET;
-import frc.robot.AutoPathHelper.START_POS;
-import frc.robot.commands.auto.DisableAutoOverride;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-// ===== Available Components =====
-//
-// Button
-// Checkbox
-// Container
-// Heartbeat
-// Image
-// Refresh button
-// Static Text
-// Updating Text
-// Video stream
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.commands.CheckEncoders;
+import frc.robot.commands.auto.DisableAutoOverride;
+import frc.robot.commands.auto.OverrideAutoSelection;
 
 public class DankDash {
     private NetworkTable netTable;
@@ -50,7 +35,7 @@ public class DankDash {
             System.out.println("Key: " + key);
             if (key == "encoderCheck") {
                 if (value.getBoolean()) {
-                    encoderCheck = new CheckEncoders();
+                    this.encoderCheck = new CheckEncoders();
                     netTable.getEntry("encoderCheck").setBoolean(false);
                 }
             }
@@ -101,6 +86,7 @@ public class DankDash {
     }
 
     private void toggleBreakCoast() {
+        System.out.println("[DANKDASH] Toggling coast/break on elevator & grabber");
         if (cbState == CoastBreakState.BREAK) {
             Robot.elevator.elevatorMotor.setIdleMode(IdleMode.kCoast);
             Robot.grabber.getArmMotor().setIdleMode(IdleMode.kCoast);
