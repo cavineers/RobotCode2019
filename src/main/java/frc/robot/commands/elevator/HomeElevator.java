@@ -17,6 +17,7 @@ public class HomeElevator extends Command {
 
     @Override
     protected void initialize() {
+        isHomed = false;
         this.setTimeout(10);
         //Disable Cascading PID Control while homing
         Robot.elevator.getPIDPos().disable();

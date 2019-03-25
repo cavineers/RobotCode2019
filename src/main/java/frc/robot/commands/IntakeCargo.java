@@ -33,7 +33,7 @@ public class IntakeCargo extends CommandGroup {
         if (Robot.grabber.hasHatch()) {
             new Rumble(0.25, ControllerSide.BOTH).start();
             new ChangeHatchGrabberState(HatchGrabberState.INTAKING).start();
-            addSequential(new ChangeCargoIntakeState(PositionState.DOWN, MotorState.OFF));
+            new ChangeCargoIntakeState(PositionState.DOWN, MotorState.OFF).start();
         } 
         super.initialize();
 

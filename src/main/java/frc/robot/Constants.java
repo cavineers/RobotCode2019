@@ -55,13 +55,13 @@ public class Constants {
     public static final double kElevatorLvl1CargoInches = 27.5;
     public static final double kElevatorLvl1CargoRotations = (kElevatorLvl1CargoInches-kElevatorCargoOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
     
-    public static final double kElevatorLvl2HatchInches = 47.0; 
+    public static final double kElevatorLvl2HatchInches = 49.0; 
     public static final double kElevatorLvl2HatchRotations = (kElevatorLvl2HatchInches-kElevatorHatchOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
     
     public static final double kElevatorLvl2CargoInches = 55.5;
     public static final double kElevatorLvl2CargoRotations = (kElevatorLvl2CargoInches-kElevatorCargoOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
     
-    public static final double kElevatorLvl3HatchInches = 75; 
+    public static final double kElevatorLvl3HatchInches = 77; 
     public static final double kElevatorLvl3HatchRotations = (kElevatorLvl3HatchInches-kElevatorHatchOffset+kElevatorHomeHeightInches)*kElevatorRotationsPerInch;
     
     public static final double kElevatorLvl3CargoInches = 83.5;

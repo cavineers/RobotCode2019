@@ -272,7 +272,8 @@ public class Robot extends TimedRobot {
         // grabber.pidPos.setI(SmartDashboard.getNumber("i-val", 0));
         // grabber.pidPos.setD(SmartDashboard.getNumber("d-val", 0));
         // SmartDashboard.putNumber("grabber-pos", grabber.getPosition());
-        // SmartDashboard.putNumber("elevator-pos", elevator.getPosition());
+        SmartDashboard.putNumber("elevator-pos", elevator.getPosition());
+        SmartDashboard.putNumber("elevator-setpoint", elevator.getPIDPos().getSetpoint());
         // SmartDashboard.putNumber("ball vel", grabber.getBallMotor().getSelectedSensorVelocity());
 
         // SmartDashboard.putNumber("grabber-current",
