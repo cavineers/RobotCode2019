@@ -13,8 +13,8 @@ import frc.robot.commands.EnterDefenseMode;
 import frc.robot.commands.HomeAll;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
-import frc.robot.commands.TargetVisionTape;
 import frc.robot.commands.ToggleCargoIntake;
+import frc.robot.commands.VisionMath;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.commands.elevator.ElevatorToGround;
@@ -63,7 +63,7 @@ public class OI {
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
 
         //actual button commands
-        a_button.whenPressed(new IntakeCargo());
+        a_button.whenPressed(new VisionMath());
         b_button.whenPressed(new ToggleGrabber());
         x_button.whenPressed(new ToggleHatchGrabber());
         y_button.whenPressed(new EjectBall());

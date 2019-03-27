@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
         estimator.start();
 
         // start ensuring that vision coprocessor(s) have properly synchronized clocks
-        // clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime); //TODO: uncomment if we use vision
+        clockSyncUpdater.startPeriodic(Constants.kClockSyncLoopTime); //TODO: uncomment if we use vision
 
         // Init and export profile to network tables
         dankDash = new DankDash();
