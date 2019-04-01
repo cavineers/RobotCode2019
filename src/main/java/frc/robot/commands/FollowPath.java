@@ -21,6 +21,11 @@ public class FollowPath extends Command {
         this.path = AutoPathHelper.getPath(pathType);
         requires(Robot.drivetrain);
     }
+
+    public FollowPath(Path pathName) {
+        this.path = pathName;
+        requires(Robot.drivetrain);
+    }
     
     @Override
     protected void initialize() {

@@ -50,6 +50,7 @@ public class AutoPathHelper {
         LEFT_ROCKET_3, // go forward from the turnaround point to the front of the left loading station to get a hatch
         LEFT_ROCKET_4, // back up from the loading station and go back to the turning point
         LEFT_ROCKET_5, // go forward from turnaround and allign in front of the near side of the left rocket
+
     }
 
     public static Path getPath(PATH_TYPE pathType) {

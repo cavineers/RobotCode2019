@@ -13,6 +13,8 @@ import frc.lib.pathPursuit.RobotCmd;
 import frc.robot.Robot;
 import frc.robot.Constants;
 
+import frc.robot.commands.FollowPath;
+
 public class VisionMath extends Command {
 
     Path path;
@@ -24,7 +26,7 @@ public class VisionMath extends Command {
 
     @Override
     protected void initialize() {
-        this.setTimeout(10); // set the command timeout to 10 seconds
+        this.setTimeout(60); // set the command timeout to 10 seconds
         path = null;
         forceFinish = false;
         if (Robot.reflectiveTapeCamera.getUpdate() == null) {
@@ -42,6 +44,9 @@ public class VisionMath extends Command {
         if (path == null) {
             forceFinish = true;
         }
+
+        
+        //new FollowPath(this.path).start();
     }
 
     protected Path createPath(TargetUpdate targetUpdate) {
@@ -69,11 +74,18 @@ public class VisionMath extends Command {
         //the target in a coordinate system alligned with the field, but centered at the robot
         Vector3D vtrfs = vtrrs.rotateZAxis(robotFieldPos.getHeading());
 
-        Vector2D v2trfs = new Vector2D(vtrfs.getDx() + robotFieldPos.getX() , vtrfs.getDy() + robotFieldPos.getY());
+        Vector2D v2trfs = new Vector2D((vtrfs.getDx() - 8.0) + robotFieldPos.getX(), vtrfs.getDy() + robotFieldPos.getY());
 
+        System.out.println("V2TRFS" + v2trfs);
+        System.out.println("X VALUES" + vtrfs.getDx() + "," + robotFieldPos.getX());
+        System.out.println("Y VALUES" + vtrfs.getDy() + "," + robotFieldPos.getY());
+
+        
         double targetHeadingAngle = robotFieldPos.getHeading() + Math.atan((vhtrs.getDy()/vhtrs.getDx()));       
-      
+        System.out.println("TARGET HEADING ANGLE" + targetHeadingAngle);
+        
         RobotPos latestFieldPos = Robot.estimator.getPos();
+        System.out.println("FIELD POSITION" + latestFieldPos);
 
         DubinsPath dubinsPath = DubinPathCalculator.getBestPath(latestFieldPos.position, latestFieldPos.getHeading(), v2trfs.getPoint(), targetHeadingAngle);
        
@@ -85,6 +97,8 @@ public class VisionMath extends Command {
         SmartDashboard.putString("target status", "planned path");
         return dubinsPath.getPath();
 
+
+
     }
   
     @Override
@@ -92,10 +106,9 @@ public class VisionMath extends Command {
         if (forceFinish) {
             return;
         }
-
+       
         RobotPos latestPos = Robot.estimator.getPos();
         latestPos.setVelocities(Robot.drivetrain.getRightVel(), Robot.drivetrain.getLeftVel());
-        System.out.println(latestPos.getX() + ", " + latestPos.getY());
         RobotCmd cmd = path.update(latestPos);
         Robot.drivetrain.setLeftVel(cmd.getLeftVel());
         Robot.drivetrain.setRightVel(cmd.getRightVel());

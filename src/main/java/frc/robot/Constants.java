@@ -13,7 +13,7 @@ public class Constants {
 
     //physical info about the chassis
     public static final double kWheelDiameter = 6; // in inches; the diameter of the drive wheels
-    public static final double kWheelBase = 33; //in inches; the distance between the left and right drive wheels
+    public static final double kWheelBase = 27; //in inches; the distance between the left and right drive wheels
     
     //pulses per inch of the wheel encoders
     public static final double kSensorUnitsPerInch = 72.5572917; //pulses per foot 854.3 math; 876.7 experimentally, 848.18- 4 times 64
@@ -142,7 +142,7 @@ public class Constants {
 
 
     public static final double kStraightLineDistance = 2; // distance in inches of the straight line path at the end of a target
-    public static final double kMinRadiusTargeting = 5; // radius in inches of the minimum allowed radius for a dubin's path
+    public static final double kMinRadiusTargeting = 2; // radius in inches of the minimum allowed radius for a dubin's path
 
     // Robot Vector constants
     // TODO get actual measurements
@@ -160,7 +160,9 @@ public class Constants {
     public static final double[][] kMtscs = {{0.0, 0.0, 1.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}};
 
     //translation vector from rio to camera
-    public static final Vector3D kVrscs = new Vector3D(12.0, 0.0, 20.0);
+    //public static final Vector3D kVrscs = new Vector3D(8.0, 0.0, 26.0);
+    public static final Vector3D kVrscs = new Vector3D(6.0, 0.0, 26.0);
+    //12,0,20
 
     // Intake
     public static final double kCargoIntakeSpeed = 1;
