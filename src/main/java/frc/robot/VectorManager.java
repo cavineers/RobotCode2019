@@ -1,22 +1,21 @@
 package frc.robot;
-import edu.wpi.first.wpilibj.drive.Vector2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.RobotPos;
 import frc.lib.TargetUpdate;
 import frc.lib.Vector2D;
 import frc.lib.Vector3D;
-import frc.lib.pathPursuit.Path;
+import frc.lib.pathPursuit.LineSegment;
+import frc.lib.pathPursuit.Point;
 import frc.robot.Constants;
 
 public class VectorManager {
 
-    Path path;
-    TargetUpdate targetUpdate;
-    RobotPos robotFieldPos;
-    Vector3D vhtcs;
-    Vector3D vctts;
-    Vector3D vhtrs;
-    Vector2D v2trfs;
+    private TargetUpdate targetUpdate;
+    private RobotPos robotFieldPos;
+    private Vector3D vhtcs;
+    private Vector3D vctts;
+    private Vector3D vhtrs;
+    private Vector2D v2trfs;
+    private Point pointB;
 
     public void setTargetUpdate(TargetUpdate newTargetUpdate){
         this.targetUpdate = newTargetUpdate;
@@ -74,11 +73,37 @@ public class VectorManager {
 
     }
 
-    protected double calcAngle(double startX, double startY, double endX, double endY){
+    //TODO work out which one is actually x and actually y
+    public double calcAngle(Point startPoint, Point endPoint){
         double angle = 0;
-        double xVal = Math.abs(startX- endX);
-        double yVal = Math.abs(startY- endY);
-        angle = Math.atan(yVal/xVal);
+        double aVal = Math.abs(startPoint.getX()- endPoint.getX());
+        double bVal = Math.abs(startPoint.getY()- endPoint.getY());
+        angle = Math.atan(aVal/bVal);
         return angle;
     }
+
+    public Point getPointB(){
+        return new Point(getVtrfs().getDx(), (getVtrfs().getDy()+Constants.kSpaceToTurn));  
+    }
+
+    public LineSegment calcVisionLineSegmentA(){
+        Point robotPosPoint = new Point(getRobotPos().getX(), getRobotPos().getY());
+        return new LineSegment(robotPosPoint, getPointB(), Constants.kMaxTargetSpeed, 0);
+    }
+
+    public LineSegment calcVisionLineSegmentB(){
+        Point robotPosPoint = new Point(getRobotPos().getX(), getRobotPos().getY());
+        Point targetPoint = new Point(getVtrfs().getDx(), getVtrfs().getDy());
+        return new LineSegment(robotPosPoint, targetPoint, Constants.kMaxTargetSpeed, 0);
+    }
+
+    public double getAngleA(){
+        Point robotPosPoint = new Point(getRobotPos().getX(), getRobotPos().getY());
+        return calcAngle(robotPosPoint, getPointB());
+    }
+
+    public double getAngleB(double angleA){
+        return (Math.PI - angleA);
+    }
+
 }

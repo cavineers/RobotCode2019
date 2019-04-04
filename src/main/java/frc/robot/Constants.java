@@ -14,7 +14,8 @@ public class Constants {
     //physical info about the chassis
     public static final double kWheelDiameter = 6; // in inches; the diameter of the drive wheels
     public static final double kWheelBase = 27; //in inches; the distance between the left and right drive wheels
-    
+    public static final double kSpaceToTurn = 8;
+
     //pulses per inch of the wheel encoders
     public static final double kSensorUnitsPerInch = 72.5572917; //pulses per foot 854.3 math; 876.7 experimentally, 848.18- 4 times 64
 
