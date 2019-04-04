@@ -9,12 +9,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.DriveVisionPath;
 import frc.robot.commands.EnterDefenseMode;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.HomeAll;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.ToggleCargoIntake;
+import frc.robot.commands.TurnToAngle;
 import frc.robot.commands.VisionMath;
 import frc.robot.subsystems.DriveTrain.DriveGear;
 import frc.robot.subsystems.Elevator.ElevatorLevel;
@@ -66,7 +68,7 @@ public class OI {
         //actual button commands
         a_button.whenPressed(new VisionMath());
         b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new FollowPath(AutoPathHelper.PATH_TYPE.RIGHT_CARGOBAY_1));
+        x_button.whenPressed(new DriveVisionPath());
         y_button.whenPressed(new EjectBall());
 
         left_middle.whenPressed(new HomeAll());

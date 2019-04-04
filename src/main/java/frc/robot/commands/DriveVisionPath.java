@@ -31,8 +31,9 @@ public class DriveVisionPath extends Command {
         //attempt to obtain the image data from the camera
         TargetUpdate targetUpdate = null; // data received from the camera
         targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
-        RobotPos robotFieldPos = Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()); // the position of the robot when the picture was taken (field coords)
-        new TurnToAngle(calcAngle(robotFieldPos.getX(), robotField.getY(), ))
+
+        calculateValues(targetUpdate);
+        
 
     }
 
@@ -64,15 +65,29 @@ public class DriveVisionPath extends Command {
         
         RobotPos latestFieldPos = Robot.estimator.getPos();
 
+        //turn to point in front of target
+        new TurnToAngle(calcAngle(latestFieldPos.getX(), latestFieldPos.getY(), v2trfs.getPoint().getX(), v2trfs.getPoint().getY()));
+
+        latestFieldPos = Robot.estimator.getPos();
+
+        //create and follow line to point in front of target
+        //turn towards target
+        //drive towards target
+
+
+
+
     }
   
-    protected void turnAngle(double startX, double startY, double endX, double endY){
+    protected double calcAngle(double startX, double startY, double endX, double endY){
         double angle = 0;
         double xVal = Math.abs(startX- endX);
         double yVal = Math.abs(startY- endY);
         angle = Math.atan(yVal/xVal);
-        new TurnToAngle(angle);
+        return angle;
     }
+
+    
     @Override
     protected void execute() {
        
@@ -85,7 +100,7 @@ public class DriveVisionPath extends Command {
   
     @Override
     protected boolean isFinished() {
-        return (path != null && path.isFinished()) || forceFinish || this.isTimedOut();
+        return (path != null && path.isFinished()) || this.isTimedOut();
     }
   
     @Override
