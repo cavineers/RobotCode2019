@@ -142,7 +142,7 @@ public class Constants {
     public static final double kMaxLookAheadSpeedTargeting = 50.0; // inches per second
 
 
-    public static final double kStraightLineDistance = 2; // distance in inches of the straight line path at the end of a target
+    public static final double kStraightLineDistance = 10; // distance in inches of the straight line path at the end of a target
     public static final double kMinRadiusTargeting = 2; // radius in inches of the minimum allowed radius for a dubin's path
 
     // Robot Vector constants
