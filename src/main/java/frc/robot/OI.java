@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.EnterDefenseMode;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.HomeAll;
@@ -67,7 +68,7 @@ public class OI {
         //actual button commands
         a_button.whenPressed(new VisionMath());
         b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new VisionMath());
+        x_button.whenPressed(new DriveToTarget(Robot.reflectiveTapeCamera.getUpdate()));
         y_button.whenPressed(new EjectBall());
 
         left_middle.whenPressed(new HomeAll());
