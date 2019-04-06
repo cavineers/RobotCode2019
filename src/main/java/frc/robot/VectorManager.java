@@ -11,11 +11,6 @@ public class VectorManager {
 
     private TargetUpdate targetUpdate;
     private RobotPos robotFieldPos;
-    private Vector3D vhtcs;
-    private Vector3D vctts;
-    private Vector3D vhtrs;
-    private Vector2D v2trfs;
-    private Point pointB;
 
     public void setTargetUpdate(TargetUpdate newTargetUpdate){
         this.targetUpdate = newTargetUpdate;

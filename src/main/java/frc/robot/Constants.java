@@ -5,8 +5,8 @@ import frc.lib.Vector3D;
 public class Constants {
 
     //path pursuit stuff
-    public static final double kPathPursuitTolerance = 0; //in inches; get within 1 inch of the endpoint prior to moving on to the next segment
-    public static final double kPathPursuitFinishTolerance = 0;
+    public static final double kPathPursuitTolerance = 1; //in inches; get within 1 inch of the endpoint prior to moving on to the next segment
+    public static final double kPathPursuitFinishTolerance = 1;
     public static final double kDefaultDt = 0.01; // in seconds; the default dt for pathfinding calculations
     public static final double kMaxAccelSpeedUp = 300; //in inches/sec^2; the max acceleration the robot can be commanded to experience when traveling a path
     public static final double kStopSteeringDistance = 4; //in inches; when the robot stops steering after a path
@@ -14,7 +14,7 @@ public class Constants {
     //physical info about the chassis
     public static final double kWheelDiameter = 6; // in inches; the diameter of the drive wheels
     public static final double kWheelBase = 27; //in inches; the distance between the left and right drive wheels
-    public static final double kSpaceToTurn = 8;
+    public static final double kSpaceToTurn = 20;
 
     //pulses per inch of the wheel encoders
     public static final double kSensorUnitsPerInch = 72.5572917; //pulses per foot 854.3 math; 876.7 experimentally, 848.18- 4 times 64

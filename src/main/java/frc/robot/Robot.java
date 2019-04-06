@@ -123,14 +123,16 @@ public class Robot extends TimedRobot {
         // start estimating position of the robot
         estimator = new RobotPosEstimator(0, 0, 0, drivetrain.getRightPos(), drivetrain.getLeftPos());
 
-        // initialize operator interface / controls
-        oi = new OI();
+        
 
         // initialize sensors
         reflectiveTapeCamera = new CameraHelper("reflectiveTape");
         gyro.zeroYaw();
         gyro.reset();
 
+        // initialize operator interface / controls
+        oi = new OI();
+        
         // start up the led manager
         leds = new LEDHelper();
 

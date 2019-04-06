@@ -68,7 +68,7 @@ public class OI {
         //actual button commands
         a_button.whenPressed(new VisionMath());
         b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new DriveToTarget(Robot.reflectiveTapeCamera.getUpdate()));
+        x_button.whenPressed(new DriveToTarget());
         y_button.whenPressed(new EjectBall());
 
         left_middle.whenPressed(new HomeAll());

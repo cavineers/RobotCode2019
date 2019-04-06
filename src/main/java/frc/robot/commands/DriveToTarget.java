@@ -11,13 +11,18 @@ import frc.lib.pathPursuit.Segment;
 
 
 public class DriveToTarget extends CommandGroup {
-    TargetUpdate targetUpdate;
-    public DriveToTarget(TargetUpdate newTargetUpdate) {
-        this.targetUpdate = newTargetUpdate;
+    
+    public DriveToTarget() {
+        TargetUpdate targetUpdate = null;   
+        
+        
 
-        if(targetUpdate == null){
+        if(Robot.reflectiveTapeCamera.getUpdate() == null){
             end();
+            return;
         }
+
+        targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
         
         VectorManager vision = new VectorManager();
         Path pathA = new Path();
