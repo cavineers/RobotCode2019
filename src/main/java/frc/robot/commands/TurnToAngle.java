@@ -23,7 +23,6 @@ public class TurnToAngle extends Command {
 
   @Override
   protected void execute() {
-
     // calculate error between current angle and setpoint
     double error = this.setpoint - Robot.getAngleRad();
     error = MathHelper.angleToNegPiToPi(error);

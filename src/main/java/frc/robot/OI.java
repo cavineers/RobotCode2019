@@ -16,6 +16,7 @@ import frc.robot.commands.HomeAll;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.ShiftGear;
 import frc.robot.commands.ToggleCargoIntake;
+import frc.robot.commands.TravelToTarget;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.commands.VisionMath;
 import frc.robot.subsystems.DriveTrain.DriveGear;
@@ -66,9 +67,8 @@ public class OI {
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
 
         //actual button commands
-        a_button.whenPressed(new VisionMath());
         b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new DriveToTarget());
+        x_button.whenPressed(new TravelToTarget());
         y_button.whenPressed(new EjectBall());
 
         left_middle.whenPressed(new HomeAll());
