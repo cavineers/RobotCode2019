@@ -40,29 +40,22 @@ public class TravelToTarget extends Command {
             return;
         }
         
-        System.out.println("HELLO");
         Robot.gyro.zeroYaw();
         Robot.estimator.zero();
 
-        System.out.println("THERE");
         targetUpdate = Robot.reflectiveTapeCamera.getUpdate();
 
-        System.out.println("WHAT");
         vision.setTargetUpdate(targetUpdate);
         vision.setRobotPos(Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()));
-        System.out.println("UP");
         angleA = vision.getAngleA();
 
-        System.out.println("ANGLE A" + angleA);
         turningCmdA = new TurnToAngle(Math.toDegrees(angleA));
         turningCmdA.start(); 
-        System.out.println("!!!!!!!!!!!!!!!!!!");
     }
   
     @Override
     protected void execute() {
-        //GETS HERE
-        System.out.println("RUNNING");
+        //GETS HERE CONSISTENTLY
         System.out.println(turningCmdA != null);
         System.out.println(turningCmdA.isCompleted());
         System.out.println(!step1Completed);
