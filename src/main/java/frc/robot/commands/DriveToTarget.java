@@ -54,7 +54,7 @@ public class DriveToTarget extends Command {
 
 		switch (step) {
 		case 1:
-			if (turningCmdA != null && turningCmdA.isCompleted()) {
+            if (turningCmdA != null && turningCmdA.isCompleted()) {
 				vision.setRobotPos(Robot.estimator.getPos());
                 lineA = vision.calcVisionLineSegmentA();
                 pathA.addSegment(lineA);
