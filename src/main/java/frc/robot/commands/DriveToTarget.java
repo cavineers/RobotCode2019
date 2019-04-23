@@ -83,6 +83,7 @@ public class DriveToTarget extends Command {
                 followPathB.start();
                 step = 4;
             }
+            break;
         
 
 		}
