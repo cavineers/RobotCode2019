@@ -34,7 +34,6 @@ public class TravelToTarget extends Command {
     @Override
     protected void initialize() {
         
-        this.setTimeout(60); 
         if(Robot.reflectiveTapeCamera.getUpdate() == null){
             end();
             return;
