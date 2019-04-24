@@ -27,8 +27,8 @@ public class Constants {
 
     //turn to angle stuff
     public static final double kMaxTurnToAngleSpeed = 144; // in inches per second; the max speed of the robot used for turn to angle
-    public static final double kAngleTolerance = 0.5; // in degrees; the tolerance of turn to angle
-    
+    public static final double kAngleTolerance = .5; // in degrees; the tolerance of turn to angle
+    //originall .5
     //elevator stuff
     public static final double kElevatorRotationsPerInch = 2.804;
     public static final double kElevatorPosTolerance = 1;

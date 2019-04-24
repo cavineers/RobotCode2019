@@ -19,10 +19,12 @@ public class TurnToAngle extends Command {
   protected void initialize() {
     Robot.drivetrain.setLeftVel(0);
     Robot.drivetrain.setRightVel(0);
+    System.out.println("ENTERED TURN TO ANGLE");
   }
 
   @Override
   protected void execute() {
+    System.out.println("Angle" + Math.toDegrees(Robot.getAngleRad()));
     // calculate error between current angle and setpoint
     double error = this.setpoint - Robot.getAngleRad();
     error = MathHelper.angleToNegPiToPi(error);

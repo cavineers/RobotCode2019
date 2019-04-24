@@ -31,6 +31,7 @@ import frc.robot.commands.tests.RawMoveElevator;
 import frc.robot.commands.tests.RawSetGrabberPosition;
 import frc.robot.commands.tests.RawSetGrabberVelocity;
 import frc.robot.LEDHelper;
+import frc.robot.commands.TurnToAnglePID;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -67,8 +68,8 @@ public class OI {
         l_bump.whenPressed(new ShiftGear(DriveGear.LOW_GEAR)); // left is low
 
         //actual button commands
-        b_button.whenPressed(new ToggleGrabber());
-        x_button.whenPressed(new TravelToTarget());
+        b_button.whenPressed(new TurnToAnglePID(5));
+        x_button.whenPressed(new DriveToTarget());
         y_button.whenPressed(new EjectBall());
 
         left_middle.whenPressed(new HomeAll());

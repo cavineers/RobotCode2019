@@ -33,7 +33,7 @@ public class DriveToTarget extends Command {
             end();
             return;
         }
-        
+        this.setInterruptible(false);
         Robot.gyro.zeroYaw();
         Robot.estimator.zero();
 
@@ -43,18 +43,25 @@ public class DriveToTarget extends Command {
         vision.setRobotPos(Robot.estimator.getPositionAtTime(targetUpdate.getTimestamp()));
         angleA = vision.getAngleA();
 
-        turningCmdA = new TurnToAngle(Math.toDegrees(angleA));
-        turningCmdA.start(); 
-
+        turningCmdA = new TurnToAnglePID(angleA);
+        System.out.println("ANGLE A" + angleA);
         step = 1;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-
+        System.out.println("STEP" + step);
 		switch (step) {
-		case 1:
-            if (turningCmdA != null && turningCmdA.isCompleted()) {
+        case 1:
+            turningCmdA.start();
+            step = 2;
+            break;
+
+        case 2:
+            System.out.println("CASE 2");
+            System.out.println("TURNING" + turningCmdA.isCompleted());
+            if (turningCmdA.isCompleted()) {
+                System.out.println("COMMAND A IS COMPLETE");
 				vision.setRobotPos(Robot.estimator.getPos());
                 lineA = vision.calcVisionLineSegmentA();
                 pathA.addSegment(lineA);
@@ -62,26 +69,26 @@ public class DriveToTarget extends Command {
                 followPathA = new FollowPath(pathA);
                 followPathA.start();
                 angleB = vision.getAngleB(angleA);
-				step = 2;
+				step = 3;
 			}
 			break;
 
-		case 2:
+		case 3:
 			if (followPathA != null && followPathA.isCompleted()) {
 				turningCmdB = new TurnToAngle(Math.toDegrees(angleB));
                 turningCmdB.start();
-				step = 3;
+				step = 4;
 			}
             break;
         
-        case 3:
+        case 4:
             if(turningCmdB != null && turningCmdB.isCompleted()){
                 vision.setRobotPos(Robot.estimator.getPos());
                 lineB = vision.calcVisionLineSegmentB();
                 pathB.addSegment(lineB);
                 followPathB = new FollowPath(pathB);
                 followPathB.start();
-                step = 4;
+                step = 5;
             }
             break;
         
@@ -92,7 +99,7 @@ public class DriveToTarget extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return step == 4;
+		return step == 5;
 
 	}
 
