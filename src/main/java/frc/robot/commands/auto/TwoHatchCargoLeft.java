@@ -11,7 +11,7 @@ import frc.robot.commands.grabber.ChangeHatchGrabberState;
 import frc.robot.commands.grabber.HomeGrabber;
 import frc.robot.subsystems.Grabber.HatchGrabberState;
 
-public class TwoHatchCargoLeft extends CommandGroup{
+public class TwoHatchCargoLeft extends CommandGroup {
     public TwoHatchCargoLeft() {
         //initial homing routine
         addSequential(new Command() {

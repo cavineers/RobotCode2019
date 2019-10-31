@@ -14,28 +14,22 @@ import frc.robot.commands.HomeAll;
 import frc.robot.commands.IntakeCargo;
 import frc.robot.commands.MoveGrabberAndElevator;
 import frc.robot.commands.ShiftGear;
-import frc.robot.commands.TargetVisionTape;
-import frc.robot.commands.ToggleCargoIntake;
-import frc.robot.subsystems.CargoIntake.MotorState;
-import frc.robot.subsystems.DriveTrain.DriveGear;
-import frc.robot.subsystems.Elevator.ElevatorLevel;
-import frc.robot.subsystems.Grabber.GrabberPosition;
-import frc.robot.commands.elevator.ElevatorToLevel;
 import frc.robot.commands.grabber.EjectBall;
-import frc.robot.commands.grabber.HomeGrabber;
 import frc.robot.commands.grabber.ToggleGrabber;
 import frc.robot.commands.grabber.ToggleHatchGrabber;
-import frc.robot.commands.tests.RawMoveElevator;
-import frc.robot.commands.tests.RawSetGrabberPosition;
-import frc.robot.commands.tests.RawSetGrabberVelocity;
-import frc.robot.LEDHelper;
+import frc.robot.commands.vision.VCargo;
+import frc.robot.commands.vision.VCargo.VCargoHeight;
+import frc.robot.subsystems.DriveTrain.DriveGear;
+import frc.robot.subsystems.Elevator.ElevatorLevel;
 import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Grabber.GrabberPosition;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
+    LEDHelper led;
 
     public static Joystick joy = new Joystick(0);
     public static JoystickButton a_button = new JoystickButton(joy, 1);
@@ -50,7 +44,6 @@ public class OI {
     public static JoystickButton left_stick = new JoystickButton(joy, 9);
     public static JoystickButton right_stick = new JoystickButton(joy, 10);
 
-    LEDHelper led;
     public int lastDpad = -1;
     public boolean lastRightTrig = false;
     public boolean lastLeftTrig = false;
@@ -73,7 +66,8 @@ public class OI {
         y_button.whenPressed(new EjectBall());
 
         left_middle.whenPressed(new HomeAll());
-        right_middle.whenPressed(new ToggleCargoIntake());
+        // right_middle.whenPressed(new ToggleCargoIntake());
+        right_middle.whenPressed(new VCargo());
 
         // Homing test
         // a_button.whenPressed(new HomeElev());
@@ -127,7 +121,8 @@ public class OI {
             lastLeftTrig = isLeftTriggerPressed();
             if (lastLeftTrig) {
                 // the left trigger is pressed
-                new MoveGrabberAndElevator(ElevatorLevel.CARGOSHIP_TOP, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
+                // new MoveGrabberAndElevator(ElevatorLevel.CARGOSHIP_TOP, GrabberPosition.EXTENDED, Grabber.MotorState.OFF).start();
+                new VCargo();
 
             }
         }

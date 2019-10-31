@@ -143,7 +143,7 @@ public class Robot extends TimedRobot {
 
         // Init and export profile to network tables
         dankDash = new DankDash();
-        dankDash.setProfileLocation("TestChassis");
+        dankDash.setProfileLocation("Geoff");
         dankDash.setProfileName("Geoff");
         dankDash.export();
         dankDash.addListener();
