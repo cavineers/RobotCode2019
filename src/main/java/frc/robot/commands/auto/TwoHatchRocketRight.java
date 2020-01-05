@@ -15,7 +15,7 @@ public class TwoHatchRocketRight extends CommandGroup{
         addSequential(new Command() {
             @Override
             protected void initialize() {
-                Robot.gyro.zeroYaw();
+                // Robot.gyro.zeroYaw();
                 Robot.estimator.setPos(AutoPathHelper.getPath(AutoPathHelper.PATH_TYPE.RIGHT_ROCKET_1).getCurrentSegment().getStartPoint());
             }
 

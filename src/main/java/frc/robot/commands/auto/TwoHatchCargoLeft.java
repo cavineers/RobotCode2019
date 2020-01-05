@@ -18,7 +18,7 @@ public class TwoHatchCargoLeft extends CommandGroup{
             @Override
             protected void initialize() {
                 System.out.println("starting...");
-                Robot.gyro.zeroYaw();
+                // Robot.gyro.zeroYaw();
                 Robot.estimator.setPos(AutoPathHelper.getPath(AutoPathHelper.PATH_TYPE.LEFT_CARGOBAY_1).getCurrentSegment().getStartPoint());
             }
 
