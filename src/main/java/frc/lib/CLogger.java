@@ -1,7 +1,5 @@
 package frc.lib;
 
-import org.omg.CORBA.Any;
-
 public class CLogger {
     // Logger Mode Enum
     public enum cLoggerMode {
@@ -87,7 +85,7 @@ public class CLogger {
      * @param value Value to log
      * @param type What type of log is this
      */
-    public static void log(Any value, cLogType type) {
+    public static void log(String value, cLogType type) {
         switch (type) {
             case MajorError:
                 if (sl_majorErrors) {
@@ -126,7 +124,7 @@ public class CLogger {
      * A catch for an undefined log type
      * @param value Value to log
      */
-    public static void log(Any value) {
+    public static void log(String value) {
         log(value, cLogType.Undefined);
     }
 
@@ -135,7 +133,7 @@ public class CLogger {
      * @param value The value to log
      * @param type The type of value to log
      */
-    public static void logln(Any value, cLogType type) {
+    public static void logln(String value, cLogType type) {
         switch (type) {
             case MajorError:
                 if (sl_majorErrors) {
@@ -174,7 +172,7 @@ public class CLogger {
      * A catch for an undefined logType for logln
      * @param value The value to log
      */
-    public static void logln(Any value) {
+    public static void logln(String value) {
         logln(value, cLogType.Undefined);
     }
 
@@ -182,7 +180,7 @@ public class CLogger {
      * Bypasses the logging manager and goes straight to sysout
      * @param value The value to log
      */
-    public static void logBypass(Any value) {
+    public static void logBypass(String value) {
         System.out.print(value);
     }
 
@@ -190,7 +188,7 @@ public class CLogger {
      * Bypasses the logging manager and does a println
      * @param value The value to log
      */
-    public static void logBypassln(Any value) {
+    public static void logBypassln(String value) {
         System.out.println(value);
     }
 }
